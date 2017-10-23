@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+    <EditText
+        android:id="@+id/etAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Type time in seconds"
+        android:inputType="textPersonName"
+        android:layout_marginTop="53dp"
+        android:layout_below="@+id/description"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btnAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Alarm"
+        android:layout_below="@+id/etAlarm"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/tv_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnAlarm"
+        android:layout_centerHorizontal="true"
+        android:text="TextView" />
+
+    <EditText
+        android:id="@+id/start_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textView3"
+        android:layout_toRightOf="@+id/textView3"
+        android:ems="10"
+        android:hint="Czas rozpoczecia"
+        android:inputType="time" />
+
+    <EditText
+        android:id="@+id/end_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Czas zakończenia"
+        android:inputType="time"
+        android:layout_below="@+id/start_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/day_of_week"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Dzien tygodnia"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/end_time"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/day_of_week"
+        android:ems="10"
+        android:hint="Przedmiot"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/classroom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/subject"
+        android:ems="10"
+        android:hint="Sala"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/teacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Nauczyciel"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/classroom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/teacher"
+        android:ems="10"
+        android:hint="Opis"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/btn_add_to_DB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dodaj"
+        android:layout_below="@+id/description"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/btn_show_DB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pokaż"
+        android:layout_alignBaseline="@+id/btn_add_to_DB"
+        android:layout_alignBottom="@+id/btn_add_to_DB"
+        android:layout_toRightOf="@+id/btn_add_to_DB"
+        android:layout_toEndOf="@+id/btn_add_to_DB" />
+
+    <Button
+        android:id="@+id/btn_update_DB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description"
+        android:layout_toEndOf="@+id/btn_show_DB"
+        android:layout_toRightOf="@+id/btn_show_DB"
+        android:text="Update" />
+
+    <Button
+        android:id="@+id/btn_delete_DB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_update_DB"
+        android:layout_toEndOf="@+id/btn_update_DB"
+        android:layout_toRightOf="@+id/btn_update_DB"
+        android:text="Delete" />
+
+    <EditText
+        android:id="@+id/et_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:ems="10"
+        android:hint="ID"
+        android:inputType="number" />
+
+</RelativeLayout>
