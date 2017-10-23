@@ -4,11 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 
-import java.text.ParseException;
-import java.util.Calendar;
-
 import android.database.Cursor;
-import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,36 +16,23 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     /** TODO
-     * zrobic tak zeby aktywowal sie cały czas co kila sekund
-     * Posprawdzac te wszystkie opcje RTC, RTC_WAKEUP. Czym one sie róznią?
-     * Note: for timing operations (ticks, timeouts, etc) it is easier and much more efficient to use Handler
-     * dać tablicę z danymi o rozpoczeciu i zakonczeniu zajęć
      * statystki ile ktos juz chodził
      * ile miał jakich zajęc
      * ile czasu spedził w szkole
      * ile jeszcze do chodzenia
      * ile do wakacji
-     * zapisać dane trwania zajęć w bazie danych
-     * dać inkrementor w bazie, żeby wiedzieć które zajecia trwają
-     * jak się odinstaluje apka to alarm zniknie?
      * jak wywala sie widget, to trzeba usunąć alarm
-     * zapisać dane do bazy i odczytać
-     * prosty interfejs do wprowadzania zajęć
-     * zrobić proste pola do wpisywania danych i dać insert do bazy TODO!
-     * dostać rzeczy z bazy
      * pobieranie danych czasu tak, ze pokazuje sie zegar
      * podawanie czasu w pm/am czy tylko 24h?
-     * pokazac kolene pole nad tym ekramen co jest z wyborem czasu na zegarze
-     * rozwijane munu na dni tygodnia
-     * zobaczyc czy da sie lepiej odczytywac dane od StringBufera
+     * pokazac kolene pole nad tym ekranem co jest z wyborem czasu na zegarze
+     * rozwijane munu na dni tygodnia (albo na górze, to zanaczania jako remoteButton)
+     * zobaczyc czy da sie lepiej odczytywac dane od StringBufera z Cursera
      * jak se kliknie na widget, to dać do activity_main
      * kolory do kazdego przedmiotu
      * Dodać widget
-     * przypisywac edittexty tylko raz na poczatku, a nie za kazdym razem
      * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
      * zrobić klasę do danych z kalędarza ?
      */
-
 
     Button btnSet;
     Button btnAddToDB;
@@ -69,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tvUpdate;
 
-    static SqlLiteTry myDB;
+    static SqlLiteHelper myDB;
     private static MainActivity ins;
 
     @Override
@@ -84,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDBInstance(){
-        myDB = new SqlLiteTry(this); //this jako context
+        myDB = new SqlLiteHelper(this); //this jako context
     }
 
     private void setInstance(){
@@ -170,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
     }
 
-    public static SqlLiteTry getDatabaseInstance(){
+    public static SqlLiteHelper getDatabaseInstance(){
         return myDB;
     }
 
@@ -180,7 +163,8 @@ public class MainActivity extends AppCompatActivity {
         return myDB.deleteData(id);
     }
 
-    private void showTableData(Cursor cursor){
+    protected void showTableData(Cursor cursor){
+
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()){ // zobaczyc jak to działą z tym bufferem TODO
             buffer.append("ID " + cursor.getString(0) + "\n");
@@ -192,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             buffer.append("Teacher " + cursor.getString(6) + "\n");
             buffer.append("Description " + cursor.getString(7) + "\n\n");
         }
+        //cursor.close();
         showData("data", buffer.toString());
     }
 

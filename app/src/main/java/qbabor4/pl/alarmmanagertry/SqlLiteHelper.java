@@ -14,7 +14,7 @@ import android.widget.Toast;
  * Created by Jakub on 19-Oct-17.
  */
 
-public class SqlLiteTry extends SQLiteOpenHelper {
+public class SqlLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "STUDENT.db";
     public static final String TABLE_NAME = "timetable_table";
@@ -23,26 +23,22 @@ public class SqlLiteTry extends SQLiteOpenHelper {
     public static final String COL_3 = "end_time"; // Time in minutes
     public static final String COL_4 = "day_of_week"; // {1|2|3|4|5|6|7}
     public static final String COL_5 = "subject"; // TODO albo nazwa zeby nie bylo tylko pod szkołe? Moze wybór na początku typ rzeczy: szkoła/zwykła czynnosc?
-    public static final String COL_6 = "classroom"; // Moze byc puste
-    public static final String COL_7 = "teacher"; // Moze byc puste
-    public static final String COL_8 = "description"; // Może być puste
+    public static final String COL_6 = "classroom";
+    public static final String COL_7 = "teacher";
+    public static final String COL_8 = "description";
 
-    public SqlLiteTry(Context context ) {
+    public SqlLiteHelper(Context context ) {
         super(context, DATABASE_NAME, null, 3); // numerki to chyba wersje (jak sie zmieni wersje na wieksza, to updatuje chyba
     }
 
+    /** Runs when there is no DB created */
     @Override
-    public void onCreate(SQLiteDatabase db) { //TODO kiedy to sie wykonuje?
+    public void onCreate(SQLiteDatabase db) {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER, " + COL_3 + " INTEGER," + COL_4 +" INTEGER, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT" + ")";
         db.execSQL(SQL_String);
     }
 
-    /**
-     * Called when bigger number is passed in constructor
-     * @param db
-     * @param oldVersion
-     * @param newVersion
-     */
+    /** Runs when version in constructor is bigger than last time */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME);
@@ -104,11 +100,10 @@ public class SqlLiteTry extends SQLiteOpenHelper {
         return result != 0; // returns rows affected (when returns 0 it is false)
     }
 
-    public int getNextSubjectId(int timeInMinutes, int dayInWeek) { // zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1
+    public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) { // zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result  = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
-        // z tego dostać wszystkie dane (ID, start_time, end_time ...)
         // dostać z Cursora czy jest coś
-        return 1;
+        // TODO zwiekszac day in week jak nie ma (7 razy)
+        return  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
     }
 }

@@ -5,9 +5,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Vibrator;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -20,27 +19,23 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class Alarm extends BroadcastReceiver {
 
-    SqlLiteTry myDb = MainActivity.getDatabaseInstance();
+    SqlLiteHelper myDb = MainActivity.getDatabaseInstance();
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         if (intent != null) {
             if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
-                Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();
                 MainActivity mActivity = MainActivity.getInstace();
-
                 if (mActivity != null) {
                     MainActivity.getInstace().updateTheTextView("Updated"); // when app is closed this is null
                 }
-
-
                 Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
-                //MainActivity.createAlarmIntent(5000); // nie odpala sie w ogole TODO
 
-                // jak nie ma MainActivity to alarm sie nie ustawi (ustawiac na tą klase ?) Moze w klasie od widgeta? Ciezko powiedziec :/
+                // ustawiac intent w widgecie a nie w MainActivity
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(mActivity.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
 
                 AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
@@ -48,25 +43,30 @@ public class Alarm extends BroadcastReceiver {
                 // todo 3: dostac z bazy pierwszy wiekszy wynik w tym samym dniu
                 // todo 4: jak nie ma w tym dniu, to w kolejnym
 
-
                 int timeInMinutes = getCurrentTimeInMInutes();
                 int dayInWeek = getDayInWeek();
 
-                Toast.makeText(context, String.valueOf(dayInWeek), Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, String.valueOf(timeInMinutes), Toast.LENGTH_SHORT).show();
-                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5*1000 , pendingIntent ); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon // poczytac o typach
-                // TODO stworzyc kolejy alarm, który odpali się za jakiś czas; Tworzy sie, ale jak zamknie sie aplikację, to jest błąd (przypisac do widgeta a nie do mainActivity)
+                Cursor cursor = getNextSubjectData();
+                mActivity.showTableData(cursor);
+                
+                cursor.moveToFirst();
+                getNextSubjectData(cursor, context);
+
+                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5*1000 , pendingIntent ); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
             }
-
         }
-
     }
 
-    private int getNextSubjectId(){
+    private void getNextSubjectData(Cursor cursor, Context context){
+        String startTime = cursor.getString(1);
+        Toast.makeText(context, String.valueOf(startTime), Toast.LENGTH_SHORT).show();
+    }
+
+    private Cursor getNextSubjectData(){
         int timeInMinutes = getCurrentTimeInMInutes();
         int dayInWeek = getDayInWeek();
         // zapytanie do bazy z
-        return myDb.getNextSubjectId(timeInMinutes, dayInWeek);
+        return myDb.getNextSubjectData(timeInMinutes, dayInWeek);
     }
 
     private int getMinutes(int hours, int minutes){
