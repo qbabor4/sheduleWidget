@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 
 import android.database.Cursor;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,16 +63,35 @@ public class MainActivity extends AppCompatActivity {
     static SqlLiteHelper myDB;
     private static MainActivity ins;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /** Layout */
+        setToolbar();
+        setNavigationDrawer();
 
         setInstance();
         setWidgets();
         setButtonListeners();
         setDBInstance();
 
+
+    }
+
+    private void setNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mActionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setToolbar(){
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
     }
@@ -86,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_setting) {
             Toast.makeText(MainActivity.this, "Clicked action menu", Toast.LENGTH_SHORT).show();
+        } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)){
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
