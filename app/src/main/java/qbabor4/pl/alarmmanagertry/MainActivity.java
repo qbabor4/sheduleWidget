@@ -8,14 +8,20 @@ import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MainActivity extends AppCompatActivity {
-    /** TODO
+    /**
+     * TODO
      * statystki ile ktos juz chodził
      * ile miał jakich zajęc
      * ile czasu spedził w szkole
@@ -64,17 +70,38 @@ public class MainActivity extends AppCompatActivity {
         setWidgets();
         setButtonListeners();
         setDBInstance();
+
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
     }
 
-    private void setDBInstance(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater mMenuInflater = getMenuInflater();
+        mMenuInflater.inflate(R.menu.my_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_setting) {
+            Toast.makeText(MainActivity.this, "Clicked action menu", Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.action_about_us){
+            Toast.makeText(MainActivity.this, "Clicked about us", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setDBInstance() {
         myDB = new SqlLiteHelper(this); //this jako context
     }
 
-    private void setInstance(){
+    private void setInstance() {
         ins = this;
     }
 
-    private void setButtonListeners(){
+    private void setButtonListeners() {
         btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnAddToDB.setOnClickListener(new View.OnClickListener(){
+        btnAddToDB.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -95,12 +122,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnShowAllDB.setOnClickListener(new View.OnClickListener(){
+        btnShowAllDB.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Cursor result = myDB.getAllData();
-                if (result.getCount() == 0){
+                if (result.getCount() == 0) {
                     Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
                 } else {
                     showTableData(result);
@@ -108,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnUpdateDB.setOnClickListener(new View.OnClickListener(){
+        btnUpdateDB.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -124,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if(deleteDataDB()){
+                if (deleteDataDB()) {
                     Toast.makeText(getApplicationContext(), "deleted data", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
@@ -133,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setWidgets(){
+    private void setWidgets() {
         btnSet = (Button) findViewById(R.id.btnAlarm);
         btnAddToDB = (Button) findViewById(R.id.btn_add_to_DB);
         btnShowAllDB = (Button) findViewById(R.id.btn_show_DB);
@@ -153,20 +180,20 @@ public class MainActivity extends AppCompatActivity {
         tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
     }
 
-    public static SqlLiteHelper getDatabaseInstance(){
+    public static SqlLiteHelper getDatabaseInstance() {
         return myDB;
     }
 
-    public boolean deleteDataDB(){
+    public boolean deleteDataDB() {
         EditText etId = (EditText) findViewById(R.id.et_id);
         String id = String.valueOf(etId.getText());
         return myDB.deleteData(id);
     }
 
-    protected void showTableData(Cursor cursor){
+    protected void showTableData(Cursor cursor) {
 
         StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()){ // zobaczyc jak to działą z tym bufferem TODO
+        while (cursor.moveToNext()) { // zobaczyc jak to działą z tym bufferem TODO
             buffer.append("ID " + cursor.getString(0) + "\n");
             buffer.append("StartTime " + cursor.getString(1) + "\n");
             buffer.append("EndTime " + cursor.getString(2) + "\n");
@@ -180,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         showData("data", buffer.toString());
     }
 
-    private void showData(String tile, String message){
+    private void showData(String tile, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);// we can cancel it
         builder.setTitle(tile);
@@ -188,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public boolean updateDataDB(){
+    public boolean updateDataDB() {
         String id = String.valueOf(etId.getText());
         String startTimeStr = String.valueOf(etStartTime.getText());
         int startTimeInMinutes = getTimeInMinutes(startTimeStr);
@@ -201,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         return myDB.updateData(id, startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr);
     }
 
-    public boolean insertDataToDB(){
+    public boolean insertDataToDB() {
         String startTimeStr = String.valueOf(etStartTime.getText());
         int startTimeInMinutes = getTimeInMinutes(startTimeStr);
         int endTimeInMinutes = getTimeInMinutes(String.valueOf(etEndTime.getText()));
@@ -222,20 +249,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // zakładam, ze poda dobre dane
-    private int getTimeInMinutes(String time){
+    private int getTimeInMinutes(String time) {
         // TODO przeparsować dane z zegara na minuty
-        return  Integer.parseInt(time);
+        return Integer.parseInt(time);
     }
 
-    public void createAlarmIntent(int time){
+    public void createAlarmIntent(int time) {
         Intent intent = new Intent(ins, Alarm.class);
         intent.setAction(Intent.ACTION_ANSWER);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time*1000 , pendingIntent );
+        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, pendingIntent);
     }
 
-    public static MainActivity  getInstace(){
+    public static MainActivity getInstace() {
         return ins;
     }
 }

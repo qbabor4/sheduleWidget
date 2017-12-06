@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditText
         android:id="@+id/etAlarm"
@@ -12,36 +11,36 @@
         android:ems="10"
         android:hint="Type time in seconds"
         android:inputType="textPersonName"
-        android:layout_marginTop="53dp"
-        android:layout_below="@+id/description"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/btnAlarm"
+        android:layout_toRightOf="@+id/btn_add_to_DB"
+        android:layout_toEndOf="@+id/btn_add_to_DB" />
 
     <Button
         android:id="@+id/btnAlarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set Alarm"
-        android:layout_below="@+id/etAlarm"
+        android:layout_above="@+id/tv_update"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tv_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnAlarm"
-        android:layout_centerHorizontal="true"
-        android:text="TextView" />
+        android:text="TextView"
+        android:layout_above="@+id/et_id"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:id="@+id/start_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
         android:ems="10"
         android:hint="Czas rozpoczecia"
-        android:inputType="time" />
+        android:inputType="time"
+        android:layout_above="@+id/end_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/end_time"
@@ -50,7 +49,7 @@
         android:ems="10"
         android:hint="Czas zakończenia"
         android:inputType="time"
-        android:layout_below="@+id/start_time"
+        android:layout_above="@+id/day_of_week"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -61,31 +60,31 @@
         android:ems="10"
         android:hint="Dzien tygodnia"
         android:inputType="textPersonName"
-        android:layout_below="@+id/end_time"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/subject"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/day_of_week"
         android:ems="10"
         android:hint="Przedmiot"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:layout_above="@+id/classroom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/classroom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/subject"
         android:ems="10"
         android:hint="Sala"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:layout_above="@+id/teacher"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/teacher"
@@ -94,7 +93,7 @@
         android:ems="10"
         android:hint="Nauczyciel"
         android:inputType="textPersonName"
-        android:layout_below="@+id/classroom"
+        android:layout_above="@+id/description"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -102,19 +101,20 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/teacher"
         android:ems="10"
         android:hint="Opis"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:layout_above="@+id/btn_add_to_DB"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/btn_add_to_DB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dodaj"
-        android:layout_below="@+id/description"
+        android:layout_alignBaseline="@+id/btn_show_DB"
+        android:layout_alignBottom="@+id/btn_show_DB"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -123,19 +123,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pokaż"
-        android:layout_alignBaseline="@+id/btn_add_to_DB"
-        android:layout_alignBottom="@+id/btn_add_to_DB"
-        android:layout_toRightOf="@+id/btn_add_to_DB"
-        android:layout_toEndOf="@+id/btn_add_to_DB" />
+        android:layout_alignBaseline="@+id/btn_update_DB"
+        android:layout_alignBottom="@+id/btn_update_DB"
+        android:layout_alignLeft="@+id/etAlarm"
+        android:layout_alignStart="@+id/etAlarm" />
 
     <Button
         android:id="@+id/btn_update_DB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/description"
-        android:layout_toEndOf="@+id/btn_show_DB"
+        android:text="Update"
+        android:layout_above="@+id/btnAlarm"
         android:layout_toRightOf="@+id/btn_show_DB"
-        android:text="Update" />
+        android:layout_toEndOf="@+id/btn_show_DB"
+        android:layout_marginBottom="35dp" />
 
     <Button
         android:id="@+id/btn_delete_DB"
@@ -157,4 +158,16 @@
         android:hint="ID"
         android:inputType="number" />
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <!-- zmienic tu na tlo pomaranczowe w popupTheme-->
 </RelativeLayout>
