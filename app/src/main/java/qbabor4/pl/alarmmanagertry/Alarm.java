@@ -67,7 +67,7 @@ public class Alarm extends BroadcastReceiver {
         Toast.makeText(context, String.valueOf(startTime), Toast.LENGTH_SHORT).show();
     }
 
-    private Cursor getNextSubjectData(Context context){
+    private Cursor getNextSubjectData(Context context){ //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
         int timeInMinutes = getCurrentTimeInMInutes();
         int dayInWeek = getDayInWeek();
         // for do dni do while
@@ -77,7 +77,7 @@ public class Alarm extends BroadcastReceiver {
         for (int i=dayInWeek; i<weekAfter; i++){ // iterating through all days in week (TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
             int dayInWeekParsed = i;
             if (i > 7){ dayInWeekParsed = i%7; }
-            if (i > dayInWeek){ 
+            if (i > dayInWeek){
                 timeInMinutes = -1;
             }
             Cursor cursor  = myDb.getNextSubjectData(timeInMinutes, dayInWeekParsed); // patrzy tylko na te z wyzszyą godziną

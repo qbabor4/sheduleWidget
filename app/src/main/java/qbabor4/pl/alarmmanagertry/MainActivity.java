@@ -227,14 +227,12 @@ public class MainActivity extends AppCompatActivity {
         return  Integer.parseInt(time);
     }
 
-    public static void createAlarmIntent(int time){
+    public void createAlarmIntent(int time){
         Intent intent = new Intent(ins, Alarm.class);
-        intent.setAction(Intent.ACTION_ANSWER); // tu zmienic na coś innego TODO
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
-
-        AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
-        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time*1000 , pendingIntent ); // budzi nawet jak jest zablokowany telefon // poczytac o typach
+        intent.setAction(Intent.ACTION_ANSWER);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time*1000 , pendingIntent );
     }
 
     public static MainActivity  getInstace(){
