@@ -164,10 +164,12 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
+        app:title="School Schedule"
         app:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-    <!-- zmienic tu na tlo pomaranczowe w popupTheme-->
+    <!-- zmienic tu na tlo pomaranczowe w popupTheme
+         dac nazwe apli do stringów-->
 </RelativeLayout>

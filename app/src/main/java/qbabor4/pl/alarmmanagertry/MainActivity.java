@@ -87,9 +87,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_setting) {
             Toast.makeText(MainActivity.this, "Clicked action menu", Toast.LENGTH_SHORT).show();
         }
-        if (item.getItemId() == R.id.action_about_us){
-            Toast.makeText(MainActivity.this, "Clicked about us", Toast.LENGTH_SHORT).show();
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -4,15 +4,9 @@
 
     <item
         android:id="@+id/action_setting"
-        android:title="@string/menu_action_settings"
+        android:title="@string/menu_add_class"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_add_white_24dp">
-    </item>
-
-    <item
-        android:id="@+id/action_about_us"
-        android:title="@string/menu_action_about_us"
-        app:showAsAction="never">
+        android:icon="@drawable/ic_add_white_36dp">
     </item>
 
 </menu>

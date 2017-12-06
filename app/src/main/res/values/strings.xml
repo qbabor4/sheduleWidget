@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AlarmManagerTry</string>
-    <string name="menu_action_settings">Settings</string>
-    <string name="menu_action_about_us">About us</string>
+    <string name="menu_add_class">Add Class</string>
+
 </resources>
