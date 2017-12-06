@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -74,13 +76,12 @@ public class MainActivity extends AppCompatActivity {
         /** Layout */
         setToolbar();
         setNavigationDrawer();
+        setNavigationViewListener();
 
         setInstance();
         setWidgets();
         setButtonListeners();
         setDBInstance();
-
-
     }
 
     private void setNavigationDrawer() {
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setToolbar(){
+    private void setToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
     }
@@ -103,13 +104,39 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void setNavigationViewListener() {
+        NavigationView navigation = (NavigationView) findViewById(R.id.navigationView);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_add_new_class:
+                        // Handle menu click
+                        Toast.makeText(MainActivity.this, "new class", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_add_free_days:
+                        Toast.makeText(MainActivity.this, "add free days", Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_setting) {
             Toast.makeText(MainActivity.this, "Clicked action menu", Toast.LENGTH_SHORT).show();
-        } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)){
+        } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)) {
+
+            Toast.makeText(MainActivity.this, "drawer", Toast.LENGTH_SHORT).show();
+            // zmienic text w toolbarze na "Menu"
             return true;
         }
+        // złapać jak zamyka navigacyjne menu
+        // jak sam otwiera to też coś zrobić
+
 
         return super.onOptionsItemSelected(item);
     }

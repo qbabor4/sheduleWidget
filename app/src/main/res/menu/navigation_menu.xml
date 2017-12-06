@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/navigation_account"
-        android:title="My Account" />
+    <item android:id="@+id/navigation_add_new_class"
+        android:title="New class"
+        android:icon="@drawable/ic_add_white_36dp"/>
 
-    <item android:id="@+id/navigation_setting"
-        android:title="Settings" />
+    <item android:id="@+id/navigation_add_free_days"
+        android:title="Free days"
+        android:icon="@drawable/ic_directions_run_black_24dp"/>
 
-    <item android:id="@+id/navigation_logout"
-        android:title="logout" />
 
 </menu>

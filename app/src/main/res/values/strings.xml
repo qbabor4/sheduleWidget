@@ -3,4 +3,5 @@
     <string name="menu_add_class">Add Class</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="navigation_header">Nagłówek</string>
 </resources>
