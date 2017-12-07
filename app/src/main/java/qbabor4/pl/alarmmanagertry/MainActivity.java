@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
      * zrobić klasę do danych z kalędarza ?
      */
 
+    public static final String EXTRA_MESSAGE = "qbabor4.pl.alarmmanagertry.MESSAGE";
+
     Button btnSet;
     Button btnAddToDB;
     Button btnShowAllDB;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tvUpdate;
 
-    static SqlLiteHelper myDB;
+    private static SqlLiteHelper myDB;
     private static MainActivity ins;
 
     private DrawerLayout mDrawerLayout;
@@ -104,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void changeActivity(){
+        Intent intent = new Intent(this, AddNewClass.class);
+        intent.putExtra(EXTRA_MESSAGE, "łabalabadubdub!");
+        startActivity(intent);
+    }
+
     private void setNavigationViewListener() {
         NavigationView navigation = (NavigationView) findViewById(R.id.navigationView);
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -112,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_add_new_class:
                         // Handle menu click
+                        // nowy layout z dodawaniem zajęć (dodać do bazy)
+                        changeActivity();
                         Toast.makeText(MainActivity.this, "new class", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.navigation_add_free_days:
