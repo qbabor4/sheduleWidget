@@ -4,4 +4,6 @@
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="navigation_header">Nagłówek</string>
+    <string name="add_new_class">New Class</string>
+    <string name="start_time">Czas rozpoczecia</string>
 </resources>

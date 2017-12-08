@@ -22,39 +22,34 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+/**
+ * TODO
+ * statystki ile ktos juz chodził
+ * ile miał jakich zajęc
+ * ile czasu spedził w szkole
+ * ile jeszcze do chodzenia
+ * ile do wakacji
+ * jak wywala sie widget, to trzeba usunąć alarm
+ * pobieranie danych czasu tak, ze pokazuje sie zegar
+ * podawanie czasu w pm/am czy tylko 24h?
+ * pokazac kolene pole nad tym ekranem co jest z wyborem czasu na zegarze
+ * rozwijane munu na dni tygodnia (albo na górze, to zanaczania jako remoteButton)
+ * zobaczyc czy da sie lepiej odczytywac dane od StringBufera z Cursera
+ * jak se kliknie na widget, to dać do activity_main
+ * kolory do kazdego przedmiotu
+ * Dodać widget
+ * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
+ * zrobić klasę do danych z kalędarza ?
+ * zamnąc drawer jak sie przejdzie do nowego layouta
+ */
 public class MainActivity extends AppCompatActivity {
-    /**
-     * TODO
-     * statystki ile ktos juz chodził
-     * ile miał jakich zajęc
-     * ile czasu spedził w szkole
-     * ile jeszcze do chodzenia
-     * ile do wakacji
-     * jak wywala sie widget, to trzeba usunąć alarm
-     * pobieranie danych czasu tak, ze pokazuje sie zegar
-     * podawanie czasu w pm/am czy tylko 24h?
-     * pokazac kolene pole nad tym ekranem co jest z wyborem czasu na zegarze
-     * rozwijane munu na dni tygodnia (albo na górze, to zanaczania jako remoteButton)
-     * zobaczyc czy da sie lepiej odczytywac dane od StringBufera z Cursera
-     * jak se kliknie na widget, to dać do activity_main
-     * kolory do kazdego przedmiotu
-     * Dodać widget
-     * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
-     * zrobić klasę do danych z kalędarza ?
-     */
+
 
     public static final String EXTRA_MESSAGE = "qbabor4.pl.alarmmanagertry.MESSAGE";
 
-    Button btnSet;
-    Button btnAddToDB;
-    Button btnShowAllDB;
-    Button btnUpdateDB;
-    Button btnDeleteDB;
+    Button btnSet, btnAddToDB, btnShowAllDB, btnUpdateDB, btnDeleteDB;
 
-    EditText etTime;
-    EditText etId;
-    EditText etStartTime;
+    EditText etTime, etId;
     EditText etEndTime;
     EditText etDayOfWeek;
     EditText etSubject;
@@ -106,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void changeActivity(){
+    public void AddNewClassActivity(){
         Intent intent = new Intent(this, AddNewClass.class);
         intent.putExtra(EXTRA_MESSAGE, "łabalabadubdub!");
         startActivity(intent);
@@ -121,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_add_new_class:
                         // Handle menu click
                         // nowy layout z dodawaniem zajęć (dodać do bazy)
-                        changeActivity();
-                        Toast.makeText(MainActivity.this, "new class", Toast.LENGTH_SHORT).show();
+                        AddNewClassActivity();
+                        mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.navigation_add_free_days:
                         Toast.makeText(MainActivity.this, "add free days", Toast.LENGTH_SHORT).show();
@@ -168,17 +163,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnAddToDB.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (insertDataToDB()) {
-                    Toast.makeText(getApplicationContext(), "adding data", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        btnAddToDB.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                if (insertDataToDB()) {
+//                    Toast.makeText(getApplicationContext(), "adding data", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
         btnShowAllDB.setOnClickListener(new View.OnClickListener() {
 
@@ -193,17 +188,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnUpdateDB.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (updateDataDB()) {
-                    Toast.makeText(getApplicationContext(), "updated data", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        btnUpdateDB.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                if (updateDataDB()) {
+//                    Toast.makeText(getApplicationContext(), "updated data", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
         btnDeleteDB.setOnClickListener(new View.OnClickListener() {
 
@@ -227,13 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
         etTime = (EditText) findViewById(R.id.etAlarm);
         etId = (EditText) findViewById(R.id.et_id);
-        etStartTime = (EditText) findViewById(R.id.start_time);
-        etEndTime = (EditText) findViewById(R.id.end_time);
-        etDayOfWeek = (EditText) findViewById(R.id.day_of_week);
-        etSubject = (EditText) findViewById(R.id.subject);
-        etClassroom = (EditText) findViewById(R.id.classroom);
-        etTeacher = (EditText) findViewById(R.id.teacher);
-        etDescription = (EditText) findViewById(R.id.description);
 
         tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
     }
@@ -273,30 +261,30 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public boolean updateDataDB() {
-        String id = String.valueOf(etId.getText());
-        String startTimeStr = String.valueOf(etStartTime.getText());
-        int startTimeInMinutes = getTimeInMinutes(startTimeStr);
-        int endTimeInMinutes = getTimeInMinutes(String.valueOf(etEndTime.getText()));
-        int dayOfWeekInt = Integer.parseInt(String.valueOf(etDayOfWeek.getText()));
-        String subjectStr = String.valueOf(etSubject.getText());
-        String classroomStr = String.valueOf(etClassroom.getText());
-        String teacherStr = String.valueOf(etTeacher.getText());
-        String descriptionStr = String.valueOf(etDescription.getText());
-        return myDB.updateData(id, startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr);
-    }
+//    public boolean updateDataDB() {
+//        String id = String.valueOf(etId.getText());
+//        String startTimeStr = String.valueOf(etStartTime.getText());
+//        int startTimeInMinutes = getTimeInMinutes(startTimeStr);
+//        int endTimeInMinutes = getTimeInMinutes(String.valueOf(etEndTime.getText()));
+//        int dayOfWeekInt = Integer.parseInt(String.valueOf(etDayOfWeek.getText()));
+//        String subjectStr = String.valueOf(etSubject.getText());
+//        String classroomStr = String.valueOf(etClassroom.getText());
+//        String teacherStr = String.valueOf(etTeacher.getText());
+//        String descriptionStr = String.valueOf(etDescription.getText());
+//        return myDB.updateData(id, startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr);
+//    }
 
-    public boolean insertDataToDB() {
-        String startTimeStr = String.valueOf(etStartTime.getText());
-        int startTimeInMinutes = getTimeInMinutes(startTimeStr);
-        int endTimeInMinutes = getTimeInMinutes(String.valueOf(etEndTime.getText()));
-        int dayOfWeekInt = Integer.parseInt(String.valueOf(etDayOfWeek.getText()));
-        String subjectStr = String.valueOf(etSubject.getText());
-        String classroomStr = String.valueOf(etClassroom.getText());
-        String teacherStr = String.valueOf(etTeacher.getText());
-        String descriptionStr = String.valueOf(etDescription.getText());
-        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr);
-    }
+//    public boolean insertDataToDB() {
+//        String startTimeStr = String.valueOf(etStartTime.getText());
+//        int startTimeInMinutes = getTimeInMinutes(startTimeStr);
+//        int endTimeInMinutes = getTimeInMinutes(String.valueOf(etEndTime.getText()));
+//        int dayOfWeekInt = Integer.parseInt(String.valueOf(etDayOfWeek.getText()));
+//        String subjectStr = String.valueOf(etSubject.getText());
+//        String classroomStr = String.valueOf(etClassroom.getText());
+//        String teacherStr = String.valueOf(etTeacher.getText());
+//        String descriptionStr = String.valueOf(etDescription.getText());
+//        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr);
+//    }
 
     public void updateTheTextView(final String t) {
         MainActivity.this.runOnUiThread(new Runnable() {

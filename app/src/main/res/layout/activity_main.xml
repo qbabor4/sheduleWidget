@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-    >
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -21,9 +20,9 @@
         app:title="@string/app_name" />
 
     <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/drawerLayout">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,17 +32,16 @@
                 android:id="@+id/btn_show_DB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_update_DB"
-                android:layout_alignBottom="@+id/btn_update_DB"
-                android:layout_alignLeft="@+id/etAlarm"
-                android:layout_alignStart="@+id/etAlarm"
+                android:layout_alignBaseline="@+id/btn_add_to_DB"
+                android:layout_alignBottom="@+id/btn_add_to_DB"
+                android:layout_toEndOf="@+id/btn_add_to_DB"
+                android:layout_toRightOf="@+id/btn_add_to_DB"
                 android:text="Pokaż" />
 
             <EditText
                 android:id="@+id/et_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:ems="10"
@@ -63,120 +61,46 @@
                 android:id="@+id/btn_add_to_DB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_show_DB"
-                android:layout_alignBottom="@+id/btn_show_DB"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_marginTop="47dp"
                 android:text="Dodaj" />
 
             <Button
                 android:id="@+id/btn_update_DB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/btnAlarm"
-                android:layout_marginBottom="35dp"
+                android:layout_alignBaseline="@+id/btn_show_DB"
+                android:layout_alignBottom="@+id/btn_show_DB"
                 android:layout_toEndOf="@+id/btn_show_DB"
                 android:layout_toRightOf="@+id/btn_show_DB"
                 android:text="Update" />
-
-            <EditText
-                android:id="@+id/end_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/day_of_week"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Czas zakończenia"
-                android:inputType="time" />
-
-            <EditText
-                android:id="@+id/start_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/end_time"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Czas rozpoczecia"
-                android:inputType="time" />
 
             <TextView
                 android:id="@+id/tv_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/et_id"
+                android:layout_below="@+id/btnAlarm"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="44dp"
                 android:text="TextView" />
 
-            <EditText
-                android:id="@+id/day_of_week"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/subject"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Dzien tygodnia"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/classroom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/teacher"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Sala"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/teacher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/description"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Nauczyciel"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/btn_add_to_DB"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Opis"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/subject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/classroom"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ems="10"
-                android:hint="Przedmiot"
-                android:inputType="textPersonName" />
 
             <Button
                 android:id="@+id/btnAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/tv_update"
+                android:layout_below="@+id/etAlarm"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="13dp"
                 android:text="Set Alarm" />
 
             <EditText
                 android:id="@+id/etAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/btnAlarm"
+                android:layout_below="@+id/btn_update_DB"
+                android:layout_marginTop="15dp"
                 android:layout_toEndOf="@+id/btn_add_to_DB"
                 android:layout_toRightOf="@+id/btn_add_to_DB"
                 android:ems="10"
@@ -189,11 +113,9 @@
             android:id="@+id/navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:menu="@menu/navigation_menu"
             android:layout_gravity="start"
             app:headerLayout="@layout/navigation_header"
-            >
-        </android.support.design.widget.NavigationView>
+            app:menu="@menu/navigation_menu"></android.support.design.widget.NavigationView>
 
 
     </android.support.v4.widget.DrawerLayout>
