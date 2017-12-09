@@ -9,9 +9,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Brak klawiatury jak sie klika na edittext
@@ -27,14 +33,17 @@ import android.widget.Toast;
  * przycisk zatwierdzenia w prawym, górnym rogu
  * sprawdzac czy czas rozpoczecia jest wczesniej od zakonczenia albo jak nie ma rozpoczecia, to sprawdzac na odwrót (ustawic na taki sam czas jak źle poda
  * wysuwana lista jak nacisnie dzien tygodnia
+ * pozmieniac kolory w timepickerze
+ * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
  *
  * <p>
  * Created by Jakub on 07-Dec-17.
  */
 
-public class AddNewClass extends AppCompatActivity implements View.OnClickListener {
+public class AddNewClass extends AppCompatActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
 
-    EditText etStartTime, etEndTime, etSubject, etDayOfWeek, etTeacher, etClassroom, etDescription;
+    EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription;
+    Spinner spDayOfWeek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.add_new_class);
         setToolbar();
         setButtons();
+        setSpinner();
         dontShowKeyboardOnStart();
     }
 
@@ -52,8 +62,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etEndTime.setOnClickListener(this);
         etSubject = (EditText) findViewById(R.id.et_subject);
         etSubject.setOnClickListener(this);
-        etDayOfWeek = (EditText) findViewById(R.id.et_day_of_week);
-        etDayOfWeek.setOnClickListener(this);
         etTeacher = (EditText) findViewById(R.id.et_teacher);
         etTeacher.setOnClickListener(this);
         etClassroom = (EditText) findViewById(R.id.et_classroom);
@@ -66,6 +74,20 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    private void setSpinner(){
+        spDayOfWeek = (Spinner) findViewById(R.id.sp_day_of_week);
+        spDayOfWeek.setOnItemSelectedListener(this);
+        List<String> daysOfWeek = new ArrayList<>();
+        daysOfWeek.add("poniedziałek");
+        daysOfWeek.add("wtorek");
+        daysOfWeek.add("sroda");
+        daysOfWeek.add("czwartek");
+        daysOfWeek.add("piątek");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, daysOfWeek);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spDayOfWeek.setAdapter(dataAdapter);
+        //String text = spDayOfWeek.getSelectedItem().toString();
+    }
     /**
      * TOOLBAR
      */
@@ -124,7 +146,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         int minute = 0;
         boolean is24HourView = true;
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, R.style.Dialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 v.setText(hourOfDay + ":" + minute);
@@ -133,4 +155,13 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         timePickerDialog.show();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // wybieranie z listy dnia
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

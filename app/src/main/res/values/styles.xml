@@ -8,4 +8,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="myTimePickerStyle" parent="@android:style/Widget.Material.Light.TimePicker">
+        <item name="android:numbersTextColor">#ffffff</item>
+        <item name="android:numbersBackgroundColor">@color/colorPrimary</item>
+        <item name="android:numbersSelectorColor">#88000000</item>
+        <item name="android:headerBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="Dialog" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:timePickerDialogTheme">@style/AppTheme2</item>
+    </style>
+
+    <style name="AppTheme2" parent="myTimePickerStyle">
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+    </style>
+
+
 </resources>

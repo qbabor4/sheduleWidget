@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Time;
+
 /**
  * TODO
  * statystki ile ktos juz chodził
@@ -101,9 +103,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void AddNewClassActivity(){
+    private void addNewClassActivity(){
         Intent intent = new Intent(this, AddNewClass.class);
-        intent.putExtra(EXTRA_MESSAGE, "łabalabadubdub!");
+        startActivity(intent);
+    }
+
+    private void timetableActivity(){
+        Intent intent = new Intent(this, TimetableCanvas.class);
         startActivity(intent);
     }
 
@@ -116,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_add_new_class:
                         // Handle menu click
                         // nowy layout z dodawaniem zajęć (dodać do bazy)
-                        AddNewClassActivity();
+                        addNewClassActivity();
                         mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.navigation_add_free_days:
@@ -132,10 +138,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_setting) {
-            Toast.makeText(MainActivity.this, "Clicked action menu", Toast.LENGTH_SHORT).show();
+            timetableActivity();
+
         } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)) {
 
-            Toast.makeText(MainActivity.this, "drawer", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "opening drawer", Toast.LENGTH_SHORT).show();
             // zmienic text w toolbarze na "Menu"
             return true;
         }

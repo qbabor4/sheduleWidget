@@ -30,8 +30,8 @@
                 android:id="@+id/et_subject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="Przedmiot"
+                android:theme="@style/EditTextTheme"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -51,16 +51,13 @@
                 android:id="@+id/et_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="Opis"
                 android:inputType="textPersonName" />
 
-            <EditText
-                android:id="@+id/et_day_of_week"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Dzien tygodnia"
-                android:inputType="textPersonName" />
+            <Spinner
+                android:id="@+id/sp_day_of_week"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/et_start_time"
