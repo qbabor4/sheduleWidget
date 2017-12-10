@@ -42,7 +42,7 @@ public class CanvasTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN:
                 System.out.println("Touching down!");
                 Log.d("LOL", "touch down");
-                Toast.makeText(TimetableCanvas.getInstance(), "down", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TimetableCanvas.getInstance(), "down", Toast.LENGTH_SHORT).show();
                 for(Rect rect : rectangles){
                     if(rect.contains(touchX,touchY)){
                         System.out.println("Touched Rectangle, start activity.");
@@ -57,10 +57,10 @@ public class CanvasTouchListener implements View.OnTouchListener {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                Toast.makeText(TimetableCanvas.getInstance(), "up", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TimetableCanvas.getInstance(), "up", Toast.LENGTH_SHORT).show();
                 break;
             case MotionEvent.ACTION_MOVE:
-                Toast.makeText(TimetableCanvas.getInstance(), "sliding", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TimetableCanvas.getInstance(), "sliding", Toast.LENGTH_SHORT).show();
                 break;
         }
         return true;
