@@ -40,7 +40,7 @@ import java.util.List;
  * Created by Jakub on 07-Dec-17.
  */
 
-public class AddNewClass extends AppCompatActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
+public class AddNewClass extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemSelectedListener {
 
     EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription;
     Spinner spDayOfWeek;
@@ -119,9 +119,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         if (item.getItemId() == R.id.action_setting) {
             Toast.makeText(this, "Clicked action menu", Toast.LENGTH_SHORT).show();
         }
-
-        // dodac ikonę powrotu i dac finish jak kliknie na nią
-        // dać ikonę z lewej
 
         return super.onOptionsItemSelected(item);
     }

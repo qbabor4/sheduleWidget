@@ -1,150 +1,160 @@
 package qbabor4.pl.alarmmanagertry;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.BlurMaskFilter;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.MotionEvent.ACTION_DOWN;
 
 /**
  * clickable rectangle
  * dostac wymiery layoutu
  * zrobić siatkę z dniami
- *
+ * <p>
  * Created by Jakub on 09-Dec-17.
  */
 
-public class TimetableCanvas extends Activity {
+public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    List<Rect> rectangleClasses;
+    private List<Rect> rectangleClasses;
     private static TimetableCanvas ins;
+    private CanvasTouchListener canvasTouchListener;
+    private int canvasSurfaceViewWidth;
+    private int canvasSurfaceViewHeight;
+    private Canvas canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timetable_canvas);
         setInstance();
-        SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
-        surface.setOnTouchListener(new CanvasTouchListener());
-        surface.getHolder().addCallback(new SurfaceHolder.Callback() {
+        setToolbar();
+        setSurfaceView();
+    }
 
+    private void setSurfaceView(){
+        final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
+        canvasSurfaceView.getHolder().addCallback(this);
+        ViewTreeObserver observer = canvasSurfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                Canvas canvas = holder.lockCanvas();
-                Paint paint = new Paint();
-
-                // dostac wymiary layouta
-                rectangleClasses = new ArrayList<>();
-
-//                int x = getWidth();
-//                int y = getHeight();
-                int radius;
-                radius = 100;
-
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(Color.WHITE);
-                canvas.drawPaint(paint);
-                // Use Color.parseColor to define HTML colors
-                paint.setColor(Color.parseColor("#CD5C5C"));
-                // dodać napis na rectanglu (na środku
-
-//                canvas.drawCircle(50, 50, radius, paint);
-
-                Rect firstClass = new Rect(50, 50, 200, 300);
-                rectangleClasses.add(firstClass);
-
-                canvas.drawRect(firstClass, paint); // patrzec jaki duzy jest ekran i na tej podstawie robic rectangle
-
-
-                holder.unlockCanvasAndPost(canvas);
+            public void onGlobalLayout() {
+                // TODO Auto-generated method stub
+                canvasSurfaceViewHeight = canvasSurfaceView.getHeight();
+                canvasSurfaceViewWidth = canvasSurfaceView.getWidth();
+                canvasSurfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             }
+        });
 
+        canvasTouchListener = new CanvasTouchListener(rectangleClasses);
+        canvasSurfaceView.setOnTouchListener(canvasTouchListener);
+    }
+
+    private void setInstance() {
+        ins = this;
+    }
+
+    public static TimetableCanvas getInstance() {
+        return ins;
+    }
+
+    private void setToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar3);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // strzałka z powrotem
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
+            public void onClick(View v) {
+                // ikona powrotu
+                finish();
             }
         });
     }
 
-    private void setInstance(){
-        ins = this;
-    }
-
-    public static TimetableCanvas getInstance(){
-        return ins;
-    }
-
-//    @Override
-    public boolean onTouch(View v, MotionEvent event) { // nie działa
-        int touchX = (int)event.getX();
-        int touchY = (int)event.getY();
-        Toast.makeText(this, "add free days", Toast.LENGTH_SHORT).show();
-
-        switch(event.getAction()){
-            case MotionEvent.ACTION_BUTTON_PRESS:
-                System.out.println("Touching down!");
-                for(Rect rect : rectangleClasses){
-                    if(rect.contains(touchX,touchY)){
-                        System.out.println("Touched Rectangle, start activity.");
-//                        Intent i = new Intent(<your activity info>);
-//                        startActivity(i);
-                        // przekazac w extra dane z klasy? (moze przekazac tylko id klasy?
-                        // przekazac id
-                    }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                System.out.println("Touching up!");
-                break;
-            case MotionEvent.ACTION_MOVE:
-                System.out.println("Sliding your finger around on the screen.");
-                break;
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater mMenuInflater = getMenuInflater();
+        mMenuInflater.inflate(R.menu.my_menu3, menu);
         return true;
     }
 
-
-//    public class MyView extends View {
-//
-//        public MyView(Context context) {
-//            super(context);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.home) {
+//            Toast.makeText(this, "Clicked action menu", Toast.LENGTH_SHORT).show();
 //        }
-//
-//        @Override
-//        protected void onDraw(Canvas canvas) {
-////            super.onDraw(canvas);
-//            int x = getWidth();
-//            int y = getHeight();
-//            int radius;
-//            radius = 100;
-//            Paint paint = new Paint();
-//            paint.setStyle(Paint.Style.FILL);
-//            paint.setColor(Color.WHITE);
-//            canvas.drawPaint(paint);
-//            // Use Color.parseColor to define HTML colors
-//            paint.setColor(Color.parseColor("#CD5C5C"));
-//            canvas.drawCircle(x / 2, y / 2, radius, paint);
-//        }
-//    }
 
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        // tu bedzie pobierał z bazy i na tej podstawie rysował rectangle
+        rectangleClasses = new ArrayList<>();
+        setCanvas(holder);
+
+//        Log.d("in", String.valueOf(canvasSurfaceViewHeight));
+
+        // zrobić siatkę z godzinami i dniami na podstawie szerokości canvasa
+
+
+        makeRectange(50, 50, 200, 300, Paint.Style.FILL, "#f48342");
+
+        makeRectange(370, 50, 500, 300, Paint.Style.FILL, "#41f474");
+
+        Toast.makeText(TimetableCanvas.getInstance(), rectangleClasses.toString(), Toast.LENGTH_SHORT).show();
+
+        canvasTouchListener.setRectangles(rectangleClasses);
+        holder.unlockCanvasAndPost(canvas);
+    }
+
+    private void setCanvas(SurfaceHolder holder){
+        canvas = holder.lockCanvas();
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawPaint(paint);
+
+    }
+
+    private void makeRectange(int left, int top, int right, int bottom, Paint.Style paintStyle, String hexColor){
+        Rect rect = new Rect(left, top, right, bottom);
+        rectangleClasses.add(rect);
+        Paint paint = new Paint();
+        paint.setStyle(paintStyle);
+        paint.setColor(Color.parseColor(hexColor));
+        canvas.drawRect(rect, paint);
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d("sur", "CHANGED");
+        // tu sie robi jak jest rotate
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d("sur", "DESTROYED");
+    }
 }
