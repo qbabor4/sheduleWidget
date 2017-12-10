@@ -63,7 +63,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     }
 
-    private void setSurfaceView(){
+    private void setSurfaceView() {
         final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
         canvasSurfaceView.getHolder().addCallback(this);
         ViewTreeObserver observer = canvasSurfaceView.getViewTreeObserver();
@@ -82,7 +82,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         canvasSurfaceView.setOnTouchListener(canvasTouchListener);
     }
 
-    private void setScheduleSize(){
+    private void setScheduleSize() {
         this.scheduleHeight = canvasSurfaceViewHeight - DAYS_SECTION_SIZE;
         this.scheduleWidth = canvasSurfaceViewWidth - TIME_SECTION_SIZE;
     }
@@ -152,36 +152,36 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         holder.unlockCanvasAndPost(canvas);
     }
 
-    private void drawDefault(){
+    private void drawDefault() {
         // siatka z godzinami i dniami
         // zrobić linię
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor("#aaaaaa"));
         canvas.drawLine(NO_LINE_SIZE, DAYS_SECTION_SIZE, canvasSurfaceViewWidth - NO_LINE_SIZE, DAYS_SECTION_SIZE, paint);
-        canvas.drawLine(TIME_SECTION_SIZE , NO_LINE_SIZE, TIME_SECTION_SIZE , canvasSurfaceViewHeight - NO_LINE_SIZE, paint);
+        canvas.drawLine(TIME_SECTION_SIZE, NO_LINE_SIZE, TIME_SECTION_SIZE, canvasSurfaceViewHeight - NO_LINE_SIZE, paint);
 
-        int rectangleWidth = scheduleWidth / 5; // bo 5 dni tygodnia (jak bedie wiecej, to zmienic na tyle ile jest dni
+        // srodkowanie w pionie nie nie podstawie bounds tylko bez ogonków i kresek robić jakoś
 
-        String[] daysOfWeek = {"Pon", "WT", "SR", "CZW", "PT"}; // pobierane na podstawie bazy i języka (pol/ang)
 
-        String pon = daysOfWeek[0];
-        Paint paintText = new Paint();
-        paintText.setColor(Color.BLACK);
-        paintText.setTextSize(50);
-        float textSize = paintText.getTextSize();
-        float textWidth = paintText.measureText(pon);
-        Log.d("hight: ", String.valueOf(textSize ));
-        Log.d("width: ", String.valueOf(textWidth ));
-        Rect bounds = new Rect();
-        paintText.getTextBounds(pon, 0, pon.length(), bounds);
-        Log.d("w:", String.valueOf(scheduleWidth));
-        canvas.drawText(pon, TIME_SECTION_SIZE + scheduleWidth/10 - bounds.width()/2 , DAYS_SECTION_SIZE/ 2 + bounds.height()/2  ,paintText); //  /10 bo jest 5 dni
-//        canvas.drawText(pon, 10, 10 ,paintText);
+        String[] daysOfWeek = {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob"}; // pobierane na podstawie bazy i języka (pol/ang)
 
+        int rectangleWidth = scheduleWidth / daysOfWeek.length; // bo 5 dni tygodnia (jak bedie wiecej, to zmienic na tyle ile jest dni
+
+        for (int i = 0; i < daysOfWeek.length; i++) {
+            String day = daysOfWeek[i];
+            Paint paintText = new Paint();
+            paintText.setColor(Color.BLACK);
+            paintText.setTextSize(50);
+            Rect bounds = new Rect();
+            paintText.getTextBounds(day, 0, day.length(), bounds);
+            canvas.drawText(day, TIME_SECTION_SIZE + (i*2+1)*((scheduleWidth / (daysOfWeek.length*2))) - bounds.width() / 2, DAYS_SECTION_SIZE / 2 + bounds.height() / 2, paintText); //  /10 bo jest 5 dni /5 /2
+            // 10
+            Log.d("lol", String.valueOf(TIME_SECTION_SIZE + (scheduleWidth / (daysOfWeek.length*2)) - bounds.width() / 2));
+        }
     }
 
-    private void setCanvas(SurfaceHolder holder){
+    private void setCanvas(SurfaceHolder holder) {
         canvas = holder.lockCanvas();
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -190,7 +190,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     }
 
-    private void makeRectange(int left, int top, int right, int bottom, String hexColor){
+    private void makeRectange(int left, int top, int right, int bottom, String hexColor) {
         Rect rect = new Rect(left, top, right, bottom);
         rectangleClasses.add(rect);
         Paint paint = new Paint();
@@ -199,11 +199,11 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         canvas.drawRect(rect, paint);
     }
 
-    private void drawText(String text){
-        Paint paint= new Paint();
+    private void drawText(String text) {
+        Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(50);  //set text size
-        float w = paint.measureText(text)/2;
+        float w = paint.measureText(text) / 2;
         float textSize = paint.getTextSize();
         canvas.drawText(text, 50, 100, paint);
         // wpisywanie textu w rectangle (patrzenie na x, y rectangla i na tej podstawie text)
