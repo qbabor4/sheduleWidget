@@ -152,6 +152,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         holder.unlockCanvasAndPost(canvas);
     }
 
+    private int startTimeDisplayed;
+    private int stopTimeDisplayed;
+
     private void drawDefault() {
         // siatka z godzinami i dniami
         // zrobić linię
@@ -192,9 +195,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         int maxTime = 16 * 60; // w minutach // t
         int timeDifference = maxTime - minTime;
 
-        int numOfTimesDisplayed = 16 ;
+        int numOfTimesDisplayed = 16;
 
-        for (int i = 0; i < numOfTimesDisplayed+1; i++) {
+        for (int i = 0; i < numOfTimesDisplayed + 1; i++) {
             Log.d("minuty", String.valueOf(minTime + (timeDifference / numOfTimesDisplayed) * i));
             int minutesTotal = minTime + (timeDifference / numOfTimesDisplayed) * i;
 
@@ -206,40 +209,117 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
             paintText.setColor(Color.BLACK);
             paintText.setTextSize(50);
             // jak długosc minut jest 1 to dodac 0 z przodu
-            if (minutes.length() == 1){
+            if (minutes.length() == 1) {
                 minutes = "0" + minutes;
             }
             String timeToDraw = hours + ":" + minutes;
             Rect bounds = new Rect();
             paintText.getTextBounds(timeToDraw, 0, timeToDraw.length(), bounds);
-            canvas.drawLine(TIME_SECTION_SIZE , DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2))), canvasSurfaceViewWidth, DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2))), paintText);
-            canvas.drawText(timeToDraw, TIME_SECTION_SIZE /2 - bounds.width()/2 , DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2))) + bounds.height() / 2, paintText);
+            canvas.drawLine(TIME_SECTION_SIZE, DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2))), canvasSurfaceViewWidth, DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2))), paintText);
+            canvas.drawText(timeToDraw, TIME_SECTION_SIZE / 2 - bounds.width() / 2, DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2))) + bounds.height() / 2, paintText);
         }
 
         // narysowac prostokąt podając godziny i numer dnia (dzien)
         int i = 0;  // 8:00
-        int y1 = DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2)));
-        int j = 16; // 10:00
-        int y2 = DAYS_SECTION_SIZE + (j * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2)));
+        int y1 = DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2)));
+        int j = 16; // 16:00
+        int y2 = DAYS_SECTION_SIZE + (j * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2)));
         int k = 1;
         int x1 = TIME_SECTION_SIZE + (scheduleWidth / (daysOfWeek.length)) * k + RECTAGLE_HORISONTAL_PADDING;
         int l = 2;
         int x2 = TIME_SECTION_SIZE + (scheduleWidth / (daysOfWeek.length)) * l - RECTAGLE_HORISONTAL_PADDING;
 //        canvas.drawRect(new Rect(x1, y1, x2, y2), paint);
-        makeRectange(x1,y1,x2,y2,"#f48342");
+        makeRectange(x1, y1, x2, y2, "#f48342");
 
         // dostac z dni x1 x2
+
+        int startTimeMinutes = 8 * 60; // 8:00
+        int stopTimeMinutes = 10 * 60; // 16:00
+        int timebetween = stopTimeMinutes - startTimeMinutes; // czss pomiedzy
+
+        int classStartTime = 9 * 60;
+        int classStopTime = 12 * 60;
+
+        // znaleść miejsce od którego zaczynam
+        //dostaje czas w minutach
+        // zrobić z tego
+        // dostac czas w minutach
+        getStartAndStopTimeDisplayed(478, 1200);
+
+        Log.d("num1", "" + ""+ this.startTimeDisplayed);
+        Log.d("num2", "" + ""+ this.stopTimeDisplayed);
+
+        // z czasów, które dostalem dostac liczbę pełnych godzin które się w tym mieszczą
+//        Log.d("num", "" + getNumOfFullHoursToDisplay(startTimeMinutes, stopTimeMinutes-1));
+//        getNumOfTimesDisplayed15(479, 600);
     }
 
-    private void addRectangleClass(int startTime, int stopTime, int dayOfWeek){ // jeszcze jakiś text w środku i kolor rectangla i textu
+//    private int getNumOfTimesDisplayed15(int startTime, int stopTime){
+//
+//        startTimeDisplayed = startTime - startTime % 15;
+//
+//        stopTimeDisplayed = stopTime ; // jak bedzie 8:07 to doda 8 i bedzie 8 :15
+//        if (stopTime%15 != 0) {
+//            stopTimeDisplayed += 15 - stopTime % 15;
+//        }
+//
+//        int numOfTImesDisplayed = (stopTimeDisplayed - startTimeDisplayed)/15 +1;
+//        if (numOfTImesDisplayed > 17){
+//            return 17;
+//        } else {
+//            return numOfTImesDisplayed; // zawsze bedzie 17 pokazywało
+//        }
+//        // przypisywac startTimeDisplayed i stop
+//
+//        // ustawia liczbe wyswietlonych czasów tu, ale patrzy na
+//        // jak wiecej niż 17 sie ma wyswietlać, ale mniej niż 34 to 30 jak 34 do ius to godzny i 2h jak wiecej
+//
+//    }
+
+    private void getStartAndStopTimeDisplayed(int startTime, int stopTime){
+        getStartAndStopTimeDisplayed(startTime, stopTime, 15);
+    }
+
+
+    private void getStartAndStopTimeDisplayed(int startTime, int stopTime, int gap){ // setuje czas poczatkowy i koncowy
+        startTimeDisplayed = startTime - startTime % gap;
+
+        int stopTimeCounted = stopTime ; // jak bedzie 8:07 to doda 8 i bedzie 8 :15
+        if (stopTime%gap != 0) {
+            stopTimeCounted += gap - stopTime % gap;
+        }
+        int numOfTimesDisplayed = (stopTimeCounted - startTimeDisplayed)/gap +1;
+        if (numOfTimesDisplayed > 17){                                                 /// mozna podawac ile ma sie wyswietlać
+            getStartAndStopTimeDisplayed(startTime, stopTime, gap *2);
+        } else {
+            stopTimeDisplayed = startTimeDisplayed + 17 * gap;  // 17 -1
+            if (stopTimeDisplayed > 1440){ // jak wiecej od 24
+                stopTimeDisplayed = 1440;
+                // podać liczbę godzin, które się wyświetlają (normalnie jest zawsze 17)
+            }
+        }
+
+    }
+
+//    private int getNumOfFullHoursToDisplay(int startTime, int stopTime) { // moze rekurencyjnie z podawaniem czy 60 / 30/ 15?
+//        // jak poda 7:15, to pokazać od 7 albo 7:30 jak za malo czasów albo 7:15
+//        int startHour = startTime / 60;
+//        int stopHour = stopTime / 60;
+//        if (stopTime % 60 != 0) {// jak ma resztę to dodać 1
+//            stopHour += 1;
+//        }
+//        return stopHour - startHour + 1; // tyle sie bedzie wyswietlało (bo włacznie z poczatkową i koncową
+//    }
+
+    private void addRectangleClass(int startTime, int stopTime, int dayOfWeek) { // jeszcze jakiś text w środku i kolor rectangla i textu
         // zakładam, że zawsze bedzie 17 czasów pokazanych
         // zakładam, że podają co min 30 min (potem sie zmieni)
         // dstac y pierwszej lini i ostatniej a potem dzielic biorąc czas pomiędzy wszystkimi a czas trwania lekcji
         int numOfTimesDisplayed = 16;
         int i = 0;  // 8:00
-        int y1 = DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2)));
+        int y1 = DAYS_SECTION_SIZE + (i * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2)));
         int j = numOfTimesDisplayed; // 16:00
-        int y2 = DAYS_SECTION_SIZE + (j * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed+1) * 2)));
+        int y2 = DAYS_SECTION_SIZE + (j * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed + 1) * 2)));
 
         int spaceBetweenStartAndEnd = y2 - y1; // ogólna wysokosc od 8 do 16
         // dodawac y1 bo od tego ma iść
