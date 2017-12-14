@@ -49,21 +49,21 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private Canvas canvas;
 
     private int startTimeDisplayed;
-    private int stopTimeDisplayed;
+    private int endTimeDisplayed;
     private int numOfTimesDisplayed;
     private int gapBetweenTimesDisplayed;
     private int firstLineYValue; // moze to lokalnie w drawDefault? albo drawRectangleClasses
     private int lastLineYValue; // ^
     private String[] daysOfWeek;
 
+    private int startX;
+    private int endX;
+    private int rowWidth;
+
     private static final int TIME_SECTION_SIZE = 150; // moze to sie zmieni na procenty v v v
     private static final int DAYS_SECTION_SIZE = 80;
     private static final int NO_LINE_SIZE = 15;
     private static final int RECTAGLE_HORISONTAL_PADDING = 10;
-
-    private int lol(){
-        return 5;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +145,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         rectangleClasses = new ArrayList<>();
 
         setCanvas(holder);
+
         drawDefault();
+
         drawRectangleClasses();
 
         Toast.makeText(TimetableCanvas.getInstance(), rectangleClasses.toString(), Toast.LENGTH_SHORT).show();
@@ -167,7 +169,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         drawLineUnderDays();
 
         daysOfWeek = getDays(0); // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
-
+        setGlobalVariables();
         drawDaysNames(daysOfWeek); // daysOfWeek chyba beda globalnie, albo tylko długość arrraya
         drawTimesWithLines();
     }
@@ -178,11 +180,11 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     private void drawRectangleClasses() { // podawac liste z mapami
         // testowo
-        // 10:00 - 12:00 we wtorek
+        // 10:00 - 13:00 we wtorek
         Map<SqlDataEnum, String> classData = new HashMap<>();
         classData.put(SqlDataEnum.DAY, "1");
         classData.put(SqlDataEnum.START_TIME, "600");
-        classData.put(SqlDataEnum.STOP_TIME, "720");
+        classData.put(SqlDataEnum.STOP_TIME, "780");
         drawRectangle(classData);
 
     }
@@ -199,13 +201,36 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         return TIME_SECTION_SIZE;
     }
 
+    private void setGlobalVariables(){ // dodac inne zmienne
+        startX = getXofScheduleStart(); // globalne
+        endX = getXofScheduleEnd();
+        rowWidth = getRowWidth();
+    }
+
+
+
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
         int day = Integer.parseInt(classData.get(SqlDataEnum.DAY)); // numer dnia (1)
-        int startX = getXofScheduleStart(); // globalne finalne
-        int endX = getXofScheduleEnd();
-        int rowWidth = getRowWidth();
+        int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME)); // numer dnia (1)
+        int stopTime = Integer.parseInt(classData.get(SqlDataEnum.STOP_TIME)); // numer dnia (1)
 
+        Log.d("start", "" + startTimeDisplayed );
+        Log.d("start", "" + endTimeDisplayed );
+
+        // globalnie czas pomiedzy poczatkiem i koncem
+        float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float)(endTimeDisplayed - startTimeDisplayed);
+        float percentageRectangleEndY = (stopTime - startTimeDisplayed) / (float)(endTimeDisplayed - startTimeDisplayed);
+        // odliegłosc czasów plus procentstart * wysokosc w pixelach
+        int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue)); // nie ok firstLinevalue
+        int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue)); // nie ok
+
+        int x1 = TIME_SECTION_SIZE + rowWidth * day; //ok
+        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1); // ok
         // wyznaczyć x1 i x2 gdzie sie ma pokazac
+//        drawRectangle(50, 100, 500, 400, "#000345");
+        drawRectangle(x1, y1, x2, y2, "#000345");
+        Log.d("lol4", ""+ percentageRectangleEndY);
+        Log.d("lol4", x1+ " " + x2 + " " + y1 + " " + y2);
     }
 
     private void getXofRectangleStart(){
@@ -291,7 +316,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     }
 
     private int getYaxisOfLine(int indexOfLinOnScreen) {
-        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji
+        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 +1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji
     }
 
     private void setGlobalValuesOfFirstAndLastLineOnYaxis() {
@@ -315,12 +340,12 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         if (numOfTimesDisplayed > 17) {                                                 /// mozna podawac ile ma sie wyswietlać
             setGapAndStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
         } else {
-            stopTimeDisplayed = startTimeDisplayed + 16 * gap;  // 17 -1
+            endTimeDisplayed = startTimeDisplayed + 16 * gap;  // 17 -1
             numOfTimesDisplayed = 17;
-            if (stopTimeDisplayed > 1440) { // jak wiecej od 24
-                stopTimeDisplayed = 1440;
+            if (endTimeDisplayed > 1440) { // jak wiecej od 24
+                endTimeDisplayed = 1440;
                 Log.d("LOLnum", "lol");
-                numOfTimesDisplayed = (stopTimeDisplayed - startTimeDisplayed) / gap + 1;
+                numOfTimesDisplayed = (endTimeDisplayed - startTimeDisplayed) / gap + 1;
                 // podać liczbę godzin, które się wyświetlają (normalnie jest zawsze 17)
             }
         }
