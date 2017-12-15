@@ -7,9 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import static qbabor4.pl.alarmmanagertry.SqlDataEnum.*;
+
 /**
  * TODO Normalnie bedzie patrzyło na czas urzadzenia i według tego wyciagało rzeczy z bazy (trzeba uwzględnić przerwy)
  * Czy alarm moze się usunąc jak wywalam aplikację? (Raczej nie)
+ * dać enuma na czestotliwośc
  *
  * Created by Jakub on 19-Oct-17.
  */
@@ -17,24 +20,26 @@ import android.widget.Toast;
 public class SqlLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "STUDENT.db";
-    public static final String TABLE_NAME = "timetable_table";
-    public static final String COL_1 = "id"; // id
-    public static final String COL_2 = "start_time"; // Time in minutes
-    public static final String COL_3 = "end_time"; // Time in minutes
-    public static final String COL_4 = "day_of_week"; // {1|2|3|4|5|6|7}
-    public static final String COL_5 = "subject"; // TODO albo nazwa zeby nie bylo tylko pod szkołe? Moze wybór na początku typ rzeczy: szkoła/zwykła czynnosc?
-    public static final String COL_6 = "classroom";
-    public static final String COL_7 = "teacher";
-    public static final String COL_8 = "description";
+    public static final String TABLE_NAME = "timetable";
+    public static final String COL_1 = ID.name(); // id
+    public static final String COL_2 = START_TIME.name(); // Time in minutes
+    public static final String COL_3 = END_TIME.name(); // Time in minutes
+    public static final String COL_4 = DAY_OF_WEEK.name(); // {0|1|2|3|4|5|6}
+    public static final String COL_5 = SUBJECT.name(); // TODO albo nazwa zeby nie bylo tylko pod szkołe? Moze wybór na początku typ rzeczy: szkoła/zwykła czynnosc?
+    public static final String COL_6 = CLASSROOM.name();
+    public static final String COL_7 = TEACHER.name();
+    public static final String COL_8 = DESCRIPTION.name();
+    public static final String COL_9 = COLOR.name();
+    public static final String COL_10 = FREQUENCY.name();
 
     public SqlLiteHelper(Context context ) {
-        super(context, DATABASE_NAME, null, 3); // numerki to chyba wersje (jak sie zmieni wersje na wieksza, to updatuje chyba
+        super(context, DATABASE_NAME, null, 4); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
     }
 
     /** Runs when there is no DB created */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER, " + COL_3 + " INTEGER," + COL_4 +" INTEGER, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT" + ")";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER, " + COL_3 + " INTEGER," + COL_4 +" INTEGER, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT" + COL_9 + "TEXT," + COL_10 + "TEXT" + ")";
         db.execSQL(SQL_String);
     }
 
@@ -54,7 +59,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
      * @param description
      * @return
      */
-    public boolean insertData(int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description){
+    public boolean insertData(int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency){
         //SQLiteDatabase db = this.getReadableDatabase();
         SQLiteDatabase db = this.getWritableDatabase(); //
         ContentValues contentValues = new ContentValues();
@@ -66,6 +71,8 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, classroom);
         contentValues.put(COL_7, teacher);
         contentValues.put(COL_8, description);
+        contentValues.put(COL_9, color);
+        contentValues.put(COL_10, frequency);
 
         long result = db.insert(TABLE_NAME, null, contentValues); // if data is not inserted this method returns -1 (false)
         return result != -1; // true when isn't -1
@@ -77,8 +84,8 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateData(String id, int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description){
-        SQLiteDatabase db = this.getWritableDatabase(); // czym to sie rózni od readable ? TODO
+    public boolean updateData(String id, int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COL_1, id);
@@ -89,6 +96,8 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, classroom);
         contentValues.put(COL_7, teacher);
         contentValues.put(COL_8, description);
+        contentValues.put(COL_9, color);
+        contentValues.put(COL_10, frequency);
 
         int result = db.update(TABLE_NAME, contentValues, "ID = ?" ,new String[]{id} );
         return result != -1;
@@ -104,6 +113,11 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         // dostać z Cursora czy jest coś
         // TODO zwiekszac day in week jak nie ma (7 razy)
+        // potem za drugim razem sprawdzac od początku a nie od czasu zakonczenia ostatniego
         return  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
     }
+
+//    public Cursor getAllData(){
+//
+//    }
 }

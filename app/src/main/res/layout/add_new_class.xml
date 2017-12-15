@@ -5,17 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:title="@string/add_new_class" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -31,8 +20,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Przedmiot"
-                android:theme="@style/EditTextTheme"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:theme="@style/EditTextTheme" />
 
             <EditText
                 android:id="@+id/et_teacher"
@@ -60,6 +49,20 @@
                 android:layout_height="wrap_content" />
 
             <EditText
+                android:id="@+id/et_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="kolor"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/et_frequency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Opis"
+                android:inputType="textPersonName" />
+
+            <EditText
                 android:id="@+id/et_start_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,13 +77,24 @@
                 android:hint="Czas zakończenia" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/btn_add_new_class"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dodaj zajęcia" />
 
         </LinearLayout>
     </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="@string/add_new_class" />
 
 
 </LinearLayout>

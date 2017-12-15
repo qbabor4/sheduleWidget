@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -35,6 +37,8 @@ import java.util.List;
  * wysuwana lista jak nacisnie dzien tygodnia
  * pozmieniac kolory w timepickerze
  * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
+ * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
+ * scrollwiev na layoucie
  *
  * <p>
  * Created by Jakub on 07-Dec-17.
@@ -42,20 +46,29 @@ import java.util.List;
 
 public class AddNewClass extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemSelectedListener {
 
-    EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription;
+    EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
     Spinner spDayOfWeek;
+    Button btnAddClass;
+
+    private static SqlLiteHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_class);
         setToolbar();
+        setEditTexts();
         setButtons();
         setSpinner();
+        setDBInstance();
         dontShowKeyboardOnStart();
     }
 
-    private void setButtons() {
+    private void setDBInstance() {
+        myDB = new SqlLiteHelper(this); //this jako context
+    }
+
+    private void setEditTexts() {
         etStartTime = (EditText) findViewById(R.id.et_start_time);
         etStartTime.setOnClickListener(this);
         etEndTime = (EditText) findViewById(R.id.et_end_time);
@@ -68,6 +81,15 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etClassroom.setOnClickListener(this);
         etDescription = (EditText) findViewById(R.id.et_description);
         etDescription.setOnClickListener(this);
+        etColor = (EditText) findViewById(R.id.et_color);
+        etColor.setOnClickListener(this);
+        etFrequency = (EditText) findViewById(R.id.et_frequency);
+        etFrequency.setOnClickListener(this);
+    }
+
+    private void setButtons(){
+        btnAddClass = (Button) findViewById(R.id.btn_add_new_class);
+        btnAddClass.setOnClickListener(this);
     }
 
     private void dontShowKeyboardOnStart() {
@@ -78,16 +100,46 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         spDayOfWeek = (Spinner) findViewById(R.id.sp_day_of_week);
         spDayOfWeek.setOnItemSelectedListener(this);
         List<String> daysOfWeek = new ArrayList<>();
-        daysOfWeek.add("poniedziałek");
-        daysOfWeek.add("wtorek");
-        daysOfWeek.add("sroda");
-        daysOfWeek.add("czwartek");
-        daysOfWeek.add("piątek");
+        daysOfWeek.add("Poniedziałek");
+        daysOfWeek.add("Wtorek");
+        daysOfWeek.add("Sroda");
+        daysOfWeek.add("Czwartek");
+        daysOfWeek.add("Piątek");
+        daysOfWeek.add("Sobota");
+        daysOfWeek.add("Niedziela");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, daysOfWeek);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDayOfWeek.setAdapter(dataAdapter);
+
         //String text = spDayOfWeek.getSelectedItem().toString();
     }
+
+    public boolean insertDataToDB() {
+        String startTimeStr = String.valueOf(etStartTime.getText());
+        int startTimeInMinutes = getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null
+        int endTimeInMinutes = getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
+        int dayOfWeekInt = spDayOfWeek.getSelectedItemPosition();
+        String subjectStr = String.valueOf(etSubject.getText());
+        String classroomStr = String.valueOf(etClassroom.getText());
+        String teacherStr = String.valueOf(etTeacher.getText());
+        String descriptionStr = String.valueOf(etDescription.getText());
+        String color = String.valueOf(etColor.getText());
+        String frequency = String.valueOf(etFrequency.getText());
+//        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
+        return true;
+    }
+
+    private int getTimeInMinutesFromTimePicker(String time) {
+        // TODO przeparsować dane z zegara na minuty
+        Log.d("lolt", etStartTime.getText() + "");
+        int colonIndex = time.indexOf(':');
+        int hour = Integer.parseInt(time.substring(0, colonIndex));
+        Log.d("lolt", hour  +"");
+        int minutes = Integer.parseInt(time.substring(colonIndex+1));
+        Log.d("lolt", minutes  +"");
+        return hour*60 + minutes;
+    }
+
     /**
      * TOOLBAR
      */
@@ -100,7 +152,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // what do you want here
                 // ikona powrotu
                 finish();
             }
@@ -131,10 +182,12 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         if (v.equals(etStartTime) || v.equals(etEndTime)) {
             showTimePicker((EditText) v);
-            // nie działa
             Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
         } else if (v.equals(etTeacher)) {
             Toast.makeText(getApplicationContext(), "te", Toast.LENGTH_SHORT).show();
+        } else if (v.equals(btnAddClass)){
+            // sprawdzic czy poprawne dane
+            insertDataToDB();
         }
     }
 

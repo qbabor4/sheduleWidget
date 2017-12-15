@@ -5,7 +5,14 @@ package qbabor4.pl.alarmmanagertry;
  */
 
 public enum SqlDataEnum {
-    DAY,
+    ID,
+    DAY_OF_WEEK,
     START_TIME,
-    STOP_TIME;
+    END_TIME,
+    SUBJECT,
+    CLASSROOM,
+    TEACHER,
+    DESCRIPTION,
+    COLOR,
+    FREQUENCY;
 }

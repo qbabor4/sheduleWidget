@@ -74,6 +74,8 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         setSurfaceView();
     }
 
+    // dostać dane z bazy
+
     private void setSurfaceView() {
         final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
         canvasSurfaceView.getHolder().addCallback(this);
@@ -182,10 +184,22 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         // testowo
         // 10:00 - 13:00 we wtorek
         Map<SqlDataEnum, String> classData = new HashMap<>();
-        classData.put(SqlDataEnum.DAY, "1");
+        classData.put(SqlDataEnum.DAY_OF_WEEK, "1");
         classData.put(SqlDataEnum.START_TIME, "600");
-        classData.put(SqlDataEnum.STOP_TIME, "780");
+        classData.put(SqlDataEnum.END_TIME, "780");
         drawRectangle(classData);
+
+        Map<SqlDataEnum, String> classData2 = new HashMap<>();
+        classData2.put(SqlDataEnum.DAY_OF_WEEK, "4");
+        classData2.put(SqlDataEnum.START_TIME, "900");
+        classData2.put(SqlDataEnum.END_TIME, "960");
+        drawRectangle(classData2);
+
+        Map<SqlDataEnum, String> classData3 = new HashMap<>();
+        classData3.put(SqlDataEnum.DAY_OF_WEEK, "3");
+        classData3.put(SqlDataEnum.START_TIME, "900");
+        classData3.put(SqlDataEnum.END_TIME, "960");
+        drawRectangle(classData3);
 
     }
 
@@ -210,9 +224,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
 
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
-        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY)); // numer dnia (1)
+        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)); // numer dnia (1)
         int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME)); // numer dnia (1)
-        int stopTime = Integer.parseInt(classData.get(SqlDataEnum.STOP_TIME)); // numer dnia (1)
+        int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME)); // numer dnia (1)
 
         Log.d("start", "" + startTimeDisplayed );
         Log.d("start", "" + endTimeDisplayed );
@@ -224,8 +238,8 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue)); // nie ok firstLinevalue
         int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue)); // nie ok
 
-        int x1 = TIME_SECTION_SIZE + rowWidth * day; //ok
-        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1); // ok
+        int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTAGLE_HORISONTAL_PADDING; //ok
+        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1) - RECTAGLE_HORISONTAL_PADDING; // ok
         // wyznaczyć x1 i x2 gdzie sie ma pokazac
 //        drawRectangle(50, 100, 500, 400, "#000345");
         drawRectangle(x1, y1, x2, y2, "#000345");
