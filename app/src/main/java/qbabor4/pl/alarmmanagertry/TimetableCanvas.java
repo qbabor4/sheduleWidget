@@ -92,6 +92,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         Cursor result = mDB.getAllData();
         if (result.getCount() == 0) {
             Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
+            // pusty plan od 8 do 16 plan TODO
         } else {
             setClassesData(result);
         }
@@ -224,8 +225,6 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private void setGlobalVariables(){ // dodac inne zmienne
         rowWidth = getRowWidth();
     }
-
-
 
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
         int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK));
@@ -406,11 +405,12 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
                         Toast.makeText(TimetableCanvas.getInstance(), "rectangle", Toast.LENGTH_SHORT).show();
 
                         // pokazac okinko z danymi lekcji
+                        // na okienku opcja edycji i usuniecia
 
-//                        Intent intent = new Intent(this, AddNewClass.class);
-//                        Log.d("llol", classesData.toString());
-//                        intent.putExtra("classData", classesData.get(i));
-//                        startActivity(intent);
+                        Intent intent = new Intent(this, AddNewClass.class);
+                        Log.d("llol", classesData.toString());
+                        intent.putExtra("classData", classesData.get(i));
+                        startActivity(intent);
                         break;
                     }
                 }

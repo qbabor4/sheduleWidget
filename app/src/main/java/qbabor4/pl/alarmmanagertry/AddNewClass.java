@@ -4,12 +4,12 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,7 +19,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Brak klawiatury jak sie klika na edittext
@@ -38,9 +37,9 @@ import java.util.Map;
  * pozmieniac kolory w timepickerze
  * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
  * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
- *
+ * <p>
  * moze tu podawac do konstruktora Mapę z klasą i drugi konstruktor bez mapy
- *
+ * <p>
  * <p>
  * Created by Jakub on 07-Dec-17.
  */
@@ -50,6 +49,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
     Spinner spDayOfWeek;
 
+    private HashMap<SqlDataEnum, String> classData;
     private boolean updateOperation = false;
 
     private static SqlLiteHelper myDB;
@@ -67,13 +67,26 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         dontShowKeyboardOnStart();
     }
 
-    private void checkForUpdateOperation(){
-        HashMap<SqlDataEnum, String> classData = (HashMap<SqlDataEnum, String>) getIntent().getSerializableExtra("classData");
-        if (classData != null){
-            updateOperation = true;
-            // wziac dane klasy i przypisac (moze sprawdzac czy są dane klasy zamast update?
-            // setować edittexty
+    private void checkForUpdateOperation() {
+        classData = (HashMap<SqlDataEnum, String>) getIntent().getSerializableExtra("classData");
+        if (classData != null) {
+            updateOperation = true; // mozna sprawdxzac czy mapa jest null
+            Log.d("lol4", classData.toString());
+            setClassInputs();
         }
+    }
+
+    private void setClassInputs() {
+        etSubject.setText(classData.get(SqlDataEnum.SUBJECT));
+        etTeacher.setText(classData.get(SqlDataEnum.TEACHER));
+        etClassroom.setText(classData.get(SqlDataEnum.CLASSROOM));
+        etDescription.setText(classData.get(SqlDataEnum.DESCRIPTION));
+        etColor.setText(classData.get(SqlDataEnum.COLOR));
+        etFrequency.setText(classData.get(SqlDataEnum.FREQUENCY));
+        spDayOfWeek.setSelection(Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)));
+
+        etStartTime.setText(TimeTools.getTimePickerFormatTime(classData.get(SqlDataEnum.START_TIME)));
+        etEndTime.setText(TimeTools.getTimePickerFormatTime(classData.get(SqlDataEnum.END_TIME)));
     }
 
     private void setDBInstance() {
@@ -103,9 +116,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private void setSpinner(){
+    private void setSpinner() {
         spDayOfWeek = (Spinner) findViewById(R.id.sp_day_of_week);
-//        spDayOfWeek.setOnItemSelectedListener(this);
         List<String> daysOfWeek = new ArrayList<>();
         daysOfWeek.add("Poniedziałek");
         daysOfWeek.add("Wtorek");
@@ -117,14 +129,12 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, daysOfWeek);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDayOfWeek.setAdapter(dataAdapter);
-
-        //String text = spDayOfWeek.getSelectedItem().toString();
     }
 
     public boolean insertDataToDB() {
         String startTimeStr = String.valueOf(etStartTime.getText());
-        int startTimeInMinutes = getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null (jak zły czas to dać info, że błedny czas
-        int endTimeInMinutes = getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
+        int startTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null (jak zły czas to dać info, że błedny czas
+        int endTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
         int dayOfWeekInt = spDayOfWeek.getSelectedItemPosition();
         String subjectStr = String.valueOf(etSubject.getText());
         String classroomStr = String.valueOf(etClassroom.getText());
@@ -135,28 +145,21 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
     }
 
-    private void validateStartTimeInput(){
-        if (getTimeInMinutesFromTimePicker(etStartTime.getText().toString()) > getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) ){
+    private void validateStartTimeInput() {
+        if (TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString()) > TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())) {
             etEndTime.setText(etStartTime.getText());
         }
     }
 
-    private void validateEndTimeInput(){
-        if (getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) < getTimeInMinutesFromTimePicker(etStartTime.getText().toString())){
+    private void validateEndTimeInput() {
+        if (TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) < TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())) {
             etStartTime.setText(etEndTime.getText());
         }
     }
 
-    private void setDefaultInputs(){
+    private void setDefaultInputs() {
         etStartTime.setText("8:00");
         etEndTime.setText("10:00");
-    }
-
-    private int getTimeInMinutesFromTimePicker(String time) {
-        int colonIndex = time.indexOf(':');
-        int hour = Integer.parseInt(time.substring(0, colonIndex));
-        int minutes = Integer.parseInt(time.substring(colonIndex+1));
-        return hour*60 + minutes;
     }
 
     /**
@@ -214,8 +217,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private boolean validateTimes(){
-        if (etStartTime.getText() == etEndTime.getText()){
+    private boolean validateTimes() {
+        if (etStartTime.getText() == etEndTime.getText()) {
             Toast.makeText(this, "Podaj poprawny czas", Toast.LENGTH_SHORT);
             return false;
         }
@@ -226,20 +229,20 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         String time = v.getText().toString();
         int colonIndex = time.indexOf(':');
         int hour = Integer.parseInt(time.substring(0, colonIndex));
-        int minutes = Integer.parseInt(time.substring(colonIndex+1));
+        int minutes = Integer.parseInt(time.substring(colonIndex + 1));
         boolean is24HourView = true;
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, R.style.Dialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int pickerMinutes) {
                 String pickerMinutersStr = String.valueOf(pickerMinutes);
-                if (pickerMinutersStr.length() == 1){
+                if (pickerMinutersStr.length() == 1) {
                     pickerMinutersStr = "0" + pickerMinutersStr;
                 }
                 v.setText(hourOfDay + ":" + pickerMinutersStr);
-                if (v == etStartTime){
+                if (v == etStartTime) {
                     validateStartTimeInput();
-                } else if (v == etEndTime){
+                } else if (v == etEndTime) {
                     validateEndTimeInput();
                 }
             }
@@ -247,13 +250,4 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         timePickerDialog.show();
     }
 
-//    @Override
-//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//        // wybieranie z listy dnia
-//    }
-//
-//    @Override
-//    public void onNothingSelected(AdapterView<?> parent) {
-//
-//    }
 }
