@@ -32,34 +32,37 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
     public static final String COL_9 = COLOR.name();
     public static final String COL_10 = FREQUENCY.name();
 
-    public SqlLiteHelper(Context context ) {
+    public SqlLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, 7); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
     }
 
-    /** Runs when there is no DB created */
+    /**
+     * Runs when there is no DB created
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER NOT NULL, " + COL_3 + " INTEGER NOT NULL," + COL_4 +" INTEGER NOT NULL, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT," + COL_9 + " TEXT," + COL_10 + " TEXT" + ")";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER NOT NULL, " + COL_3 + " INTEGER NOT NULL," + COL_4 + " INTEGER NOT NULL, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT," + COL_9 + " TEXT," + COL_10 + " TEXT" + ")";
         db.execSQL(SQL_String);
     }
 
-    /** Runs when version in constructor is bigger than last time */
+    /**
+     * Runs when version in constructor is bigger than last time
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
     /**
-     *
-     * @param startTime Time in minutes
+     * @param startTime   Time in minutes
      * @param subject
      * @param classroom
      * @param teacher
      * @param description
      * @return
      */
-    public boolean insertData(int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency){
+    public boolean insertData(int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency) {
         SQLiteDatabase db = this.getWritableDatabase(); //
         ContentValues contentValues = new ContentValues();
 
@@ -77,13 +80,13 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result != -1; // true when isn't -1
     }
 
-    public Cursor getAllData(){
+    public Cursor getAllData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from " + TABLE_NAME, null); //zobaczyc jak działą rawquery i czy nie zamienic na query
         return result;
     }
 
-    public boolean updateData(String id, int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency){
+    public boolean updateData(String id, int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency) { // dać classData TODO
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -98,11 +101,11 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COL_9, color);
         contentValues.put(COL_10, frequency);
 
-        int result = db.update(TABLE_NAME, contentValues, "ID = ?" ,new String[]{id} );
+        int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         return result != -1;
     }
 
-    public boolean deleteData(String id){
+    public boolean deleteData(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_NAME, "ID = ?", new String[]{id});
         return result != 0; // returns rows affected (when returns 0 it is false)
@@ -113,24 +116,28 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         // dostać z Cursora czy jest coś
         // TODO zwiekszac day in week jak nie ma (7 razy)
         // potem za drugim razem sprawdzac od początku a nie od czasu zakonczenia ostatniego
-        return  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
     }
 
-    public int getMinStartTime(){ // co jak nie bedzie nic?
+    public int getMinStartTime() { // co jak nie bedzie nic?
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select min(" + COL_2 + ") from " + TABLE_NAME, null); //zobaczyc jak działą rawquery i czy nie zamienic na query
         result.moveToFirst();
         return result.getInt(0);
     }
 
-    public int getMaxEndTime(){
+    public int getMaxEndTime() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select max(" + COL_3 + ") from " + TABLE_NAME, null);
         result.moveToFirst();
         return result.getInt(0);
     }
 
-//    public Cursor getAllData(){
-//
-//    }
+    public int getMaxDay() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select max(" + COL_4 + ") from " + TABLE_NAME, null);
+        result.moveToFirst();
+        return result.getInt(0);
+    }
+
 }

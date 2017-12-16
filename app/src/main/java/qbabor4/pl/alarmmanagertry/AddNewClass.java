@@ -17,7 +17,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Brak klawiatury jak sie klika na edittext
@@ -36,17 +38,19 @@ import java.util.List;
  * pozmieniac kolory w timepickerze
  * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
  * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
- * scrollwiev na layoucie
+ *
+ * moze tu podawac do konstruktora Mapę z klasą i drugi konstruktor bez mapy
  *
  * <p>
  * Created by Jakub on 07-Dec-17.
  */
 
-public class AddNewClass extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemSelectedListener {
+public class AddNewClass extends AppCompatActivity implements View.OnClickListener {
 
     EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
     Spinner spDayOfWeek;
 
+    private boolean updateOperation = false;
 
     private static SqlLiteHelper myDB;
 
@@ -56,11 +60,20 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.add_new_class);
         setToolbar();
         setEditTexts();
-
         setSpinner();
         setDefaultInputs();
+        checkForUpdateOperation();
         setDBInstance();
         dontShowKeyboardOnStart();
+    }
+
+    private void checkForUpdateOperation(){
+        HashMap<SqlDataEnum, String> classData = (HashMap<SqlDataEnum, String>) getIntent().getSerializableExtra("classData");
+        if (classData != null){
+            updateOperation = true;
+            // wziac dane klasy i przypisac (moze sprawdzac czy są dane klasy zamast update?
+            // setować edittexty
+        }
     }
 
     private void setDBInstance() {
@@ -92,7 +105,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     private void setSpinner(){
         spDayOfWeek = (Spinner) findViewById(R.id.sp_day_of_week);
-        spDayOfWeek.setOnItemSelectedListener(this);
+//        spDayOfWeek.setOnItemSelectedListener(this);
         List<String> daysOfWeek = new ArrayList<>();
         daysOfWeek.add("Poniedziałek");
         daysOfWeek.add("Wtorek");
@@ -101,7 +114,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         daysOfWeek.add("Piątek");
         daysOfWeek.add("Sobota");
         daysOfWeek.add("Niedziela");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, daysOfWeek);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, daysOfWeek);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDayOfWeek.setAdapter(dataAdapter);
 
@@ -234,13 +247,13 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         timePickerDialog.show();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // wybieranie z listy dnia
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+//    @Override
+//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        // wybieranie z listy dnia
+//    }
+//
+//    @Override
+//    public void onNothingSelected(AdapterView<?> parent) {
+//
+//    }
 }

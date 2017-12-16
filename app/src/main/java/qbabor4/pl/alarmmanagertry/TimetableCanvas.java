@@ -1,11 +1,14 @@
 package qbabor4.pl.alarmmanagertry;
 
 
+import android.annotation.TargetApi;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -22,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,17 +46,18 @@ import java.util.Map;
  * Created by Jakub on 09-Dec-17.
  */
 
-public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.Callback {
+public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.Callback, View.OnTouchListener {
 
     private List<Rect> rectangleClasses = new ArrayList<>();
 
     private static TimetableCanvas ins;
-    private CanvasTouchListener canvasTouchListener;
+//    private CanvasTouchListener canvasTouchListener;
     private int canvasSurfaceViewWidth;
     private int canvasSurfaceViewHeight;
     private int scheduleWidth;
     private int scheduleHeight;
     private Canvas canvas;
+    private SurfaceView canvasSurfaceView;
 
     private int startTimeDisplayed;
     private int endTimeDisplayed;
@@ -68,8 +74,8 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private static final int NO_LINE_SIZE = 15;
     private static final int RECTANGLE_HORIZONTAL_PADDING = 10;
 
-    private SqlLiteHelper mDB;
-    private List<Map<SqlDataEnum, String>> classesData = new ArrayList<>();
+    private SqlLiteHelper mDB  = new SqlLiteHelper(this);
+    private List<HashMap<SqlDataEnum, String>> classesData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +83,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         setContentView(R.layout.timetable_canvas);
         setInstance();
         setToolbar();
-
-        setDBInstance();
         getDataFromDB();
-        Log.d("classDATA", classesData.toString());
-
         setSurfaceView();
-    }
-
-    private void setDBInstance() {
-        mDB = new SqlLiteHelper(this); //this jako context
+        canvasSurfaceView.setOnTouchListener(this);
     }
 
     private void getDataFromDB(){
@@ -100,7 +99,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     private void setClassesData(Cursor cursor){
         while (cursor.moveToNext()) {
-            Map<SqlDataEnum, String> classData = new HashMap<>();
+            HashMap<SqlDataEnum, String> classData = new HashMap<>();
             SqlDataEnum[] rowNames = SqlDataEnum.values();
             for (int i = 0; i < rowNames.length; i++) {
                 classData.put(rowNames[i], cursor.getString(i));
@@ -110,22 +109,27 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     }
 
     private void setSurfaceView() {
-        final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
+        canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
         canvasSurfaceView.getHolder().addCallback(this);
         ViewTreeObserver observer = canvasSurfaceView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                // TODO Auto-generated method stub
                 canvasSurfaceViewHeight = canvasSurfaceView.getHeight();
                 canvasSurfaceViewWidth = canvasSurfaceView.getWidth();
                 setScheduleSize();
-                canvasSurfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                removeOnGlobalLayoutListener(canvasSurfaceView, this);
             }
         });
+    }
 
-        canvasTouchListener = new CanvasTouchListener(rectangleClasses);
-        canvasSurfaceView.setOnTouchListener(canvasTouchListener);
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static void removeOnGlobalLayoutListener(View v, ViewTreeObserver.OnGlobalLayoutListener listener){
+        if (Build.VERSION.SDK_INT < 16) {
+            v.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
+        } else {
+            v.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
+        }
     }
 
     private void setScheduleSize() {
@@ -175,41 +179,36 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
         setCanvas(holder);
-
         drawDefault();
-
         drawRectangleClasses();
-
-        Toast.makeText(TimetableCanvas.getInstance(), rectangleClasses.toString(), Toast.LENGTH_SHORT).show();
-
-        canvasTouchListener.setRectangles(rectangleClasses);
         holder.unlockCanvasAndPost(canvas);
     }
 
     private void drawDefault() {
 
-        // dostac pierszą godzinę i ostatnią wyciagajac z bazy i patrząc na min i max ze wszystkich
         // dosta tak samo dni
         // jak nic nie ma w bazie, to wyswietlic od 8 do 16 plan
         // co któraś linia w innym kolorze? moze kazda inna co 3 w innym kolorze (odcienie szarego)
         int minStartTime = mDB.getMinStartTime();
         int maxEndTime = mDB.getMaxEndTime();
+        int maxDay = mDB.getMaxDay();
+        setDays(maxDay);
 //        setGlobalGapAndStartAndStopTimeDisplayed(540, 960); // 9 do 16 // pierwsza i ostatnia godzina w planie
         setGlobalGapAndStartAndStopTimeDisplayed(minStartTime, maxEndTime);
         setGlobalValuesOfFirstAndLastLineOnYaxis(); // to jakos inaczej, bez globalnych jak sie da
 
         drawLineUnderDays();
 
-        daysOfWeek = getDays(0); // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
+         // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
         setGlobalVariables();
         drawDaysNames(daysOfWeek); // daysOfWeek chyba beda globalnie, albo tylko długość arrraya
         drawTimesWithLines();
     }
 
-    private String[] getDays(int lastDay) { //TODO
-        return new String[]{"Pon", "Wt", "Śr", "Czw", "Pt"};
+    private void setDays(int lastDay) { //TODO
+        String[] days =  {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"};
+        daysOfWeek =  Arrays.copyOfRange(days, 0, lastDay+1);
     }
 
     private void drawRectangleClasses() {
@@ -393,5 +392,36 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d("sur", "DESTROYED");
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) { // zrobic on hold jak bedzie przytrzymywał
+        int touchX = (int)event.getX();
+        int touchY = (int)event.getY();
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+
+                for (int i = 0; i < rectangleClasses.size(); i++ ){
+                    if(rectangleClasses.get(i).contains(touchX,touchY)){
+                        Toast.makeText(TimetableCanvas.getInstance(), "rectangle", Toast.LENGTH_SHORT).show();
+
+                        // pokazac okinko z danymi lekcji
+
+//                        Intent intent = new Intent(this, AddNewClass.class);
+//                        Log.d("llol", classesData.toString());
+//                        intent.putExtra("classData", classesData.get(i));
+//                        startActivity(intent);
+                        break;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+//                Toast.makeText(TimetableCanvas.getInstance(), "up", Toast.LENGTH_SHORT).show();
+                break;
+            case MotionEvent.ACTION_MOVE:
+//                Toast.makeText(TimetableCanvas.getInstance(), "sliding", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }
