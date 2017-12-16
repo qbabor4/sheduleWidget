@@ -4,7 +4,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -48,7 +46,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
     Spinner spDayOfWeek;
-    Button btnAddClass;
+
 
     private static SqlLiteHelper myDB;
 
@@ -58,7 +56,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.add_new_class);
         setToolbar();
         setEditTexts();
-        setButtons();
+
         setSpinner();
         setDefaultInputs();
         setDBInstance();
@@ -86,11 +84,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etColor.setOnClickListener(this);
         etFrequency = (EditText) findViewById(R.id.et_frequency);
         etFrequency.setOnClickListener(this);
-    }
-
-    private void setButtons(){
-        btnAddClass = (Button) findViewById(R.id.btn_add_new_class);
-        btnAddClass.setOnClickListener(this);
     }
 
     private void dontShowKeyboardOnStart() {
@@ -126,8 +119,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         String descriptionStr = String.valueOf(etDescription.getText());
         String color = String.valueOf(etColor.getText());
         String frequency = String.valueOf(etFrequency.getText());
-//        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
-        return true;
+        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
     }
 
     private void validateStartTimeInput(){
@@ -140,8 +132,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         if (getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) < getTimeInMinutesFromTimePicker(etStartTime.getText().toString())){
             etStartTime.setText(etEndTime.getText());
         }
-        // sprawdzac tylko czasy i dzien, a tak to dodawac puste do bazy
-        // jak ustawia czas pozniejszy na wczesniej to dac ten wczesniejszy na ten sam
     }
 
     private void setDefaultInputs(){
@@ -160,7 +150,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
      * TOOLBAR
      */
     private void setToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar2);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_add_new_class);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // strzałka z powrotem
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -169,6 +159,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 // ikona powrotu
+                // czy chce dodać zajęcia okienko TODO
                 finish();
             }
         });
@@ -177,14 +168,20 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
-        mMenuInflater.inflate(R.menu.my_menu2, menu);
+        mMenuInflater.inflate(R.menu.toolbar_add_new_class, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_setting) {
-            Toast.makeText(this, "Clicked action menu", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.btn_add_new_class) { // biała parafka
+            if (validateTimes()) {
+                if (insertDataToDB()) {
+                    Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -201,10 +198,15 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
         } else if (v.equals(etTeacher)) {
             Toast.makeText(getApplicationContext(), "te", Toast.LENGTH_SHORT).show();
-        } else if (v.equals(btnAddClass)){
-            // sprawdzic czy poprawne dane
-            insertDataToDB();
         }
+    }
+
+    private boolean validateTimes(){
+        if (etStartTime.getText() == etEndTime.getText()){
+            Toast.makeText(this, "Podaj poprawny czas", Toast.LENGTH_SHORT);
+            return false;
+        }
+        return true;
     }
 
     private void showTimePicker(final EditText v) {

@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">School Schedule</string>
-    <string name="menu_add_class">Add Class</string>
+    <string name="menu_add_new_class">Add Class</string>
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="navigation_header">Nagłówek</string>
-    <string name="add_new_class">New Class</string>
     <string name="start_time">Czas rozpoczecia</string>
+    <string name="toolbar_timetable">Plan zajęć</string>
 </resources>

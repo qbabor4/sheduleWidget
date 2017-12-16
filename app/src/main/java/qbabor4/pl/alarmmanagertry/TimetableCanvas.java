@@ -56,14 +56,14 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private int lastLineYValue; // ^
     private String[] daysOfWeek;
 
-    private int startX;
-    private int endX;
     private int rowWidth;
 
     private static final int TIME_SECTION_SIZE = 150; // moze to sie zmieni na procenty v v v
     private static final int DAYS_SECTION_SIZE = 80;
     private static final int NO_LINE_SIZE = 15;
-    private static final int RECTAGLE_HORISONTAL_PADDING = 10;
+    private static final int RECTANGLE_HORIZONTAL_PADDING = 10;
+
+    private SqlLiteHelper mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +71,16 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         setContentView(R.layout.timetable_canvas);
         setInstance();
         setToolbar();
+
+        setDBInstance();
+        // wczytac dane z bazy (wszystkie) TODO NEXT
         setSurfaceView();
     }
 
-    // dostać dane z bazy
+    private void setDBInstance() {
+        mDB = new SqlLiteHelper(this); //this jako context
+    }
+
 
     private void setSurfaceView() {
         final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
@@ -200,24 +206,13 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         classData3.put(SqlDataEnum.START_TIME, "900");
         classData3.put(SqlDataEnum.END_TIME, "960");
         drawRectangle(classData3);
-
     }
 
     private int getRowWidth() {
         return scheduleWidth / daysOfWeek.length;
     }
 
-    private int getXofScheduleEnd() {
-        return TIME_SECTION_SIZE + scheduleWidth;
-    }
-
-    private int getXofScheduleStart() {
-        return TIME_SECTION_SIZE;
-    }
-
     private void setGlobalVariables(){ // dodac inne zmienne
-        startX = getXofScheduleStart(); // globalne
-        endX = getXofScheduleEnd();
         rowWidth = getRowWidth();
     }
 
@@ -238,8 +233,8 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue)); // nie ok firstLinevalue
         int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue)); // nie ok
 
-        int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTAGLE_HORISONTAL_PADDING; //ok
-        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1) - RECTAGLE_HORISONTAL_PADDING; // ok
+        int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTANGLE_HORIZONTAL_PADDING; //ok
+        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1) - RECTANGLE_HORIZONTAL_PADDING; // ok
         // wyznaczyć x1 i x2 gdzie sie ma pokazac
 //        drawRectangle(50, 100, 500, 400, "#000345");
         drawRectangle(x1, y1, x2, y2, "#000345");

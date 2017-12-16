@@ -33,13 +33,13 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
     public static final String COL_10 = FREQUENCY.name();
 
     public SqlLiteHelper(Context context ) {
-        super(context, DATABASE_NAME, null, 4); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
+        super(context, DATABASE_NAME, null, 7); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
     }
 
     /** Runs when there is no DB created */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER, " + COL_3 + " INTEGER," + COL_4 +" INTEGER, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT" + COL_9 + "TEXT," + COL_10 + "TEXT" + ")";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER NOT NULL, " + COL_3 + " INTEGER NOT NULL," + COL_4 +" INTEGER NOT NULL, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT," + COL_9 + " TEXT," + COL_10 + " TEXT" + ")";
         db.execSQL(SQL_String);
     }
 
@@ -60,7 +60,6 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
      * @return
      */
     public boolean insertData(int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency){
-        //SQLiteDatabase db = this.getReadableDatabase();
         SQLiteDatabase db = this.getWritableDatabase(); //
         ContentValues contentValues = new ContentValues();
 

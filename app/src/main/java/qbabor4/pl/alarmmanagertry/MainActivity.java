@@ -52,12 +52,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnSet, btnAddToDB, btnShowAllDB, btnUpdateDB, btnDeleteDB;
 
     EditText etTime, etId;
-    EditText etEndTime;
-    EditText etDayOfWeek;
-    EditText etSubject;
-    EditText etClassroom;
-    EditText etTeacher;
-    EditText etDescription;
+
 
     TextView tvUpdate;
 
@@ -170,18 +165,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        btnAddToDB.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (insertDataToDB()) {
-//                    Toast.makeText(getApplicationContext(), "adding data", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
         btnShowAllDB.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -235,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static SqlLiteHelper getDatabaseInstance() {
         return myDB;
-    }
+    } // to bedzie instancja dla planu i dla widgeta
 
     public boolean deleteDataDB() {
         EditText etId = (EditText) findViewById(R.id.et_id);
@@ -246,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     protected void showTableData(Cursor cursor) {
 
         StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()) { // zobaczyc jak to działą z tym bufferem TODO
+        while (cursor.moveToNext()) {
             buffer.append("ID " + cursor.getString(0) + "\n");
             buffer.append("StartTime " + cursor.getString(1) + "\n");
             buffer.append("EndTime " + cursor.getString(2) + "\n");
@@ -254,7 +237,9 @@ public class MainActivity extends AppCompatActivity {
             buffer.append("Subject " + cursor.getString(4) + "\n");
             buffer.append("Classroom " + cursor.getString(5) + "\n");
             buffer.append("Teacher " + cursor.getString(6) + "\n");
-            buffer.append("Description " + cursor.getString(7) + "\n\n");
+            buffer.append("Description " + cursor.getString(7) + "\n");
+            buffer.append("Color " + cursor.getString(8) + "\n");
+            buffer.append("Frequency " + cursor.getString(9) + "\n\n"); // moze 0/1/2?
         }
         //cursor.close();
         showData("data", buffer.toString());

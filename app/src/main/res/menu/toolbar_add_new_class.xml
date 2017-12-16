@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_setting"
-        android:title="@string/menu_add_class"
+        android:id="@+id/btn_add_new_class"
+        android:title="@string/menu_add_new_class"
         app:showAsAction="always"
-        android:icon="@drawable/ic_directions_run_black_24dp">
+        android:icon="@drawable/ic_done_white_24dp">
     </item>
 
 </menu>

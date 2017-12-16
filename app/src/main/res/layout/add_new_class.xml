@@ -5,9 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_add_new_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="Dodaj zajęcia" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -59,7 +72,7 @@
                 android:id="@+id/et_frequency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Opis"
+                android:hint="Częstotliwość"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -76,25 +89,6 @@
                 android:focusable="false"
                 android:hint="Czas zakończenia" />
 
-            <Button
-                android:id="@+id/btn_add_new_class"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dodaj zajęcia" />
-
         </LinearLayout>
     </ScrollView>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:title="@string/add_new_class" />
-
-
 </LinearLayout>
