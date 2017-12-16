@@ -60,6 +60,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         setEditTexts();
         setButtons();
         setSpinner();
+        setDefaultInputs();
         setDBInstance();
         dontShowKeyboardOnStart();
     }
@@ -116,7 +117,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     public boolean insertDataToDB() {
         String startTimeStr = String.valueOf(etStartTime.getText());
-        int startTimeInMinutes = getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null
+        int startTimeInMinutes = getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null (jak zły czas to dać info, że błedny czas
         int endTimeInMinutes = getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
         int dayOfWeekInt = spDayOfWeek.getSelectedItemPosition();
         String subjectStr = String.valueOf(etSubject.getText());
@@ -129,14 +130,29 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         return true;
     }
 
+    private void validateStartTimeInput(){
+        if (getTimeInMinutesFromTimePicker(etStartTime.getText().toString()) > getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) ){
+            etEndTime.setText(etStartTime.getText());
+        }
+    }
+
+    private void validateEndTimeInput(){
+        if (getTimeInMinutesFromTimePicker(etEndTime.getText().toString()) < getTimeInMinutesFromTimePicker(etStartTime.getText().toString())){
+            etStartTime.setText(etEndTime.getText());
+        }
+        // sprawdzac tylko czasy i dzien, a tak to dodawac puste do bazy
+        // jak ustawia czas pozniejszy na wczesniej to dac ten wczesniejszy na ten sam
+    }
+
+    private void setDefaultInputs(){
+        etStartTime.setText("8:00");
+        etEndTime.setText("10:00");
+    }
+
     private int getTimeInMinutesFromTimePicker(String time) {
-        // TODO przeparsować dane z zegara na minuty
-        Log.d("lolt", etStartTime.getText() + "");
         int colonIndex = time.indexOf(':');
         int hour = Integer.parseInt(time.substring(0, colonIndex));
-        Log.d("lolt", hour  +"");
         int minutes = Integer.parseInt(time.substring(colonIndex+1));
-        Log.d("lolt", minutes  +"");
         return hour*60 + minutes;
     }
 
@@ -192,16 +208,27 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     }
 
     private void showTimePicker(final EditText v) {
-        int hourOfDay = 12;
-        int minute = 0;
+        String time = v.getText().toString();
+        int colonIndex = time.indexOf(':');
+        int hour = Integer.parseInt(time.substring(0, colonIndex));
+        int minutes = Integer.parseInt(time.substring(colonIndex+1));
         boolean is24HourView = true;
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, R.style.Dialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                v.setText(hourOfDay + ":" + minute);
+            public void onTimeSet(TimePicker view, int hourOfDay, int pickerMinutes) {
+                String pickerMinutersStr = String.valueOf(pickerMinutes);
+                if (pickerMinutersStr.length() == 1){
+                    pickerMinutersStr = "0" + pickerMinutersStr;
+                }
+                v.setText(hourOfDay + ":" + pickerMinutersStr);
+                if (v == etStartTime){
+                    validateStartTimeInput();
+                } else if (v == etEndTime){
+                    validateEndTimeInput();
+                }
             }
-        }, hourOfDay, minute, is24HourView);
+        }, hour, minutes, is24HourView);
         timePickerDialog.show();
     }
 
