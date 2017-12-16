@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     EditText etTime, etId;
 
-
     TextView tvUpdate;
 
     private static SqlLiteHelper myDB;

@@ -116,6 +116,20 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
     }
 
+    public int getMinStartTime(){ // co jak nie bedzie nic?
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select min(" + COL_2 + ") from " + TABLE_NAME, null); //zobaczyc jak działą rawquery i czy nie zamienic na query
+        result.moveToFirst();
+        return result.getInt(0);
+    }
+
+    public int getMaxEndTime(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select max(" + COL_3 + ") from " + TABLE_NAME, null);
+        result.moveToFirst();
+        return result.getInt(0);
+    }
+
 //    public Cursor getAllData(){
 //
 //    }

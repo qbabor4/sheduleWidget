@@ -1,6 +1,7 @@
 package qbabor4.pl.alarmmanagertry;
 
 
+import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -30,6 +31,9 @@ import java.util.Map;
  * TODO
  * wybieranie koloru w dodawaniu zajęć albo same sie beda zmieniac
  * klawisze prawo i lewo zeby zobaczy kolojne tygodnie
+ * wybór koloru
+ * pokazywanie danych jak sie kliknie na rectangla z guzikami delete, edit
+ * jak sie przytrzyma to dać tylko mozliwosc edit
  * <p>
  * TODO IFTIME:
  * zmiana nagólwka z dniami i czasami dynamicznie (robienie wedłód procentów
@@ -39,7 +43,8 @@ import java.util.Map;
 
 public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    private List<Rect> rectangleClasses;
+    private List<Rect> rectangleClasses = new ArrayList<>();
+
     private static TimetableCanvas ins;
     private CanvasTouchListener canvasTouchListener;
     private int canvasSurfaceViewWidth;
@@ -64,6 +69,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private static final int RECTANGLE_HORIZONTAL_PADDING = 10;
 
     private SqlLiteHelper mDB;
+    private List<Map<SqlDataEnum, String>> classesData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +79,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         setToolbar();
 
         setDBInstance();
-        // wczytac dane z bazy (wszystkie) TODO NEXT
+        getDataFromDB();
+        Log.d("classDATA", classesData.toString());
+
         setSurfaceView();
     }
 
@@ -81,6 +89,25 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         mDB = new SqlLiteHelper(this); //this jako context
     }
 
+    private void getDataFromDB(){
+        Cursor result = mDB.getAllData();
+        if (result.getCount() == 0) {
+            Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
+        } else {
+            setClassesData(result);
+        }
+    }
+
+    private void setClassesData(Cursor cursor){
+        while (cursor.moveToNext()) {
+            Map<SqlDataEnum, String> classData = new HashMap<>();
+            SqlDataEnum[] rowNames = SqlDataEnum.values();
+            for (int i = 0; i < rowNames.length; i++) {
+                classData.put(rowNames[i], cursor.getString(i));
+            }
+            classesData.add(classData);
+        }
+    }
 
     private void setSurfaceView() {
         final SurfaceView canvasSurfaceView = (SurfaceView) findViewById(R.id.surface);
@@ -93,7 +120,6 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
                 canvasSurfaceViewHeight = canvasSurfaceView.getHeight();
                 canvasSurfaceViewWidth = canvasSurfaceView.getWidth();
                 setScheduleSize();
-                Log.d("surlol", "lol");
                 canvasSurfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             }
         });
@@ -149,8 +175,6 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // tu bedzie pobierał z bazy i na tej podstawie rysował rectangle
-        rectangleClasses = new ArrayList<>();
 
         setCanvas(holder);
 
@@ -170,8 +194,10 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         // dosta tak samo dni
         // jak nic nie ma w bazie, to wyswietlic od 8 do 16 plan
         // co któraś linia w innym kolorze? moze kazda inna co 3 w innym kolorze (odcienie szarego)
-
-        setGlobalGapAndStartAndStopTimeDisplayed(540, 960); // 9 do 16 // pierwsza i ostatnia godzina w planie
+        int minStartTime = mDB.getMinStartTime();
+        int maxEndTime = mDB.getMaxEndTime();
+//        setGlobalGapAndStartAndStopTimeDisplayed(540, 960); // 9 do 16 // pierwsza i ostatnia godzina w planie
+        setGlobalGapAndStartAndStopTimeDisplayed(minStartTime, maxEndTime);
         setGlobalValuesOfFirstAndLastLineOnYaxis(); // to jakos inaczej, bez globalnych jak sie da
 
         drawLineUnderDays();
@@ -186,26 +212,10 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         return new String[]{"Pon", "Wt", "Śr", "Czw", "Pt"};
     }
 
-    private void drawRectangleClasses() { // podawac liste z mapami
-        // testowo
-        // 10:00 - 13:00 we wtorek
-        Map<SqlDataEnum, String> classData = new HashMap<>();
-        classData.put(SqlDataEnum.DAY_OF_WEEK, "1");
-        classData.put(SqlDataEnum.START_TIME, "600");
-        classData.put(SqlDataEnum.END_TIME, "780");
-        drawRectangle(classData);
-
-        Map<SqlDataEnum, String> classData2 = new HashMap<>();
-        classData2.put(SqlDataEnum.DAY_OF_WEEK, "4");
-        classData2.put(SqlDataEnum.START_TIME, "900");
-        classData2.put(SqlDataEnum.END_TIME, "960");
-        drawRectangle(classData2);
-
-        Map<SqlDataEnum, String> classData3 = new HashMap<>();
-        classData3.put(SqlDataEnum.DAY_OF_WEEK, "3");
-        classData3.put(SqlDataEnum.START_TIME, "900");
-        classData3.put(SqlDataEnum.END_TIME, "960");
-        drawRectangle(classData3);
+    private void drawRectangleClasses() {
+        for(Map<SqlDataEnum, String> classData: classesData){
+            drawRectangle(classData);
+        }
     }
 
     private int getRowWidth() {
@@ -219,12 +229,9 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
 
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
-        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)); // numer dnia (1)
-        int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME)); // numer dnia (1)
-        int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME)); // numer dnia (1)
-
-        Log.d("start", "" + startTimeDisplayed );
-        Log.d("start", "" + endTimeDisplayed );
+        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK));
+        int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME));
+        int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME));
 
         // globalnie czas pomiedzy poczatkiem i koncem
         float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float)(endTimeDisplayed - startTimeDisplayed);
@@ -235,15 +242,8 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
         int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTANGLE_HORIZONTAL_PADDING; //ok
         int x2 = TIME_SECTION_SIZE + rowWidth * (day+1) - RECTANGLE_HORIZONTAL_PADDING; // ok
-        // wyznaczyć x1 i x2 gdzie sie ma pokazac
-//        drawRectangle(50, 100, 500, 400, "#000345");
+
         drawRectangle(x1, y1, x2, y2, "#000345");
-        Log.d("lol4", ""+ percentageRectangleEndY);
-        Log.d("lol4", x1+ " " + x2 + " " + y1 + " " + y2);
-    }
-
-    private void getXofRectangleStart(){
-
     }
 
 
