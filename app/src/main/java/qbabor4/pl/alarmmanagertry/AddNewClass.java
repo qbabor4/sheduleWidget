@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Brak klawiatury jak sie klika na edittext
@@ -37,6 +38,8 @@ import java.util.List;
  * pozmieniac kolory w timepickerze
  * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
  * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
+ * przy cofaniu nie updatuje canvasa
+ *
  * <p>
  * moze tu podawac do konstruktora Mapę z klasą i drugi konstruktor bez mapy
  * <p>
@@ -52,7 +55,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     private HashMap<SqlDataEnum, String> classData;
     private boolean updateOperation = false;
 
-    private static SqlLiteHelper myDB;
+    private static SqlLiteHelper mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             updateOperation = true; // mozna sprawdxzac czy mapa jest null
             Log.d("lol4", classData.toString());
             setClassInputs();
+        } else {
+            classData = new HashMap<>(); // wywalic moze
         }
     }
 
@@ -90,7 +95,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setDBInstance() {
-        myDB = new SqlLiteHelper(this); //this jako context
+        mDB = new SqlLiteHelper(this); //this jako context
     }
 
     private void setEditTexts() {
@@ -131,7 +136,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         spDayOfWeek.setAdapter(dataAdapter);
     }
 
-    public boolean insertDataToDB() {
+    public boolean insertDataToDB1() {
         String startTimeStr = String.valueOf(etStartTime.getText());
         int startTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null (jak zły czas to dać info, że błedny czas
         int endTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
@@ -142,7 +147,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         String descriptionStr = String.valueOf(etDescription.getText());
         String color = String.valueOf(etColor.getText());
         String frequency = String.valueOf(etFrequency.getText());
-        return myDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
+        return mDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
     }
 
     private void validateStartTimeInput() {
@@ -192,15 +197,45 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.btn_add_new_class) { // biała parafka
             if (validateTimes()) {
-                if (insertDataToDB()) {
-                    Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
+                if(updateOperation){
+                    if (updateDataInDB()) {
+                        Toast.makeText(getApplicationContext(), "Updatuje zajęcia zajęcia", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    if (insertDataToDB1()) { // TODO jak dodaje z drugiej funkcji to nei działa. Pewnie chodzi o ID
+                        Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addDataFromInputsToClassData(){
+        classData.put(SqlDataEnum.SUBJECT, etSubject.getText().toString());
+        classData.put(SqlDataEnum.TEACHER, etTeacher.getText().toString());
+        classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString());
+        classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString());
+        classData.put(SqlDataEnum.COLOR, etColor.getText().toString());
+        classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString());
+        classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()));
+        classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())));
+        classData.put(SqlDataEnum.END_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())));
+    }
+
+    private boolean updateDataInDB() {
+        addDataFromInputsToClassData();
+        return mDB.updateData(classData);
+    }
+
+    private boolean insertDataToDB(){
+        addDataFromInputsToClassData();
+        return mDB.updateData(classData);
     }
 
     /**

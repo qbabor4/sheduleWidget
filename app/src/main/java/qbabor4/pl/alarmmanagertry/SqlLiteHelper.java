@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 import static qbabor4.pl.alarmmanagertry.SqlDataEnum.*;
 
 /**
@@ -86,22 +89,32 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateData(String id, int startTime, int endTime, int dayOfWeek, String subject, String classroom, String teacher, String description, String color, String frequency) { // dać classData TODO
+    public boolean insertData(HashMap<SqlDataEnum, String> classData) { // dać classData TODO
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COL_1, id);
-        contentValues.put(COL_2, startTime);
-        contentValues.put(COL_3, endTime);
-        contentValues.put(COL_4, dayOfWeek);
-        contentValues.put(COL_5, subject);
-        contentValues.put(COL_6, classroom);
-        contentValues.put(COL_7, teacher);
-        contentValues.put(COL_8, description);
-        contentValues.put(COL_9, color);
-        contentValues.put(COL_10, frequency);
+        // bez ID
+        SqlDataEnum[] rowNames = SqlDataEnum.values();
+        rowNames = Arrays.copyOfRange(rowNames, 0, rowNames.length);
+        // wziac wyszystko bez pierwszej pozycji?
+        for (SqlDataEnum rowName: rowNames){
+            contentValues.put(rowName.name(), classData.get(rowName));
+        }
 
-        int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
+        long result = db.insert(TABLE_NAME, null, contentValues); // if data is not inserted this method returns -1 (false)
+        return result != -1; // true when isn't -1
+    }
+
+    public boolean updateData(HashMap<SqlDataEnum, String> classData) { // dać classData TODO
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        SqlDataEnum[] rowNames = SqlDataEnum.values();
+        for (SqlDataEnum rowName: rowNames){
+            contentValues.put(rowName.name(), classData.get(rowName));
+        }
+
+        int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{classData.get(SqlDataEnum.ID)});
         return result != -1;
     }
 
