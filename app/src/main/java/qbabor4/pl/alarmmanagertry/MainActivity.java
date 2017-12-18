@@ -50,7 +50,7 @@ import java.util.Map;
  * pokazac kolene pole nad tym ekranem co jest z wyborem czasu na zegarze
  * rozwijane munu na dni tygodnia (albo na górze, to zanaczania jako remoteButton)
  * zobaczyc czy da sie lepiej odczytywac dane od StringBufera z Cursera
- * jak se kliknie na widget, to dać do activity_main
+ * jak se kliknie na widget, to dać do alarm_try
  * kolory do kazdego przedmiotu
  * Dodać widget
  * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
      * Data from DB
      */
     private String[] daysOfWeek;
+    /** Needed to move rectangle */
+    private int minDay;
 
     /**
      * Constant canvas data
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.timetable_canvas);
+        setContentView(R.layout.main_activity);
 
         setInstance();
         setDatabaseInstance();
@@ -146,14 +148,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_main_activity);
         setSupportActionBar(mToolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
-        mMenuInflater.inflate(R.menu.main_activity_toolbar, menu);
+        mMenuInflater.inflate(R.menu.toolbar_main_activity, menu);
         return true;
     }
 
@@ -233,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        // jakby tu pobieracdane z bazy zobaczyc TODO
         setCanvas(holder);
         drawDefault();
         drawRectangleClasses();
@@ -243,15 +246,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.d("sur", "CHANGED");
         // tu sie robi jak jest rotate
-        // przedrawować defoult
-        // czy trzeba znowu ustwaic width i height?
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d("sur", "DESTROYED");
     }
-
 
 
     // ------------- TODO pozmianiac kolejnosc
@@ -282,20 +282,22 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.scheduleWidth = canvasSurfaceViewWidth - TIME_SECTION_SIZE;
     }
 
+
+
     private void drawDefault() {
         // co któraś linia w innym kolorze? moze kazda inna co 3 w innym kolorze (odcienie szarego)
         int minStartTime = mDB.getMinStartTime();
         int maxEndTime = mDB.getMaxEndTime();
-        int minDay = mDB.getMinDay();
+        minDay = mDB.getMinDay();
         int maxDay = mDB.getMaxDay(); // jakb bedzie -1 to chyba sie rozpierniczy
-        setDays(0, maxDay); // TODO ucinanie pierwszych dni
+        setDays(minDay, maxDay); // TODO ucinanie pierwszych dni
 
         setGlobalGapAndStartAndStopTimeDisplayed(minStartTime, maxEndTime);
         setGlobalValuesOfFirstAndLastLineOnYaxis(); // to jakos inaczej, bez globalnych jak sie da
 
         drawLineUnderDays();
 
-        // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
+        // TODO pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
         setGlobalVariables();
         drawDaysNames(daysOfWeek); // daysOfWeek chyba beda globalnie, albo tylko długość arrraya
         drawTimesWithLines();
@@ -321,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
-        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK));
+        int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)) - minDay;
         int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME));
         int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME));
 
@@ -337,7 +339,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         drawRectangle(x1, y1, x2, y2, "#000345");
     }
-
 
     private void drawRectangle(int left, int top, int right, int bottom, String hexColor) {
         Rect rect = new Rect(left, top, right, bottom);
@@ -357,7 +358,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             canvas.drawLine(TIME_SECTION_SIZE, getYaxisOfLine(i), canvasSurfaceViewWidth, getYaxisOfLine(i), paintOfTime);
             canvas.drawText(timeToDraw, getXaxisOfTimeDisplayed(bounds), getYaxisOfTimeDisplayed(i, bounds), paintOfTime);
         }
-
     }
 
     /**

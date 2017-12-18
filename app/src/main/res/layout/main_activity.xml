@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/navigation_header"
-            app:menu="@menu/navigation_menu"></android.support.design.widget.NavigationView>
+            app:menu="@menu/navigation_menu_main_activity"></android.support.design.widget.NavigationView>
 
 
     </android.support.v4.widget.DrawerLayout>
