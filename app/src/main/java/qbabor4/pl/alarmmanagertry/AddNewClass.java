@@ -210,7 +210,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     private void showTimetableCanvas(){
         finish();
-        Intent intent = new Intent(this, TimetableCanvas.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

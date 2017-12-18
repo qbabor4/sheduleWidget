@@ -155,4 +155,11 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result.getInt(0);
     }
 
+    public int getMinDay() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select min(" + COL_4 + ") from " + TABLE_NAME, null);
+        result.moveToFirst();
+        return result.getInt(0);
+    }
+
 }

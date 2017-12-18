@@ -27,9 +27,9 @@ public class Alarm extends BroadcastReceiver {
         if (intent != null) {
             if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
                 //Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();
-                MainActivity mActivity = MainActivity.getInstace();
+                AlarmTry mActivity = AlarmTry.getInstace();
                 if (mActivity != null) {
-                    MainActivity.getInstace().updateTheTextView("Updated"); // when app is closed this is null
+                    AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null
                 }
                 Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
@@ -48,6 +48,7 @@ public class Alarm extends BroadcastReceiver {
                 Cursor cursor = getNextSubjectData(context);
 
                 if (cursor != null) {
+
                     mActivity.showTableData(cursor);
                     Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
                 } else {

@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -17,45 +17,10 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:title="@string/app_name" />
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/btn_show_DB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pokaż"
-                android:layout_alignBaseline="@+id/btn_delete_DB"
-                android:layout_alignBottom="@+id/btn_delete_DB"
-                android:layout_toLeftOf="@+id/btn_delete_DB"
-                android:layout_toStartOf="@+id/btn_delete_DB" />
-
-            <EditText
-                android:id="@+id/et_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="ID"
-                android:inputType="number"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-
-            <Button
-                android:id="@+id/btn_delete_DB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete"
-                android:layout_below="@+id/et_id"
-                android:layout_alignRight="@+id/et_id"
-                android:layout_alignEnd="@+id/et_id"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp" />
 
             <TextView
                 android:id="@+id/tv_update"
@@ -83,19 +48,10 @@
                 android:ems="10"
                 android:hint="Type time in seconds"
                 android:inputType="textPersonName"
-                android:layout_below="@+id/btn_show_DB"
+
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 
-        <android.support.design.widget.NavigationView
-            android:id="@+id/navigationView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/navigation_header"
-            app:menu="@menu/navigation_menu"></android.support.design.widget.NavigationView>
 
-
-    </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

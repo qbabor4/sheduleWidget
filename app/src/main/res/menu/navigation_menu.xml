@@ -9,5 +9,9 @@
         android:title="Free days"
         android:icon="@drawable/ic_directions_run_black_24dp"/>
 
+    <item android:id="@+id/navigation_alarm_try"
+        android:title="alarm try"
+        android:icon="@drawable/ic_directions_run_black_24dp"/>
+
 
 </menu>
