@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
-        mMenuInflater.inflate(R.menu.mainActivity_toolbar, menu);
+        mMenuInflater.inflate(R.menu.main_activity_toolbar, menu);
         return true;
     }
 
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (item.getItemId() == R.id.action_setting) { // plus icon
             addNewClassActivity();
         } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)) { // when drawer is opened by clicking on button
-            Toast.makeText(MainActivity.this, "opening drawer", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "opening/closing drawer", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -231,21 +231,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         canvasSurfaceView.setOnTouchListener(this);
     }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        setCanvas(holder);
+        drawDefault();
+        drawRectangleClasses();
+        holder.unlockCanvasAndPost(canvas);
+    }
 
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d("sur", "CHANGED");
+        // tu sie robi jak jest rotate
+        // przedrawować defoult
+        // czy trzeba znowu ustwaic width i height?
+    }
 
-    private void addNewClassActivity() {
-        Intent intent = new Intent(this, AddNewClass.class);
-        startActivity(intent);
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d("sur", "DESTROYED");
     }
 
 
 
-    private void alarmTryActivity() {
-        Intent intent = new Intent(this, AlarmTry.class);
-        startActivity(intent);
-    }
+    // ------------- TODO pozmianiac kolejnosc
 
-
+    /** Reads data from database and sets variable classesData */
     private void setClassesData(Cursor cursor) {
         while (cursor.moveToNext()) {
             HashMap<SqlDataEnum, String> classData = new HashMap<>();
@@ -256,8 +267,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             classesData.add(classData);
         }
     }
-
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void removeOnGlobalLayoutListener(View v, ViewTreeObserver.OnGlobalLayoutListener listener) {
@@ -273,26 +282,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.scheduleWidth = canvasSurfaceViewWidth - TIME_SECTION_SIZE;
     }
 
-
-
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        setCanvas(holder);
-        drawDefault();
-        drawRectangleClasses();
-        holder.unlockCanvasAndPost(canvas);
-    }
-
     private void drawDefault() {
-
-
-        // jak nic nie ma w bazie, to wyswietlic od 8 do 16 plan
         // co któraś linia w innym kolorze? moze kazda inna co 3 w innym kolorze (odcienie szarego)
         int minStartTime = mDB.getMinStartTime();
         int maxEndTime = mDB.getMaxEndTime();
         int minDay = mDB.getMinDay();
-        int maxDay = mDB.getMaxDay(); // jak nic nie bedzie to chyba sie rozpierniczy
+        int maxDay = mDB.getMaxDay(); // jakb bedzie -1 to chyba sie rozpierniczy
         setDays(0, maxDay); // TODO ucinanie pierwszych dni
 
         setGlobalGapAndStartAndStopTimeDisplayed(minStartTime, maxEndTime);
@@ -365,23 +360,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
-    private void drawDaysNames(String[] daysOfWeek) {
+    /**
+     * Draws days on top of schedule after getting data about days from database
+     * @param daysOfWeek
+     */
+    private void drawDaysNames(String[] daysOfWeek) { // moze tu sie da podawać dni a nie globalnie
         Paint paintDay = getPaintOfDaysToDisplay();
         for (int i = 0; i < daysOfWeek.length; i++) {
-
             String day = daysOfWeek[i];
             Rect bounds = new Rect();
             paintDay.getTextBounds(day, 0, day.length(), bounds);
-
             canvas.drawText(day, TIME_SECTION_SIZE + (i * 2 + 1) * ((scheduleWidth / (daysOfWeek.length * 2))) - bounds.width() / 2, DAYS_SECTION_SIZE / 2 + paintDay.getTextSize() / 4, paintDay); // getTextSize is /4 becouse it looks better, and positions ok
         }
     }
 
+    /**
+     * Draws 1 line under days of week to make it better looking
+     */
     private void drawLineUnderDays() {
         Paint paintOfLineUnderDays = getPaintOfLineUnderDays();
         canvas.drawLine(NO_LINE_SIZE, DAYS_SECTION_SIZE, canvasSurfaceViewWidth - NO_LINE_SIZE, DAYS_SECTION_SIZE, paintOfLineUnderDays); // horisontal line under days of week
     }
 
+    /**
+     * Gets Paint with color and style to draw line under days
+     * @return
+     */
     private Paint getPaintOfLineUnderDays() {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -467,7 +471,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
-    private void drawText(String text) {
+
+    private void drawText(String text) {  // TODO narysowac nazwy zajęć na prostokątach (kolor tekstu bedzie podawany przez uzytkownika
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(50);  //set text size
@@ -479,19 +484,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // wpisywac na środku
     }
 
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.d("sur", "CHANGED");
-        // tu sie robi jak jest rotate
-        // przedrawować defoult
-        // czy trzeba znowu ustwaic width i height?
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d("sur", "DESTROYED");
-    }
-
+    /**
+     * on touch listener used when user touches rectangle
+     * @param v
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) { // zrobic on hold jak bedzie przytrzymywał
         int touchX = (int) event.getX();
@@ -516,6 +514,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         return true;
     }
 
+    /**
+     * The same activity ad adding new class but with given data
+     * After confirmation data is updated, not inserted
+     * @param classData
+     */
     private void startEditClassActivity(HashMap<SqlDataEnum, String> classData) {
         Intent intent = new Intent(this, AddNewClass.class);
         Log.d("llol", classData.toString());
@@ -523,6 +526,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         startActivity(intent);
     }
 
+    /**
+     * Data of class shown when user touches on rectangle to show him info of this class
+     * @param classData
+     * @return
+     */
     private String getClassDataToDisplay(HashMap<SqlDataEnum, String> classData) {
         String out = "";
         SqlDataEnum[] sqlDataEnumValues = SqlDataEnum.values();
@@ -531,10 +539,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
             out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
         }
-
         return out;
     }
 
+    /**
+     * Deletes data from database
+     * @param classData
+     * @return
+     */
     private boolean deleteClass(HashMap<SqlDataEnum, String> classData) {
         return mDB.deleteData(classData.get(SqlDataEnum.ID));
     }
@@ -551,8 +563,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 confirmDeleteDialog(classData);
-                // okienko czy na pewno chce usunąć i nowy AlarmTry
-                // zobaczyc czy nie wystarczy pobieranie danych w rysowaniu canvasa
             }
         });
 
@@ -578,7 +588,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         finish();
                         startActivity(getIntent());
                         break;
-
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
                         break;
@@ -589,6 +598,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Czy na pewno chcesz usunąć te zajęcia?").setPositiveButton("Tak", dialogClickListener)
                 .setNegativeButton("Nie", dialogClickListener).show();
+    }
+
+    private void addNewClassActivity() {
+        Intent intent = new Intent(this, AddNewClass.class);
+        startActivity(intent);
+    }
+
+    private void alarmTryActivity() {
+        Intent intent = new Intent(this, AlarmTry.class);
+        startActivity(intent);
     }
 }
 
