@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -95,9 +96,10 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
 
         // bez ID
         SqlDataEnum[] rowNames = SqlDataEnum.values();
-        rowNames = Arrays.copyOfRange(rowNames, 0, rowNames.length);
-        // wziac wyszystko bez pierwszej pozycji?
+        rowNames = Arrays.copyOfRange(rowNames, 1, rowNames.length);
+
         for (SqlDataEnum rowName: rowNames){
+            Log.d("lol5", rowName.name() + classData.get(rowName));
             contentValues.put(rowName.name(), classData.get(rowName));
         }
 

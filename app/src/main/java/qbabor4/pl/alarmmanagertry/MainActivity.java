@@ -2,6 +2,7 @@ package qbabor4.pl.alarmmanagertry;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.sql.Time;
 
@@ -177,18 +181,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        btnUpdateDB.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (updateDataDB()) {
-//                    Toast.makeText(getApplicationContext(), "updated data", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
         btnDeleteDB.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -204,9 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setWidgets() {
         btnSet = (Button) findViewById(R.id.btnAlarm);
-        btnAddToDB = (Button) findViewById(R.id.btn_add_to_DB);
         btnShowAllDB = (Button) findViewById(R.id.btn_show_DB);
-        btnUpdateDB = (Button) findViewById(R.id.btn_update_DB);
         btnDeleteDB = (Button) findViewById(R.id.btn_delete_DB);
 
         etTime = (EditText) findViewById(R.id.etAlarm);
@@ -248,8 +238,33 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);// we can cancel it
         builder.setTitle(tile);
+
+        ////////////////////////////-------------
         builder.setMessage(message);
-        builder.show();
+//        builder.setItems(new CharSequence[]
+//                        {"button 1", "button 2", "button 3", "button 4"},
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // The 'which' argument contains the index position
+//                        // of the selected item
+//                        switch (which) {
+//                            case 0:
+//                                Toast.makeText(getInstace(), "clicked 1", Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case 1:
+//                                Toast.makeText(getInstace(), "clicked 2", Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case 2:
+//                                Toast.makeText(getInstace(), "clicked 3", Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case 3:
+//                                Toast.makeText(getInstace(), "clicked 4", Toast.LENGTH_SHORT).show();
+//                                break;
+//                        }
+//                    }
+//                });
+        builder.create().show();
+
     }
 
 //    public boolean updateDataDB() {

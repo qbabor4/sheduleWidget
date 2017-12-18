@@ -30,58 +30,40 @@
                 android:id="@+id/btn_show_DB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_add_to_DB"
-                android:layout_alignBottom="@+id/btn_add_to_DB"
-                android:layout_toEndOf="@+id/btn_add_to_DB"
-                android:layout_toRightOf="@+id/btn_add_to_DB"
-                android:text="Pokaż" />
+                android:text="Pokaż"
+                android:layout_alignBaseline="@+id/btn_delete_DB"
+                android:layout_alignBottom="@+id/btn_delete_DB"
+                android:layout_toLeftOf="@+id/btn_delete_DB"
+                android:layout_toStartOf="@+id/btn_delete_DB" />
 
             <EditText
                 android:id="@+id/et_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:ems="10"
                 android:hint="ID"
-                android:inputType="number" />
+                android:inputType="number"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
             <Button
                 android:id="@+id/btn_delete_DB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/btn_update_DB"
-                android:layout_toEndOf="@+id/btn_update_DB"
-                android:layout_toRightOf="@+id/btn_update_DB"
-                android:text="Delete" />
-
-            <Button
-                android:id="@+id/btn_add_to_DB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="47dp"
-                android:text="Dodaj" />
-
-            <Button
-                android:id="@+id/btn_update_DB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_show_DB"
-                android:layout_alignBottom="@+id/btn_show_DB"
-                android:layout_toEndOf="@+id/btn_show_DB"
-                android:layout_toRightOf="@+id/btn_show_DB"
-                android:text="Update" />
+                android:text="Delete"
+                android:layout_below="@+id/et_id"
+                android:layout_alignRight="@+id/et_id"
+                android:layout_alignEnd="@+id/et_id"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp" />
 
             <TextView
                 android:id="@+id/tv_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="TextView"
                 android:layout_below="@+id/btnAlarm"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="44dp"
-                android:text="TextView" />
+                android:layout_centerHorizontal="true" />
 
 
             <Button
@@ -97,13 +79,12 @@
                 android:id="@+id/etAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_update_DB"
-                android:layout_marginTop="15dp"
-                android:layout_toEndOf="@+id/btn_add_to_DB"
-                android:layout_toRightOf="@+id/btn_add_to_DB"
+                android:layout_marginTop="78dp"
                 android:ems="10"
                 android:hint="Type time in seconds"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:layout_below="@+id/btn_show_DB"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 

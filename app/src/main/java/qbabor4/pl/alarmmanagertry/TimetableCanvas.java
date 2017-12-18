@@ -10,9 +10,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,10 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,7 +45,9 @@ import java.util.Map;
  * wybór koloru
  * pokazywanie danych jak sie kliknie na rectangla z guzikami delete, edit
  * jak sie przytrzyma to dać tylko mozliwosc edit
- * <p>
+ * zrobic oznaczenie gdzie jestesmy teraz na planie (wedłóg godziny i dnia tygodnia)
+ * colorpicker przy ddoawaniu zajęć
+ *
  * TODO IFTIME:
  * zmiana nagólwka z dniami i czasami dynamicznie (robienie wedłód procentów
  * <p>
@@ -51,7 +59,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private List<Rect> rectangleClasses = new ArrayList<>();
 
     private static TimetableCanvas ins;
-//    private CanvasTouchListener canvasTouchListener;
+    //    private CanvasTouchListener canvasTouchListener;
     private int canvasSurfaceViewWidth;
     private int canvasSurfaceViewHeight;
     private int scheduleWidth;
@@ -74,7 +82,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     private static final int NO_LINE_SIZE = 15;
     private static final int RECTANGLE_HORIZONTAL_PADDING = 10;
 
-    private SqlLiteHelper mDB  = new SqlLiteHelper(this);
+    private SqlLiteHelper mDB = new SqlLiteHelper(this);
     private List<HashMap<SqlDataEnum, String>> classesData = new ArrayList<>();
 
     @Override
@@ -88,7 +96,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         canvasSurfaceView.setOnTouchListener(this);
     }
 
-    private void getDataFromDB(){
+    private void getDataFromDB() {
         Cursor result = mDB.getAllData();
         if (result.getCount() == 0) {
             Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
@@ -98,7 +106,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         }
     }
 
-    private void setClassesData(Cursor cursor){
+    private void setClassesData(Cursor cursor) {
         while (cursor.moveToNext()) {
             HashMap<SqlDataEnum, String> classData = new HashMap<>();
             SqlDataEnum[] rowNames = SqlDataEnum.values();
@@ -125,7 +133,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static void removeOnGlobalLayoutListener(View v, ViewTreeObserver.OnGlobalLayoutListener listener){
+    public static void removeOnGlobalLayoutListener(View v, ViewTreeObserver.OnGlobalLayoutListener listener) {
         if (Build.VERSION.SDK_INT < 16) {
             v.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
         } else {
@@ -201,19 +209,19 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
         drawLineUnderDays();
 
-         // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
+        // pobierane na podstawie bazy i języka (pol/ang) (brać kawałek jak sie dowiem z bazy
         setGlobalVariables();
         drawDaysNames(daysOfWeek); // daysOfWeek chyba beda globalnie, albo tylko długość arrraya
         drawTimesWithLines();
     }
 
     private void setDays(int lastDay) { //TODO
-        String[] days =  {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"};
-        daysOfWeek =  Arrays.copyOfRange(days, 0, lastDay+1);
+        String[] days = {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"};
+        daysOfWeek = Arrays.copyOfRange(days, 0, lastDay + 1);
     }
 
     private void drawRectangleClasses() {
-        for(Map<SqlDataEnum, String> classData: classesData){
+        for (Map<SqlDataEnum, String> classData : classesData) {
             drawRectangle(classData);
         }
     }
@@ -222,7 +230,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         return scheduleWidth / daysOfWeek.length;
     }
 
-    private void setGlobalVariables(){ // dodac inne zmienne
+    private void setGlobalVariables() { // dodac inne zmienne
         rowWidth = getRowWidth();
     }
 
@@ -232,14 +240,14 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
         int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME));
 
         // globalnie czas pomiedzy poczatkiem i koncem
-        float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float)(endTimeDisplayed - startTimeDisplayed);
-        float percentageRectangleEndY = (stopTime - startTimeDisplayed) / (float)(endTimeDisplayed - startTimeDisplayed);
+        float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
+        float percentageRectangleEndY = (stopTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
         // odliegłosc czasów plus procentstart * wysokosc w pixelach
         int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue)); // nie ok firstLinevalue
         int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue)); // nie ok
 
         int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTANGLE_HORIZONTAL_PADDING; //ok
-        int x2 = TIME_SECTION_SIZE + rowWidth * (day+1) - RECTANGLE_HORIZONTAL_PADDING; // ok
+        int x2 = TIME_SECTION_SIZE + rowWidth * (day + 1) - RECTANGLE_HORIZONTAL_PADDING; // ok
 
         drawRectangle(x1, y1, x2, y2, "#000345");
     }
@@ -323,7 +331,7 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
     }
 
     private int getYaxisOfLine(int indexOfLinOnScreen) {
-        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 +1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji
+        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji
     }
 
     private void setGlobalValuesOfFirstAndLastLineOnYaxis() {
@@ -395,22 +403,14 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
 
     @Override
     public boolean onTouch(View v, MotionEvent event) { // zrobic on hold jak bedzie przytrzymywał
-        int touchX = (int)event.getX();
-        int touchY = (int)event.getY();
-        switch(event.getAction()){
+        int touchX = (int) event.getX();
+        int touchY = (int) event.getY();
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                for (int i = 0; i < rectangleClasses.size(); i++ ){
-                    if(rectangleClasses.get(i).contains(touchX,touchY)){
-                        Toast.makeText(TimetableCanvas.getInstance(), "rectangle", Toast.LENGTH_SHORT).show();
-
-                        // pokazac okinko z danymi lekcji
-                        // na okienku opcja edycji i usuniecia
-
-                        Intent intent = new Intent(this, AddNewClass.class);
-                        Log.d("llol", classesData.toString());
-                        intent.putExtra("classData", classesData.get(i));
-                        startActivity(intent);
+                for (int i = 0; i < rectangleClasses.size(); i++) {
+                    if (rectangleClasses.get(i).contains(touchX, touchY)) {
+                        showClassData(classesData.get(i));
                         break;
                     }
                 }
@@ -423,5 +423,58 @@ public class TimetableCanvas extends AppCompatActivity implements SurfaceHolder.
                 break;
         }
         return true;
+    }
+
+    private void startEditClassActivity(HashMap<SqlDataEnum, String> classData){
+        Intent intent = new Intent(this, AddNewClass.class);
+        Log.d("llol", classData.toString());
+        intent.putExtra("classData", classData);
+        startActivity(intent);
+    }
+
+    private String getClassDataToDisplay(HashMap<SqlDataEnum, String> classData) {
+        String out = "";
+        SqlDataEnum[] sqlDataEnumValues = SqlDataEnum.values();
+        sqlDataEnumValues = Arrays.copyOfRange(sqlDataEnumValues, 1, sqlDataEnumValues.length);
+
+        for (SqlDataEnum sqlDataEnum: sqlDataEnumValues){
+            out +=  sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
+        }
+
+        return out;
+    }
+
+    private boolean deleteClass(HashMap<SqlDataEnum, String> classData){
+        return mDB.deleteData(classData.get(SqlDataEnum.ID));
+    }
+
+
+    private void showClassData(final HashMap<SqlDataEnum, String> classData) {
+
+        //////////////////// --------------
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptView = layoutInflater.inflate(R.layout.class_data_dialog, null);
+        final AlertDialog alertD = new AlertDialog.Builder(this).create();
+
+        TextView tvClassData = (TextView) promptView.findViewById(R.id.textView);
+        tvClassData.setText(getClassDataToDisplay(classData));
+        Button btnDelete = (Button) promptView.findViewById(R.id.delete);
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                deleteClass(classData);
+                // okienko czy na pewno chce usunąć i nowy TimetableCanvas
+
+            }
+        });
+
+        Button btnEdit = (Button) promptView.findViewById(R.id.edit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startEditClassActivity(classData);
+            }
+        });
+
+        alertD.setView(promptView);
+        alertD.show();
     }
 }

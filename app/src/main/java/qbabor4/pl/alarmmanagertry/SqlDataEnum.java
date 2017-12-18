@@ -15,4 +15,6 @@ public enum SqlDataEnum {
     DESCRIPTION,
     COLOR,
     FREQUENCY;
+
+
 }

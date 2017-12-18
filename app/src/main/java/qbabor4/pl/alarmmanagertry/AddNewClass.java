@@ -1,6 +1,7 @@
 package qbabor4.pl.alarmmanagertry;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ import java.util.StringTokenizer;
  * jak zrobic zeby brał nazwy dni z pliu (zeby mozna było ustawic inne języki
  * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
  * przy cofaniu nie updatuje canvasa
+ * jak sie cofa ikoną na dole po lewej, to zapytac czy na zapisac czy nie
  *
  * <p>
  * moze tu podawac do konstruktora Mapę z klasą i drugi konstruktor bez mapy
@@ -136,20 +138,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         spDayOfWeek.setAdapter(dataAdapter);
     }
 
-    public boolean insertDataToDB1() {
-        String startTimeStr = String.valueOf(etStartTime.getText());
-        int startTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(startTimeStr); // sprawdzac czy null (jak zły czas to dać info, że błedny czas
-        int endTimeInMinutes = TimeTools.getTimeInMinutesFromTimePicker(String.valueOf(etEndTime.getText()));
-        int dayOfWeekInt = spDayOfWeek.getSelectedItemPosition();
-        String subjectStr = String.valueOf(etSubject.getText());
-        String classroomStr = String.valueOf(etClassroom.getText());
-        String teacherStr = String.valueOf(etTeacher.getText());
-        String descriptionStr = String.valueOf(etDescription.getText());
-        String color = String.valueOf(etColor.getText());
-        String frequency = String.valueOf(etFrequency.getText());
-        return mDB.insertData(startTimeInMinutes, endTimeInMinutes, dayOfWeekInt, subjectStr, classroomStr, teacherStr, descriptionStr, color, frequency);
-    }
-
     private void validateStartTimeInput() {
         if (TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString()) > TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())) {
             etEndTime.setText(etStartTime.getText());
@@ -180,7 +168,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 // ikona powrotu
-                // czy chce dodać zajęcia okienko TODO
+                // czy na chce dodać zajęcia okienko TODO
                 finish();
             }
         });
@@ -199,13 +187,17 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             if (validateTimes()) {
                 if(updateOperation){
                     if (updateDataInDB()) {
-                        Toast.makeText(getApplicationContext(), "Updatuje zajęcia zajęcia", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Edytuje dane zajęć", Toast.LENGTH_SHORT).show();
+                        showTimetableCanvas();
+
                     } else {
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if (insertDataToDB1()) { // TODO jak dodaje z drugiej funkcji to nei działa. Pewnie chodzi o ID
+                    if (insertDataToDB()) { // TODO jak dodaje z drugiej funkcji to nei działa. Pewnie chodzi o ID
                         Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
+                        showTimetableCanvas();
+
                     } else {
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
@@ -214,6 +206,12 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showTimetableCanvas(){
+        finish();
+        Intent intent = new Intent(this, TimetableCanvas.class);
+        startActivity(intent);
     }
 
     private void addDataFromInputsToClassData(){
@@ -235,7 +233,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     private boolean insertDataToDB(){
         addDataFromInputsToClassData();
-        return mDB.updateData(classData);
+        return mDB.insertData(classData);
     }
 
     /**
