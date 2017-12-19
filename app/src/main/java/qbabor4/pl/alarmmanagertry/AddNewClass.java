@@ -2,7 +2,9 @@ package qbabor4.pl.alarmmanagertry;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,6 +22,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -41,11 +48,8 @@ import java.util.StringTokenizer;
  * dodac ikonę parafki w prawym rogu jak chce dodać zajęcia
  * przy cofaniu nie updatuje canvasa
  * jak sie cofa ikoną na dole po lewej, to zapytac czy na zapisac czy nie
+ * pokazac kolor nie jako text tylko jako kółko z kolorem
  *
- * <p>
- * moze tu podawac do konstruktora Mapę z klasą i drugi konstruktor bez mapy
- * <p>
- * <p>
  * Created by Jakub on 07-Dec-17.
  */
 
@@ -185,7 +189,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.btn_add_new_class) { // biała parafka
             if (validateTimes()) {
-                if(updateOperation){
+                if (updateOperation) {
                     if (updateDataInDB()) {
                         Toast.makeText(getApplicationContext(), "Edytuje dane zajęć", Toast.LENGTH_SHORT).show();
                         showTimetableCanvas();
@@ -194,7 +198,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if (insertDataToDB()) { // TODO jak dodaje z drugiej funkcji to nei działa. Pewnie chodzi o ID
+                    if (insertDataToDB()) {
                         Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
                         showTimetableCanvas();
 
@@ -208,18 +212,19 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         return super.onOptionsItemSelected(item);
     }
 
-    private void showTimetableCanvas(){
+    private void showTimetableCanvas() {
         finish();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private void addDataFromInputsToClassData(){
+    private void addDataFromInputsToClassData() {
         classData.put(SqlDataEnum.SUBJECT, etSubject.getText().toString());
         classData.put(SqlDataEnum.TEACHER, etTeacher.getText().toString());
         classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString());
         classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString());
         classData.put(SqlDataEnum.COLOR, etColor.getText().toString());
+        Log.d("lol4", etColor.getText().toString());
         classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString());
         classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()));
         classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())));
@@ -231,7 +236,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         return mDB.updateData(classData);
     }
 
-    private boolean insertDataToDB(){
+    private boolean insertDataToDB() {
         addDataFromInputsToClassData();
         return mDB.insertData(classData);
     }
@@ -245,9 +250,42 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         if (v.equals(etStartTime) || v.equals(etEndTime)) {
             showTimePicker((EditText) v);
             Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
-        } else if (v.equals(etTeacher)) {
-            Toast.makeText(getApplicationContext(), "te", Toast.LENGTH_SHORT).show();
+        } else if (v.equals(etColor)) {
+            showColorPicker();
+
         }
+    }
+
+    private static Map<Integer, Integer> getARGBfromHexNumber(String hexNumber){
+        Log.d("lol5", hexNumber );
+        long dec = Long.parseLong(hexNumber, 16 );
+        Map<Integer, Integer> colors = new HashMap<>();
+        colors.put(Color.BLACK, Color.alpha((int)dec)); // alfa
+        colors.put(Color.RED, Color.red((int)dec));
+        colors.put(Color.GREEN, Color.green((int)dec));
+        colors.put(Color.BLUE, Color.blue((int)dec));
+        return colors;
+    }
+
+    private void showColorPicker() {
+        String colorNow = etColor.getText().toString();
+        final ColorPicker colorPicker;
+        if (colorNow.equals("")){
+            colorPicker = new ColorPicker(this, 255, 0, 147, 178);
+        } else {
+            Map<Integer, Integer> decColors =  getARGBfromHexNumber(colorNow);
+            colorPicker = new ColorPicker(this, decColors.get(Color.BLACK), decColors.get(Color.RED), decColors.get(Color.GREEN), decColors.get(Color.BLUE));
+        }
+
+        colorPicker.show();
+        colorPicker.setCallback(new ColorPickerCallback() {
+
+            @Override
+            public void onColorChosen(@ColorInt int color) {
+                etColor.setText(String.format("%08X", (0xffffffff & color)));
+
+            }
+        });
     }
 
     private boolean validateTimes() {

@@ -6,6 +6,9 @@ package qbabor4.pl.alarmmanagertry;
 
 public class TimeTools {
 
+    public static final String[] DAYS_OF_WEEK_PL = {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"};
+    public static final String[] DAYS_OF_WEEK_PL_FULL = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
+
     public static int getTimeInMinutesFromTimePicker(String time) {
         int colonIndex = time.indexOf(':');
         int hour = Integer.parseInt(time.substring(0, colonIndex));

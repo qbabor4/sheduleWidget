@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * TODO
@@ -58,6 +59,9 @@ import java.util.Map;
  * zamnąc drawer jak sie przejdzie do nowego layouta
  * patrzec na dni od do a nie tylko do bo jak jest cos w srode, to poniedziałek widac
  * zmianic wymiary stałe na procenty canvasa i wymiary tekstu
+ *
+ * TODO IFTIME:
+ * dodać mój color picker do wyboru koloru
  */
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnTouchListener {
 
@@ -304,8 +308,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setDays(int firstDay, int lastDay) { //TODO
-        String[] days = {"Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"};
-        daysOfWeek = Arrays.copyOfRange(days, firstDay, lastDay + 1);
+
+        daysOfWeek = Arrays.copyOfRange(TimeTools.DAYS_OF_WEEK_PL, firstDay, lastDay + 1);
     }
 
     private void drawRectangleClasses() {
@@ -331,13 +335,25 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
         float percentageRectangleEndY = (stopTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
         // odliegłosc czasów plus procentstart * wysokosc w pixelach
-        int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue)); // nie ok firstLinevalue
-        int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue)); // nie ok
+        int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue));
+        int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue));
 
-        int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTANGLE_HORIZONTAL_PADDING; //ok
-        int x2 = TIME_SECTION_SIZE + rowWidth * (day + 1) - RECTANGLE_HORIZONTAL_PADDING; // ok
+        int x1 = TIME_SECTION_SIZE + rowWidth * day + RECTANGLE_HORIZONTAL_PADDING;
+        int x2 = TIME_SECTION_SIZE + rowWidth * (day + 1) - RECTANGLE_HORIZONTAL_PADDING;
 
-        drawRectangle(x1, y1, x2, y2, "#000345");
+        Log.d("lol7",getColorFromData(classData));
+        drawRectangle(x1, y1, x2, y2, getColorFromData(classData));
+    }
+
+    private String getColorFromData(Map<SqlDataEnum, String> classData){
+        String color = classData.get(SqlDataEnum.COLOR);
+        Log.d("color", color);
+        if (color.equals("")){
+            color =  "#0093B2";
+        } else {
+            color = "#" + color;
+        }
+        return color;
     }
 
     private void drawRectangle(int left, int top, int right, int bottom, String hexColor) {
@@ -345,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         rectangleClasses.add(rect);
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
+        Log.d("lol4", hexColor+"");
         paint.setColor(Color.parseColor(hexColor));
         canvas.drawRect(rect, paint);
     }
@@ -537,7 +554,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         sqlDataEnumValues = Arrays.copyOfRange(sqlDataEnumValues, 1, sqlDataEnumValues.length);
 
         for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
-            out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
+            if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
+                out += sqlDataEnum.name() + ": " + TimeTools.getTimePickerFormatTime(classData.get(sqlDataEnum)) + "\n";
+            } else if ( sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ){
+                out += sqlDataEnum.name() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
+            } else if ( sqlDataEnum == SqlDataEnum.COLOR ){
+
+            } else {
+                out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
+            }
         }
         return out;
     }

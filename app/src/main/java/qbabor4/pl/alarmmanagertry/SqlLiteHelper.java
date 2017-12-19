@@ -37,7 +37,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
     public static final String COL_10 = FREQUENCY.name();
 
     public SqlLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, 7); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
+        super(context, DATABASE_NAME, null, 8); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
     }
 
     /**
