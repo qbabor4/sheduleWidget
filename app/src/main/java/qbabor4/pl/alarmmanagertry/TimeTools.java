@@ -44,10 +44,14 @@ public class TimeTools {
      *
      * @return
      */
-    public static int getDayInWeek() {
+    public static int getDayInCurrentWeek() {
         Calendar rightNow = Calendar.getInstance();
         int dayInWeek = rightNow.get(Calendar.DAY_OF_WEEK);
-        int dayOfWeekFromMonday = dayInWeek - 1;
+        return getNormalDay(dayInWeek);
+    }
+
+    public static int getNormalDay(int dayFromCalendar){
+        int dayOfWeekFromMonday =  dayFromCalendar - 1;
         if (dayOfWeekFromMonday == 0) { // if sunday case
             dayOfWeekFromMonday = 7;
         }
