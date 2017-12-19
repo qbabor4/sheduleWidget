@@ -11,6 +11,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import java.util.Calendar;
+
 import static android.content.Context.ALARM_SERVICE;
 
 /**
@@ -41,15 +43,35 @@ public class Alarm extends BroadcastReceiver {
 
 
 
-
                 Cursor cursor = getNextSubjectData();
                 if (cursor != null) { /** got next class data */
                     mActivity.showTableData(cursor);
                     Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
 
-                    
-                    // dostac czas i dzien z cursora
-                    // ustawuc za Calendar datę za pomocą pobrania dzisiajeszej i dodania dni i czasu, a potem pobrać różnicę czasów
+                    cursor.moveToFirst();
+
+                    Log.d("curs1", ""+cursor.getString(2)); // end time
+                    // dostac czas i dzien z daty ustawionej z danych z cursora
+                    // ustawić za Calendar datę za pomocą pobrania dzisiajeszej i dodania dni i czasu, a potem pobrać różnicę czasów
+
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    // patrzec na dni, miesiace z dzisiaj? TODO
+
+                    Calendar calendar = Calendar.getInstance();
+                    int year = 2017;
+                    int month = 12;
+                    int date =  19;// dzen
+                    int hourOfDay = 20;
+                    int minute = 30;
+                    calendar.set(year, month, date, hourOfDay, minute);
+
+                    // moze to zrobić troche wczesniej, bo moze nie znaleźć kolejnych zajęć jak będą zaraz za (sprawdzic)
+                    long timeOfEndOfNextClass = calendar.getTimeInMillis(); // to podać do alarmu
+
+
+                    // jak
+                    // jak czas wiekszy od teraz czasu, to zapisac w kolejnym tygodniu
+
                     setNewAlarm(intent, 5000);
 
 
@@ -68,7 +90,7 @@ public class Alarm extends BroadcastReceiver {
      */
     private void setNewAlarm(Intent intent, int time){ // moze podawac cały timestap?
 
-        AlarmTry mActivity = AlarmTry.getInstace();
+        AlarmTry mActivity = AlarmTry.getInstace(); // TODO zmianic jak widget bedzie
         if (mActivity != null) {
             AlarmTry.getInstace().updateTheTextView("Updating"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
         }
@@ -84,7 +106,7 @@ public class Alarm extends BroadcastReceiver {
 
         int timeInMinutes = TimeTools.getCurrentTimeInMinutes();
         int dayInWeek = TimeTools.getDayInWeek();
-        int weekAfter = dayInWeek + 7;
+        int weekAfter = dayInWeek + 8; // looks in whole week includnig current day from 0:00
 
         for (int i = dayInWeek; i < weekAfter; i++){
             Cursor cursor = myDb.getNextSubjectData(timeInMinutes, i%7); // patrzy tylko na te z wyzszą godziną
