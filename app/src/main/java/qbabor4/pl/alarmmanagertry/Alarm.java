@@ -10,13 +10,12 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.Calendar;
 
 import static android.content.Context.ALARM_SERVICE;
 
 /**
  * ustawiac intent w widgecie a nie w MainActivity
- *
+ * <p>
  * Created by Jakub on 14-Oct-17.
  */
 
@@ -29,99 +28,79 @@ public class Alarm extends BroadcastReceiver {
 
         if (intent != null) {
             if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
-                //Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();
+
 
                 //shows that alarm do something
                 AlarmTry mActivity = AlarmTry.getInstace();
                 if (mActivity != null) {
                     AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
                 }
-
                 // Vibrate for 500 milliseconds
                 Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
                 v.vibrate(500);
 
 
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(mActivity.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
-                AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
 
 
-
-
-
-
-
-
-
-
-                int timeInMinutes = getCurrentTimeInMinutes();
-                int dayInWeek = getDayInWeek();
-                Log.d("tim", timeInMinutes + " " + dayInWeek);
-
-                Cursor cursor = getNextSubjectData(context);
-
-                if (cursor != null) {
-
+                Cursor cursor = getNextSubjectData();
+                if (cursor != null) { /** got next class data */
                     mActivity.showTableData(cursor);
                     Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show();
-                    // no subjects added
-                }
-                //cursor.moveToFirst();
-                //getNextSubjectData(cursor, context);
 
-                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5*1000 , pendingIntent ); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
+                    
+                    // dostac czas i dzien z cursora
+                    // ustawuc za Calendar datę za pomocą pobrania dzisiajeszej i dodania dni i czasu, a potem pobrać różnicę czasów
+                    setNewAlarm(intent, 5000);
+
+
+                } else { /** no subjects added to timetable */
+                    Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show();
+                    // nie ustawiać kolejnego alarmu
+                }
             }
         }
     }
 
-    private Cursor getNextSubjectData(Context context){ //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
-        int timeInMinutes = getCurrentTimeInMinutes();
-        int dayInWeek = getDayInWeek();
-        // for do dni do while
+    /**
+     * Creates new pendingIntent and sets new Alarm
+     * @param intent intent
+     * @param time  time from now after this alarm will make alarm
+     */
+    private void setNewAlarm(Intent intent, int time){ // moze podawac cały timestap?
 
+        AlarmTry mActivity = AlarmTry.getInstace();
+        if (mActivity != null) {
+            AlarmTry.getInstace().updateTheTextView("Updating"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
+        }
+        /** Seting up pendingIntent and AlarmManager */
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mActivity.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
+        AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
+        /** setsAnother alarm looking on end time of next classes */
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time, pendingIntent); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
+    }
+
+    private Cursor getNextSubjectData() { //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
         Cursor retCursor = null;
-        int weekAfter = dayInWeek +7;
 
-        for (int i=dayInWeek; i<weekAfter; i++){ // iterating through all days in week (TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
-            int dayInWeekParsed = i;
-            if (i > 7){ dayInWeekParsed = i%7; }
-            if (i > dayInWeek){
-                timeInMinutes = -1;
-            }
-            Cursor cursor  = myDb.getNextSubjectData(timeInMinutes, dayInWeekParsed); // patrzy tylko na te z wyzszyą godziną
-            Toast.makeText(context, i  +" "+ cursor.getCount()  , Toast.LENGTH_SHORT).show();
-            if (cursor.getCount() != 0) { // data in cursor
+        int timeInMinutes = TimeTools.getCurrentTimeInMinutes();
+        int dayInWeek = TimeTools.getDayInWeek();
+        int weekAfter = dayInWeek + 7;
+
+        for (int i = dayInWeek; i < weekAfter; i++){
+            Cursor cursor = myDb.getNextSubjectData(timeInMinutes, i%7); // patrzy tylko na te z wyzszą godziną
+            if (cursor.getCount() != 0) { // if data in cursor
                 retCursor = cursor;
+                Log.d("cur", "znalazł");
                 break;
             }
+            timeInMinutes = 0; // when in current day there is no class found, algorithm looks for class in next day from 0:00 hour
         }
         return retCursor;
     }
 
-    private int getMinutes(int hours, int minutes){
-        return minutes + hours*60;
-    }
 
-    private int getCurrentTimeInMinutes(){
-        Calendar rightNow = Calendar.getInstance();
-        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-        int minutes = rightNow.get(Calendar.MINUTE);
-        return getMinutes(hour, minutes);
-    }
 
-    /**
-     * Get current day starting from 0 as Monday and ending with 6 as sunday
-     * @return
-     */
-    private int getDayInWeek(){
-        Calendar rightNow = Calendar.getInstance();
-        int dayInWeek = rightNow.get(Calendar.DAY_OF_WEEK);
-        int dayOfWeekFromMonday = dayInWeek -1;
-        if (dayOfWeekFromMonday == 0){ // if sunday case
-            dayOfWeekFromMonday = 7;
-        }
-        return dayOfWeekFromMonday -1; // 0 as monday, not sunday
-    }
+
+
+
 }

@@ -1,5 +1,7 @@
 package qbabor4.pl.alarmmanagertry;
 
+import java.util.Calendar;
+
 /**
  * Created by Jakub on 17-Dec-17.
  */
@@ -24,5 +26,31 @@ public class TimeTools {
             minutes = "0" + minutes;
         }
         return hour + ":" + minutes;
+    }
+
+    private static int getMinutes(int hours, int minutes) {
+        return minutes + hours * 60;
+    }
+
+    public static int getCurrentTimeInMinutes() {
+        Calendar rightNow = Calendar.getInstance();
+        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+        int minutes = rightNow.get(Calendar.MINUTE);
+        return getMinutes(hour, minutes);
+    }
+
+    /**
+     * Get current day starting from 0 as Monday and ending with 6 as sunday
+     *
+     * @return
+     */
+    public static int getDayInWeek() {
+        Calendar rightNow = Calendar.getInstance();
+        int dayInWeek = rightNow.get(Calendar.DAY_OF_WEEK);
+        int dayOfWeekFromMonday = dayInWeek - 1;
+        if (dayOfWeekFromMonday == 0) { // if sunday case
+            dayOfWeekFromMonday = 7;
+        }
+        return dayOfWeekFromMonday - 1; // 0 as monday, not sunday
     }
 }

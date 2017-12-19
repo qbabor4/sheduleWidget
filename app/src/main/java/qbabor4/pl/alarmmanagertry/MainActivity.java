@@ -62,6 +62,8 @@ import java.util.Objects;
  * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter
  * pokazywac gdzie teraz jestes na planie
  *
+ * jak czasy takie same, to nie ma przejść
+ *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru
  */

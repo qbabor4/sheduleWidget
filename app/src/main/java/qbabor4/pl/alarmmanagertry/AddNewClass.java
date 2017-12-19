@@ -49,7 +49,7 @@ import java.util.StringTokenizer;
  * przy cofaniu nie updatuje canvasa
  * jak sie cofa ikoną na dole po lewej, to zapytac czy na zapisac czy nie
  * pokazac kolor nie jako text tylko jako kółko z kolorem
- *
+ * <p>
  * Created by Jakub on 07-Dec-17.
  */
 
@@ -206,6 +206,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), "Czasy nie mogą być takie same", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -224,7 +226,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString());
         classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString());
         classData.put(SqlDataEnum.COLOR, etColor.getText().toString());
-        Log.d("lol4", etColor.getText().toString());
         classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString());
         classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()));
         classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())));
@@ -252,28 +253,27 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
             Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
         } else if (v.equals(etColor)) {
             showColorPicker();
-
         }
     }
 
-    private static Map<Integer, Integer> getARGBfromHexNumber(String hexNumber){
-        Log.d("lol5", hexNumber );
-        long dec = Long.parseLong(hexNumber, 16 );
+    private static Map<Integer, Integer> getARGBfromHexNumber(String hexNumber) {
+        Log.d("lol5", hexNumber);
+        long dec = Long.parseLong(hexNumber, 16);
         Map<Integer, Integer> colors = new HashMap<>();
-        colors.put(Color.BLACK, Color.alpha((int)dec)); // alfa
-        colors.put(Color.RED, Color.red((int)dec));
-        colors.put(Color.GREEN, Color.green((int)dec));
-        colors.put(Color.BLUE, Color.blue((int)dec));
+        colors.put(Color.BLACK, Color.alpha((int) dec)); // alfa
+        colors.put(Color.RED, Color.red((int) dec));
+        colors.put(Color.GREEN, Color.green((int) dec));
+        colors.put(Color.BLUE, Color.blue((int) dec));
         return colors;
     }
 
     private void showColorPicker() {
         String colorNow = etColor.getText().toString();
         final ColorPicker colorPicker;
-        if (colorNow.equals("")){
+        if (colorNow.equals("")) {
             colorPicker = new ColorPicker(this, 255, 0, 147, 178);
         } else {
-            Map<Integer, Integer> decColors =  getARGBfromHexNumber(colorNow);
+            Map<Integer, Integer> decColors = getARGBfromHexNumber(colorNow);
             colorPicker = new ColorPicker(this, decColors.get(Color.BLACK), decColors.get(Color.RED), decColors.get(Color.GREEN), decColors.get(Color.BLUE));
         }
 
@@ -289,8 +289,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     }
 
     private boolean validateTimes() {
-        if (etStartTime.getText() == etEndTime.getText()) {
-            Toast.makeText(this, "Podaj poprawny czas", Toast.LENGTH_SHORT);
+        if (etStartTime.getText().toString().equals(etEndTime.getText().toString())) {
             return false;
         }
         return true;
