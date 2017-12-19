@@ -52,7 +52,13 @@ public class Alarm extends BroadcastReceiver {
                     mActivity.showTableData(cursor);
                     Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
 
-                    setNewAlarm(intent, getTimeOfNextAlarm(cursor));
+                    /// zobaczyc na co ustawia (wylogować w konsoli)
+                    long time = getTimeOfNextAlarm(cursor);
+                    Date date = new Date(time);
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Log.d("data1", dateFormat.format(date));
+
+//                    setNewAlarm(intent, getTimeOfNextAlarm(cursor));
 
 
                 } else { /** no subjects added to timetable */
@@ -65,28 +71,31 @@ public class Alarm extends BroadcastReceiver {
 
     private long getTimeOfNextAlarm(Cursor classData){
         classData.moveToFirst();
-        int classEndTime = Integer.parseInt(classData.getString(2));
-        int classHour = classEndTime / 60;
-        int classMinute = classEndTime % 60;
+        int classStartTime = Integer.parseInt(classData.getString(1)); // start
+        int classHour = classStartTime / 60;
+        int classMinute = classStartTime % 60;
         int classDayOfWeek = Integer.parseInt(classData.getString(3));
 
         Calendar now = Calendar.getInstance();
-        int timeNow = now.get(Calendar.HOUR) * 60 + now.get(Calendar.MINUTE); // min and hours
+        int timeNow = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE); // min and hours
+        // podaje 7 :41 a nie 19
 
+        Log.d("data1", timeNow+"");
         if (classDayOfWeek == TimeTools.getDayInCurrentWeek()){
-            if (classEndTime <= timeNow){
+            if (classStartTime <= timeNow){
                 now.add(Calendar.DATE,7); // that many days you should add to get next day after now
-                now.set(Calendar.HOUR, classHour);
+                now.set(Calendar.HOUR_OF_DAY, classHour);
                 now.set(Calendar.MINUTE, classMinute);
             } else {
-                now.set(Calendar.HOUR, classHour);
+                now.set(Calendar.HOUR_OF_DAY, classHour);
                 now.set(Calendar.MINUTE, classMinute);
             }
         } else {
             now.add(Calendar.DATE,(classDayOfWeek-TimeTools.getDayInCurrentWeek())%7); // that many days you should add to get next day after now
-            now.set(Calendar.HOUR, classHour);
+            now.set(Calendar.HOUR_OF_DAY, classHour);
             now.set(Calendar.MINUTE, classMinute);
         }
+        now.set(Calendar.SECOND, 0);
 
         return now.getTimeInMillis();
     }

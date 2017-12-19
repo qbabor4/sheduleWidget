@@ -241,7 +241,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         addDataFromInputsToClassData();
         return mDB.insertData(classData);
     }
-
     /**
      * end Toolbar
      */
@@ -250,7 +249,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         if (v.equals(etStartTime) || v.equals(etEndTime)) {
             showTimePicker((EditText) v);
-            Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
         } else if (v.equals(etColor)) {
             showColorPicker();
         }
@@ -300,9 +298,10 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         int colonIndex = time.indexOf(':');
         int hour = Integer.parseInt(time.substring(0, colonIndex));
         int minutes = Integer.parseInt(time.substring(colonIndex + 1));
-        boolean is24HourView = true;
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, R.style.Dialog, new TimePickerDialog.OnTimeSetListener() {
+//        TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, R.style.Dialog, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(AddNewClass.this, new TimePickerDialog.OnTimeSetListener() {
+
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int pickerMinutes) {
                 String pickerMinutersStr = String.valueOf(pickerMinutes);
@@ -316,7 +315,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                     validateEndTimeInput();
                 }
             }
-        }, hour, minutes, is24HourView);
+        }, hour, minutes, true);
         timePickerDialog.show();
     }
 
