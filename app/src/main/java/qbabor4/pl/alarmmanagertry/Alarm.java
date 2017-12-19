@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Vibrator;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -14,12 +15,14 @@ import java.util.Calendar;
 import static android.content.Context.ALARM_SERVICE;
 
 /**
+ * ustawiac intent w widgecie a nie w MainActivity
+ *
  * Created by Jakub on 14-Oct-17.
  */
 
 public class Alarm extends BroadcastReceiver {
 
-    SqlLiteHelper myDb = MainActivity.getDatabaseInstance();
+    SqlLiteHelper myDb = MainActivity.getDatabaseInstance(); // brac z widgeta
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -27,23 +30,33 @@ public class Alarm extends BroadcastReceiver {
         if (intent != null) {
             if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
                 //Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();
+
+                //shows that alarm do something
                 AlarmTry mActivity = AlarmTry.getInstace();
                 if (mActivity != null) {
-                    AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null
+                    AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
                 }
-                Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+
                 // Vibrate for 500 milliseconds
+                Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
                 v.vibrate(500);
 
-                // ustawiac intent w widgecie a nie w MainActivity
+
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(mActivity.getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
-
                 AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
-                // TODO: pobierac z bazy kolejny czas (Pobrać czas, który jest pierwszym wiekszym czasem od tego teraz)
-                // todo 4: jak nie ma w tym dniu, to w kolejnym
 
-                int timeInMinutes = getCurrentTimeInMInutes();
+
+
+
+
+
+
+
+
+
+                int timeInMinutes = getCurrentTimeInMinutes();
                 int dayInWeek = getDayInWeek();
+                Log.d("tim", timeInMinutes + " " + dayInWeek);
 
                 Cursor cursor = getNextSubjectData(context);
 
@@ -63,15 +76,11 @@ public class Alarm extends BroadcastReceiver {
         }
     }
 
-    private void getNextSubjectData(Cursor cursor, Context context){
-        String startTime = cursor.getString(1);
-        Toast.makeText(context, String.valueOf(startTime), Toast.LENGTH_SHORT).show();
-    }
-
     private Cursor getNextSubjectData(Context context){ //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
-        int timeInMinutes = getCurrentTimeInMInutes();
+        int timeInMinutes = getCurrentTimeInMinutes();
         int dayInWeek = getDayInWeek();
         // for do dni do while
+
         Cursor retCursor = null;
         int weekAfter = dayInWeek +7;
 
@@ -95,20 +104,24 @@ public class Alarm extends BroadcastReceiver {
         return minutes + hours*60;
     }
 
-    private int getCurrentTimeInMInutes(){
+    private int getCurrentTimeInMinutes(){
         Calendar rightNow = Calendar.getInstance();
         int hour = rightNow.get(Calendar.HOUR_OF_DAY);
         int minutes = rightNow.get(Calendar.MINUTE);
         return getMinutes(hour, minutes);
     }
 
+    /**
+     * Get current day starting from 0 as Monday and ending with 6 as sunday
+     * @return
+     */
     private int getDayInWeek(){
         Calendar rightNow = Calendar.getInstance();
         int dayInWeek = rightNow.get(Calendar.DAY_OF_WEEK);
         int dayOfWeekFromMonday = dayInWeek -1;
-        if (dayOfWeekFromMonday == 0){
+        if (dayOfWeekFromMonday == 0){ // if sunday case
             dayOfWeekFromMonday = 7;
         }
-        return dayOfWeekFromMonday; // 1 as monday, not sunday
+        return dayOfWeekFromMonday -1; // 0 as monday, not sunday
     }
 }

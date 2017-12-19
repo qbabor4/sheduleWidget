@@ -59,6 +59,8 @@ import java.util.Objects;
  * zamnąc drawer jak sie przejdzie do nowego layouta
  * patrzec na dni od do a nie tylko do bo jak jest cos w srode, to poniedziałek widac
  * zmianic wymiary stałe na procenty canvasa i wymiary tekstu
+ * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter
+ * pokazywac gdzie teraz jestes na planie
  *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru

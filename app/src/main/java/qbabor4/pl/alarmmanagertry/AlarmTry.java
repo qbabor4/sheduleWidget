@@ -44,7 +44,7 @@ public class AlarmTry extends AppCompatActivity {
     EditText etTime;
     TextView tvUpdate;
 
-    private static SqlLiteHelper myDB;
+    private static SqlLiteHelper mDB;
     private static AlarmTry ins;
 
 
@@ -52,19 +52,22 @@ public class AlarmTry extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alarm_try);
-        setWidgets();
+
         /** Layout */
+        setWidgets();
+        setButtonListeners();
         setToolbar();
 
-        setButtonListeners();
+        /** Instances */
         setInstance();
         setDBInstance();
     }
 
-    private void setDBInstance() {
-        myDB = new SqlLiteHelper(this); //this jako context
+    private void setWidgets() {
+        btnSet = (Button) findViewById(R.id.btnAlarm);
+        etTime = (EditText) findViewById(R.id.etAlarm);
+        tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
     }
-
 
     private void setButtonListeners() {
         btnSet.setOnClickListener(new View.OnClickListener() {
@@ -74,12 +77,6 @@ public class AlarmTry extends AppCompatActivity {
                 createAlarmIntent(time);
             }
         });
-    }
-
-    private void setWidgets() {
-        btnSet = (Button) findViewById(R.id.btnAlarm);
-        etTime = (EditText) findViewById(R.id.etAlarm);
-        tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
     }
 
     private void setToolbar() {
@@ -104,16 +101,20 @@ public class AlarmTry extends AppCompatActivity {
         return true;
     }
 
-    public void updateTheTextView(final String t) {
-        AlarmTry.this.runOnUiThread(new Runnable() {
-            public void run() {
-                tvUpdate.setText(t);
-            }
-        });
+    private void setInstance() {
+        ins = this;
     }
 
-    protected void showTableData(Cursor cursor) {
+    private void setDBInstance() {
+        mDB = new SqlLiteHelper(this); //this jako context
+    }
 
+    public static AlarmTry getInstace() {
+        return ins;
+    }
+
+
+    protected void showTableData(Cursor cursor) {
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
             buffer.append("ID " + cursor.getString(0) + "\n");
@@ -140,31 +141,20 @@ public class AlarmTry extends AppCompatActivity {
 
     }
 
-
-
-
-
-    private void setInstance() {
-        ins = this;
-    }
-
-
-    public static AlarmTry getInstance() {
-        return ins;
-    }
-
-
-
-
     public void createAlarmIntent(int time) {
         Intent intent = new Intent(ins, Alarm.class);
         intent.setAction(Intent.ACTION_ANSWER);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time * 1000, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent); // podaje w sekundach
     }
 
-    public static AlarmTry getInstace() {
-        return ins;
+    /** Changes text in textView in thread */
+    public void updateTheTextView(final String t) {
+        AlarmTry.this.runOnUiThread(new Runnable() {
+            public void run() {
+                tvUpdate.setText(t);
+            }
+        });
     }
 }
