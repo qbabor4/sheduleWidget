@@ -1,8 +1,10 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +23,7 @@ import static android.content.Context.ALARM_SERVICE;
 /**
  * ustawiac intent w widgecie a nie w MainActivity
  * jakby w kolejnym dniu nie było tych zajęć, to inaczej zrobić (przy szukaniu czasukolejnego alarmu)
+ * po dodaniu zajęć do planu zmienić widget i stworzyć nowy alarm, anulując poprzedni
  *
  * <p>
  * Created by Jakub on 14-Oct-17.
@@ -35,6 +38,18 @@ public class Alarm extends BroadcastReceiver {
 
         if (intent != null) {
             if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
+                // jak widget jest dostępny to zmienić dane
+                // wytostowac czy widget jest na ekranie
+
+                if (isAnyWidgetActive(context)) {
+                    Toast.makeText(context, "Number of widgets: " + "lol", Toast.LENGTH_LONG).show();
+                    // są widgety
+                    // zmienić dane na widgecie (na jakiekolwiek)
+
+                } else {
+                    Toast.makeText(context, "Number of widgets: " + "nie lol", Toast.LENGTH_LONG).show();
+                    // nie ma widgetów
+                }
 
 
                 //shows that alarm do something
@@ -67,6 +82,10 @@ public class Alarm extends BroadcastReceiver {
                 }
             }
         }
+    }
+
+    private boolean isAnyWidgetActive(Context context){
+        return AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)).length != 0;
     }
 
     private long getTimeOfNextAlarm(Cursor classData){

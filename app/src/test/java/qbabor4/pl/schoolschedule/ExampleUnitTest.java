@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 import org.junit.Test;
 

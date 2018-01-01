@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 /**
  * Created by Jakub on 13-Dec-17.

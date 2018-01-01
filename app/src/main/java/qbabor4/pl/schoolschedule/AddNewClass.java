@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -27,13 +27,9 @@ import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * Brak klawiatury jak sie klika na edittext
- * wybieranie czasu co 5 min
- * zmiana koloru pickera czasu
- * picker wygladow tak jak u gościa
  * brak wibracji przy zmianie
  * podswietlanie edittextów na inny kolor
  * ustawianie koloru zajęć
@@ -66,7 +62,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_new_class);
+        setContentView(qbabor4.pl.schoolschedule.R.layout.add_new_class);
         setToolbar();
         setEditTexts();
         setSpinner();

@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * TODO
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(qbabor4.pl.schoolschedule.R.layout.main_activity);
 
         setInstance();
         setDatabaseInstance();
@@ -169,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void setNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -290,15 +289,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.scheduleWidth = canvasSurfaceViewWidth - TIME_SECTION_SIZE;
     }
 
-
-
     private void drawDefault() {
         // co któraś linia w innym kolorze? moze kazda inna co 3 w innym kolorze (odcienie szarego)
         int minStartTime = mDB.getMinStartTime();
         int maxEndTime = mDB.getMaxEndTime();
         minDay = mDB.getMinDay();
-        int maxDay = mDB.getMaxDay(); // jakb bedzie -1 to chyba sie rozpierniczy
-        setDays(minDay, maxDay); // TODO ucinanie pierwszych dni
+        int maxDay = mDB.getMaxDay();
+        setDays(minDay, maxDay);
 
         setGlobalGapAndStartAndStopTimeDisplayed(minStartTime, maxEndTime);
         setGlobalValuesOfFirstAndLastLineOnYaxis(); // to jakos inaczej, bez globalnych jak sie da
@@ -312,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setDays(int firstDay, int lastDay) { //TODO
-
         daysOfWeek = Arrays.copyOfRange(TimeTools.DAYS_OF_WEEK_PL, firstDay, lastDay + 1);
     }
 

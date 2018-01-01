@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 
 import android.app.AlarmManager;
@@ -38,7 +38,7 @@ import android.widget.TextView;
 public class AlarmTry extends AppCompatActivity {
 
 
-    public static final String EXTRA_MESSAGE = "qbabor4.pl.alarmmanagertry.MESSAGE";
+    public static final String EXTRA_MESSAGE = "qbabor4.pl.schoolschedule.MESSAGE";
 
     Button btnSet;
     EditText etTime;

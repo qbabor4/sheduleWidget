@@ -1,4 +1,4 @@
-package qbabor4.pl.alarmmanagertry;
+package qbabor4.pl.schoolschedule;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,12 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static qbabor4.pl.alarmmanagertry.SqlDataEnum.*;
+import static qbabor4.pl.schoolschedule.SqlDataEnum.*;
 
 /**
  * TODO Normalnie bedzie patrzyło na czas urzadzenia i według tego wyciagało rzeczy z bazy (trzeba uwzględnić przerwy)
