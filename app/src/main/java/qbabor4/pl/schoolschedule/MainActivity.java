@@ -60,6 +60,8 @@ import java.util.Map;
  * zmianic wymiary stałe na procenty canvasa i wymiary tekstu
  * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter
  * pokazywac gdzie teraz jestes na planie
+ * ustawic czas update na taki, żeby sie nie robiło
+ * wywalić zeczy z onUpdate z widgeta (robic tylko jak dostanie alarm
  *
  * jak czasy takie same, to nie ma przejść
  *
