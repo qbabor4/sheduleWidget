@@ -34,8 +34,11 @@ import static android.content.Context.ALARM_SERVICE;
 
 //public class Alarm extends BroadcastReceiver {
 public class Alarm {
-    SqlLiteHelper myDb = MainActivity.getDatabaseInstance(); // brac z widgeta
+    SqlLiteHelper myDb; // brac z widgeta
 
+    public Alarm(){
+        myDb = MainActivity.getDatabaseInstance();
+    }
 //    @Override
 //    public void onReceive(Context context, Intent intent) {
 //
@@ -98,7 +101,7 @@ public class Alarm {
 //        }
 //    }
 
-    private HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
+    public HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
         cursor.moveToFirst(); // to bedzie mozna wywalic jak nic nie bede z tym robił
         HashMap<SqlDataEnum, String> classData = new HashMap<>();
         SqlDataEnum[] rowNames = SqlDataEnum.values();
@@ -108,7 +111,7 @@ public class Alarm {
         return classData;
     }
 
-    private long getTimeOfNextAlarm(Cursor classData){
+    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć
         classData.moveToFirst();
         int classStartTime = Integer.parseInt(classData.getString(1)); // start
         int classHour = classStartTime / 60;
@@ -145,7 +148,7 @@ public class Alarm {
      * @param intent intent
      * @param time   time from now after this alarm will make alarm
      */
-    private void setNewAlarm(Intent intent, long time) { // moze podawac cały timestap?
+    public void setNewAlarm(Intent intent, long time) { // moze podawac cały timestap?
 
         AlarmTry mActivity = AlarmTry.getInstace(); // TODO zmianic jak widget bedzie
         if (mActivity != null) {
@@ -158,7 +161,7 @@ public class Alarm {
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
     }
 
-    private Cursor getNextSubjectData() { //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
+    public Cursor getNextSubjectData() { //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
         Cursor retCursor = null;
 
         int timeInMinutes = TimeTools.getCurrentTimeInMinutes();

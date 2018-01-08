@@ -18,7 +18,7 @@ public class TimeTools {
         return hour*60 + minutes;
     }
 
-    public static String getTimePickerFormatTime(String time){
+    public static String getClockFormatTime(String time){
         int timeInt = Integer.parseInt(time);
         int hour = timeInt/60;
         String minutes = String.valueOf(timeInt%60);

@@ -558,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
             if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
-                out += sqlDataEnum.name() + ": " + TimeTools.getTimePickerFormatTime(classData.get(sqlDataEnum)) + "\n";
+                out += sqlDataEnum.name() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
             } else if ( sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ){
                 out += sqlDataEnum.name() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
             } else if ( sqlDataEnum == SqlDataEnum.COLOR ){

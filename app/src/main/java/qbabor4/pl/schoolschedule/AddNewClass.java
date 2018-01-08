@@ -92,8 +92,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etFrequency.setText(classData.get(SqlDataEnum.FREQUENCY));
         spDayOfWeek.setSelection(Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)));
 
-        etStartTime.setText(TimeTools.getTimePickerFormatTime(classData.get(SqlDataEnum.START_TIME)));
-        etEndTime.setText(TimeTools.getTimePickerFormatTime(classData.get(SqlDataEnum.END_TIME)));
+        etStartTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
+        etEndTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.END_TIME)));
     }
 
     private void setDBInstance() {
