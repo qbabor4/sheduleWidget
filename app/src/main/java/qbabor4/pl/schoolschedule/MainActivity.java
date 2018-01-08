@@ -62,6 +62,7 @@ import java.util.Map;
  * pokazywac gdzie teraz jestes na planie
  * ustawic czas update na taki, żeby sie nie robiło
  * wywalić zeczy z onUpdate z widgeta (robic tylko jak dostanie alarm
+ * ustawiac layout tak, żeby zawsze wszystko pasowało
  *
  * jak czasy takie same, to nie ma przejść
  *

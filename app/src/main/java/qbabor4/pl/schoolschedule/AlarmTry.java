@@ -143,7 +143,8 @@ public class AlarmTry extends AppCompatActivity {
     }
 
     public void createAlarmIntent(int time) {
-        Intent intent = new Intent(ins, Alarm.class);
+//        Intent intent = new Intent(ins, Alarm.class);
+        Intent intent = new Intent(ins, NextClassWidget.class);
         intent.setAction(Intent.ACTION_ANSWER); // czy tu mozna ustawic swoją akcję ? TODOs
         PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);

@@ -8,7 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Vibrator;
+import android.icu.text.UnicodeSetSpanner;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.sql.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -33,68 +32,71 @@ import static android.content.Context.ALARM_SERVICE;
  * Created by Jakub on 14-Oct-17.
  */
 
-public class Alarm extends BroadcastReceiver {
-
+//public class Alarm extends BroadcastReceiver {
+public class Alarm {
     SqlLiteHelper myDb = MainActivity.getDatabaseInstance(); // brac z widgeta
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-
-        if (intent != null) {
-            if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
-                int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class));
-                if ( appWidgetIds.length != 0) { /* There are my widgets on screen */
-
-                    //shows that alarm do something
-                    AlarmTry mActivity = AlarmTry.getInstace();
-                    if (mActivity != null) {
-                        AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
-                    }
-                    // Vibrate for 500 milliseconds
-                    Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-                    v.vibrate(500);
-
-
-                    Cursor cursor = getNextSubjectData();
-                    if (cursor != null) { /** got next class data */
-                        mActivity.showTableData(cursor);
-                        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
-
-                        /// zobaczyc na co ustawia (wylogować w konsoli)
-                        long time = getTimeOfNextAlarm(cursor);
-                        Date date = new Date(time);
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        Log.d("data1", dateFormat.format(date));
-
-//                    setNewAlarm(intent, getTimeOfNextAlarm(cursor));
-
-
-                    } else { /** no subjects added to timetable */
-                        Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show();
-                        // nie ustawiać kolejnego alarmu
-                    }
-
-                    HashMap<SqlDataEnum, String> classData = getDataFromCursor(cursor);
-
-                    Toast.makeText(context, "Number of widgets: " + classData.get(SqlDataEnum.DAY_OF_WEEK), Toast.LENGTH_LONG).show();
-
-                    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                    views.setTextViewText(R.id.textView3, classData.get(SqlDataEnum.DAY_OF_WEEK));
-                    views.setTextViewText(R.id.textView4, classData.get(SqlDataEnum.START_TIME));
-                    views.setTextViewText(R.id.textView5, classData.get(SqlDataEnum.END_TIME));
-
-                    AppWidgetManager manager = AppWidgetManager.getInstance(context);
-                    manager.updateAppWidget(appWidgetIds, views);
-                    // zmienić dane na widgecie (na jakiekolwiek)
-
-                } else {
-                    Toast.makeText(context, "Number of widgets: " + "nie lol", Toast.LENGTH_LONG).show();
-                    // nie ma widgetów
-                }
-
-            }
-        }
-    }
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//
+//        if (intent != null) {
+//            if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
+//                Log.d("lol4", intent.getAction() + "lolAlarm");
+//                int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class));
+//                if ( appWidgetIds.length != 0) { /* There are my widgets on screen */
+//
+//                    //shows that alarm do something
+//                    AlarmTry mActivity = AlarmTry.getInstace();
+//                    if (mActivity != null) {
+//                        AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
+//                    }
+//                    // Vibrate for 500 milliseconds
+////                    Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+////                    v.vibrate(500);
+//
+//                    Cursor cursor = getNextSubjectData();
+//                    if (cursor != null) { /** got next class data */
+////                        mActivity.showTableData(cursor);
+////                        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
+//
+//                        /// zobaczyc na co ustawia (wylogować w konsoli)
+//                        long time = getTimeOfNextAlarm(cursor);
+//                        Date date = new Date(time);
+//                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//                        Log.d("data1", dateFormat.format(date));
+//
+//                        HashMap<SqlDataEnum, String> classData = getDataFromCursor(cursor);
+//
+////                        Toast.makeText(context, "Number of widgets: " + appWidgetIds.length, Toast.LENGTH_LONG).show();
+//
+//                        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
+//                        views.setTextViewText(R.id.tv_start_time, classData.get(SqlDataEnum.START_TIME));
+//                        views.setTextViewText(R.id.tv_end_time, classData.get(SqlDataEnum.END_TIME));
+//                        views.setTextViewText(R.id.tv_subject, classData.get(SqlDataEnum.SUBJECT));
+//                        views.setTextViewText(R.id.tv_classroom, classData.get(SqlDataEnum.CLASSROOM));
+//
+//                        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+//                        manager.updateAppWidget(appWidgetIds, views);
+//
+////                    setNewAlarm(intent, getTimeOfNextAlarm(cursor)); // jak sie konczą zajecia z cursora
+//
+//
+//                    } else { /** no subjects added to timetable */
+//                        Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show();
+//                        // nie ustawiać kolejnego alarmu
+//                    }
+//
+//
+//                    // zmienić dane na widgecie (na jakiekolwiek)
+//
+//                } else {
+//                    Toast.makeText(context, "Number of widgets: " + "nie ma widgetow", Toast.LENGTH_LONG).show();
+//                    // nie ma widgetów
+//                }
+//
+//            }
+//        }
+//    }
 
     private HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
         cursor.moveToFirst(); // to bedzie mozna wywalic jak nic nie bede z tym robił

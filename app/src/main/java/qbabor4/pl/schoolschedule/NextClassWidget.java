@@ -4,9 +4,8 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -22,6 +21,25 @@ import android.widget.Toast;
 public class NextClassWidget extends AppWidgetProvider {
 
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        // tu dać rzeczy z alarmu TODO
+        // zobaczyc czy tu odbiera
+        Log.d("lol4", intent.getAction() + "out");
+        if (intent != null) {
+            if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
+                Log.d("lol4", intent.getAction());
+                Toast.makeText(context, intent.getAction() + "lol3", Toast.LENGTH_LONG).show();
+                // tu wziąć rzeczy z Alarm bo tam beda funkcje zwiazane z alarmem TODO
+                onUpdate(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)));
+                // zobaczyc czy to na gorze działa
+                // jak działą, to dać updatowanie do updateAppWidget
+                // nie uzywac updatwowania
+            }
+        }
+
+    }
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -31,7 +49,7 @@ public class NextClassWidget extends AppWidgetProvider {
 //        views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // globalnie context setować? (trzeba dać do zmiany layouta
-        views.setTextViewText(R.id.textView3, "lol" );
+        views.setTextViewText(R.id.tv_end_time, "lol" );
 
 
         // Instruct the widget manager to update the widget

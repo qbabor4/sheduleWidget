@@ -37,12 +37,12 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <receiver android:name=".Alarm"></receiver>
+        <!--<receiver android:name=".Alarm"></receiver> -->
 
         <receiver android:name=".NextClassWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
+               <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />  <!-- to moze sie da wywalic zeby nie robił updatóe -->
+             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
