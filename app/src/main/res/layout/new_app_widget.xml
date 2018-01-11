@@ -38,6 +38,12 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_day_of_week"
+            android:text="dzien tygodnia"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"/>
 
         <TextView
             android:id="@+id/tv_subject"

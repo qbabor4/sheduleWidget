@@ -61,8 +61,10 @@ import java.util.Map;
  * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter
  * pokazywac gdzie teraz jestes na planie
  * ustawic czas update na taki, żeby sie nie robiło
- * wywalić zeczy z onUpdate z widgeta (robic tylko jak dostanie alarm
- * ustawiac layout tak, żeby zawsze wszystko pasowało
+ * przechodzenie do aplikacji jak sie kliknie na widget
+ * jak edytuje zajecia to powinno updatowac alarm
+ * odstep pomiedzy godzinami a koncami layoutu
+ * wpakowac wsztstko jakoś (teraz nie widac sali)
  *
  * jak czasy takie same, to nie ma przejść
  *

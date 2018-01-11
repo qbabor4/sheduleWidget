@@ -50,11 +50,17 @@ public class NextClassWidget extends AppWidgetProvider {
 
                 // ustawić koleny alarm
             } else if(intent.getAction().equals(OPEN_APP_ACTION)){
-                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
+//                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
             }
         }
     }
 
+    /**
+     * Nie działa
+     * @param context
+     * @param packageName
+     * @return
+     */
     public static boolean openApp(Context context, String packageName) {
         PackageManager manager = context.getPackageManager();
         try {
@@ -75,25 +81,29 @@ public class NextClassWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId, classData);
-            // tu chyba nic nie robić
-            // może tylko kasować alarmy jak skasują wszystkie widgety
         }
     }
 
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId,  HashMap<SqlDataEnum, String> classData) {
         /* Change data on widget */
-        // zmienic czasy na czytelne TODO
+
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-        views.setTextViewText(R.id.tv_start_time, TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
+        views.setTextViewText(R.id.tv_start_time,  TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
         views.setTextViewText(R.id.tv_end_time, TimeTools.getClockFormatTime(classData.get(SqlDataEnum.END_TIME)));
-        views.setTextViewText(R.id.tv_subject, classData.get(SqlDataEnum.SUBJECT));
-        views.setTextViewText(R.id.tv_classroom, classData.get(SqlDataEnum.CLASSROOM));
+        views.setTextViewText(R.id.tv_subject, "Przedmiot: " + classData.get(SqlDataEnum.SUBJECT));
+        views.setTextViewText(R.id.tv_classroom, "Sala: " + classData.get(SqlDataEnum.CLASSROOM));
+        views.setTextViewText(R.id.tv_day_of_week, "Dzień: " + getFullNameOfDayOfWeek(classData.get(SqlDataEnum.DAY_OF_WEEK)));
 
         createWidgetOnClickListener(context, views);
         // jak puste pola, to napisać, że brak
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    private String getFullNameOfDayOfWeek(String index){
+        String[] daysOfWeek = new String[]{"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
+        return daysOfWeek[Integer.parseInt(index)];
     }
 
     private void createWidgetOnClickListener(Context context, RemoteViews views){

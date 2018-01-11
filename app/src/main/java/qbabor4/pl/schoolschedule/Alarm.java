@@ -37,8 +37,9 @@ public class Alarm {
     SqlLiteHelper myDb; // brac z widgeta
 
     public Alarm(){
-        myDb = MainActivity.getDatabaseInstance();
+        myDb = MainActivity.getDatabaseInstance(); // to jest null na poczatku bo nie jest otworzona aplikacja, a widget bierze TODO (osobne pobieranie z bazy dla widgeta)
     }
+
 //    @Override
 //    public void onReceive(Context context, Intent intent) {
 //
