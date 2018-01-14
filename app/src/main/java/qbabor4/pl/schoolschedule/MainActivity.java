@@ -332,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void drawRectangle(Map<SqlDataEnum, String> classData) {
+        Log.d("lol34", "lol3" + startTimeDisplayed + " " + endTimeDisplayed + " " + gapBetweenTimesDisplayed);
         int day = Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)) - minDay;
         int startTime = Integer.parseInt(classData.get(SqlDataEnum.START_TIME));
         int stopTime = Integer.parseInt(classData.get(SqlDataEnum.END_TIME));
@@ -340,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         float percentageRectangleStartY = (startTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
         float percentageRectangleEndY = (stopTime - startTimeDisplayed) / (float) (endTimeDisplayed - startTimeDisplayed);
         // odliegłosc czasów plus procentstart * wysokosc w pixelach
+        Log.d("lol34", "draw: " + firstLineYValue + " " + lastLineYValue  + " " + percentageRectangleStartY + " " + percentageRectangleEndY );
         int y1 = firstLineYValue + Math.round(percentageRectangleStartY * (lastLineYValue - firstLineYValue));
         int y2 = firstLineYValue + Math.round(percentageRectangleEndY * (lastLineYValue - firstLineYValue));
 
@@ -347,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         int x2 = TIME_SECTION_SIZE + rowWidth * (day + 1) - RECTANGLE_HORIZONTAL_PADDING;
 
         Log.d("lol7",getColorFromData(classData));
+        Log.d("lol34", x1 + " " + x2 + " " + y1 + " " + y2); // z y jest problem
         drawRectangle(x1, y1, x2, y2, getColorFromData(classData));
     }
 
@@ -460,28 +463,51 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         setGapAndStartAndStopTimeDisplayed(startTime, stopTime, 15); // starts looking with 15 min gap
     }
 
+//    private void setGapAndStartAndStopTimeDisplayed(int startTime, int stopTime, int gap) { // setuje czas poczatkowy i koncowy
+//        startTimeDisplayed = startTime - startTime % gap;
+//        int stopTimeCounted = stopTime; // jak bedzie 8:07 to doda 8 i bedzie 8 :15
+//        if (stopTime % gap != 0) {
+//            stopTimeCounted += gap - stopTime % gap;
+//        }
+//        numOfTimesDisplayed = (stopTimeCounted - startTimeDisplayed) / gap + 1;
+//        gapBetweenTimesDisplayed = gap;
+//
+//        if (numOfTimesDisplayed > 17) {                                                 /// mozna podawac ile ma sie wyswietlać
+//            setGapAndStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
+//        } else {
+//            endTimeDisplayed = startTimeDisplayed + 16 * gap;  // 17 -1
+//            numOfTimesDisplayed = 17;
+//            if (endTimeDisplayed > 1440) { // jak wiecej od 24 /* when bigger than 24 */
+//                endTimeDisplayed = 1440;
+//                Log.d("LOLnum", "lol");
+//                numOfTimesDisplayed = (endTimeDisplayed - startTimeDisplayed) / gap + 1;
+//                // podać liczbę godzin, które się wyświetlają (normalnie jest zawsze 17)
+//            }
+//        }
+//    }
+
+    /**
+     * Sets global variables: startTimeDisplayed, gapBetweenTimesDisplayed, endTimeDisplayed
+     * @param startTime start time of earliest class in week
+     * @param stopTime stop time of earliest class in week
+     * @param gap gap between times to be displayed. If there will be more than 17 times displayed gap is multipied by 2
+     */
     private void setGapAndStartAndStopTimeDisplayed(int startTime, int stopTime, int gap) { // setuje czas poczatkowy i koncowy
         startTimeDisplayed = startTime - startTime % gap;
-        int stopTimeCounted = stopTime; // jak bedzie 8:07 to doda 8 i bedzie 8 :15
+        int stopTimeCounted = stopTime;
         if (stopTime % gap != 0) {
-            stopTimeCounted += gap - stopTime % gap;
+            stopTimeCounted += gap - stopTime % gap; /* f.e.: When there is 8:07 it will add 8 when gap is 15 and there will be 8:15 */
         }
         numOfTimesDisplayed = (stopTimeCounted - startTimeDisplayed) / gap + 1;
         gapBetweenTimesDisplayed = gap;
-
-        if (numOfTimesDisplayed > 17) {                                                 /// mozna podawac ile ma sie wyswietlać
+        if (numOfTimesDisplayed > 17) {   /* you can change here maximum number of times that can be displayed on screen */
             setGapAndStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
         } else {
-            endTimeDisplayed = startTimeDisplayed + 16 * gap;  // 17 -1
-            numOfTimesDisplayed = 17;
-            if (endTimeDisplayed > 1440) { // jak wiecej od 24
+            endTimeDisplayed = startTimeDisplayed + (numOfTimesDisplayed-1) * gap;
+            if (endTimeDisplayed > 1440) { /* when more than 24:00 */
                 endTimeDisplayed = 1440;
-                Log.d("LOLnum", "lol");
-                numOfTimesDisplayed = (endTimeDisplayed - startTimeDisplayed) / gap + 1;
-                // podać liczbę godzin, które się wyświetlają (normalnie jest zawsze 17)
             }
         }
-
     }
 
     private void setCanvas(SurfaceHolder holder) {

@@ -112,7 +112,7 @@ public class Alarm {
         return classData;
     }
 
-    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć
+    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log
         classData.moveToFirst();
         int classStartTime = Integer.parseInt(classData.getString(1)); // start
         int classHour = classStartTime / 60;
