@@ -34,10 +34,10 @@ import static android.content.Context.ALARM_SERVICE;
 
 //public class Alarm extends BroadcastReceiver {
 public class Alarm {
-    SqlLiteHelper myDb; // brac z widgeta
+    SqlLiteHelper mDB; // brac z widgeta
 
-    public Alarm(){
-        myDb = MainActivity.getDatabaseInstance(); // to jest null na poczatku bo nie jest otworzona aplikacja, a widget bierze TODO (osobne pobieranie z bazy dla widgeta)
+    public Alarm(Context context){
+        mDB = new SqlLiteHelper(context);
     }
 
 //    @Override
@@ -162,15 +162,16 @@ public class Alarm {
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
     }
 
-    public Cursor getNextSubjectData() { //TODO trzeba potem zmienic jak nie bedzie nic w kolejnym tygodniu a w nastepnym bedzie) zapisywac jakos inaczej do bazy
+    public Cursor getNextSubjectData() {
         Cursor retCursor = null;
 
         int timeInMinutes = TimeTools.getCurrentTimeInMinutes();
         int dayInWeek = TimeTools.getDayInCurrentWeek();
-        int weekAfter = dayInWeek + 8; // looks in whole week includnig current day from 0:00
+        int thisDayWeekAfter = dayInWeek + 8; // looks in whole week includnig current day from 0:00
 
-        for (int i = dayInWeek; i < weekAfter; i++) {
-            Cursor cursor = myDb.getNextSubjectData(timeInMinutes, i % 7); // patrzy tylko na te z wyzszą godziną
+        for (int i = dayInWeek; i < thisDayWeekAfter; i++) {
+            Log.d("lol3",i + "");
+            Cursor cursor = mDB.getNextSubjectData(timeInMinutes, i % 7);
             if (cursor.getCount() != 0) { // if data in cursor
                 retCursor = cursor;
                 Log.d("cur", "znalazł");

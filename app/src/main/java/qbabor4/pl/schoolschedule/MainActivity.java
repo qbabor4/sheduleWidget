@@ -1,6 +1,7 @@
 package qbabor4.pl.schoolschedule;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -147,8 +148,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         setSurfaceView();
     }
 
+
+
     private void setInstance() {
         thisInstance = this;
+    }
+
+    public static Context getContext(){
+        return thisInstance.getApplicationContext();
     }
 
     private void setDatabaseInstance() {
@@ -516,9 +523,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
         canvas.drawPaint(paint);
-
     }
-
 
     private void drawText(String text) {  // TODO narysowac nazwy zajęć na prostokątach (kolor tekstu bedzie podawany przez uzytkownika
         Paint paint = new Paint();

@@ -76,6 +76,8 @@ public class AlarmTry extends AppCompatActivity {
             public void onClick(View v) {
                 int time = Integer.parseInt(etTime.getText().toString());
                 createAlarmIntent(time);
+                SqlLiteHelper s = new SqlLiteHelper(getApplicationContext());
+                showTableData(s.getAllData());
             }
         });
     }

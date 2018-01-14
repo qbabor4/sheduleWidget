@@ -16,7 +16,7 @@ import static qbabor4.pl.schoolschedule.SqlDataEnum.*;
  * TODO Normalnie bedzie patrzyło na czas urzadzenia i według tego wyciagało rzeczy z bazy (trzeba uwzględnić przerwy)
  * Czy alarm moze się usunąc jak wywalam aplikację? (Raczej nie)
  * dać enuma na czestotliwośc
- *
+ * zmienic indexy kolumn
  * Created by Jakub on 19-Oct-17.
  */
 
@@ -89,11 +89,10 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean insertData(HashMap<SqlDataEnum, String> classData) { // dać classData TODO
+    public boolean insertData(HashMap<SqlDataEnum, String> classData) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        // bez ID
         SqlDataEnum[] rowNames = SqlDataEnum.values();
         rowNames = Arrays.copyOfRange(rowNames, 1, rowNames.length);
 
@@ -102,8 +101,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
             contentValues.put(rowName.name(), classData.get(rowName));
         }
 
-        long result = db.insert(TABLE_NAME, null, contentValues); // if data is not inserted this method returns -1 (false)
-        return result != -1; // true when isn't -1
+        return db.insert(TABLE_NAME, null, contentValues) != -1; // true when isn't -1 // if data is not inserted this method returns -1 (false)
     }
 
     public boolean updateData(HashMap<SqlDataEnum, String> classData) { // dać classData TODO
@@ -127,10 +125,8 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
 
     public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) { // zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1
         SQLiteDatabase db = this.getReadableDatabase();
-        // dostać z Cursora czy jest coś
-        // TODO zwiekszac day in week jak nie ma (7 razy)
-        // potem za drugim razem sprawdzac od początku a nie od czasu zakonczenia ostatniego
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
+//        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
+        return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_2 + " ) t WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
     }
 
     public int getMinStartTime() { // co jak nie bedzie nic?

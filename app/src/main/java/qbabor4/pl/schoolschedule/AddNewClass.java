@@ -91,7 +91,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etColor.setText(classData.get(SqlDataEnum.COLOR));
         etFrequency.setText(classData.get(SqlDataEnum.FREQUENCY));
         spDayOfWeek.setSelection(Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)));
-
         etStartTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
         etEndTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.END_TIME)));
     }
@@ -188,6 +187,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                 if (updateOperation) {
                     if (updateDataInDB()) {
                         Toast.makeText(getApplicationContext(), "Edytuje dane zajęć", Toast.LENGTH_SHORT).show();
+                        finish();
                         showTimetableCanvas();
 
                     } else {
@@ -196,6 +196,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                 } else {
                     if (insertDataToDB()) {
                         Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
+                        Log.d("lol34", classData.toString());
+                        finish();
                         showTimetableCanvas();
 
                     } else {
@@ -211,7 +213,6 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     }
 
     private void showTimetableCanvas() {
-        finish();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
