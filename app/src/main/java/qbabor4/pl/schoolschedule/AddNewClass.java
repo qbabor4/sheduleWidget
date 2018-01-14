@@ -51,6 +51,8 @@ import java.util.Map;
 
 public class AddNewClass extends AppCompatActivity implements View.OnClickListener {
 
+    public final static int ADD_NEW_CLASS = 1;
+
     EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
     Spinner spDayOfWeek;
 
@@ -188,8 +190,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                     if (updateDataInDB()) {
                         Toast.makeText(getApplicationContext(), "Edytuje dane zajęć", Toast.LENGTH_SHORT).show();
                         finish();
-                        showTimetableCanvas();
-
+                        goBackToTimetableActivity();
                     } else {
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
@@ -198,8 +199,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
                         Log.d("lol34", classData.toString());
                         finish();
-                        showTimetableCanvas();
-
+                        goBackToTimetableActivity();
                     } else {
                         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
@@ -208,12 +208,13 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                 Toast.makeText(getApplicationContext(), "Czasy nie mogą być takie same", Toast.LENGTH_SHORT).show();
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void showTimetableCanvas() {
+    private void goBackToTimetableActivity() {
+        Log.d("lol1",  "in" + "");
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

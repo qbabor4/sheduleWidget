@@ -24,16 +24,16 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "STUDENT.db";
     public static final String TABLE_NAME = "timetable";
-    public static final String COL_1 = ID.name(); // id
-    public static final String COL_2 = START_TIME.name(); // Time in minutes
-    public static final String COL_3 = END_TIME.name(); // Time in minutes
-    public static final String COL_4 = DAY_OF_WEEK.name(); // {0|1|2|3|4|5|6}
-    public static final String COL_5 = SUBJECT.name(); // TODO albo nazwa zeby nie bylo tylko pod szkołe? Moze wybór na początku typ rzeczy: szkoła/zwykła czynnosc?
-    public static final String COL_6 = CLASSROOM.name();
-    public static final String COL_7 = TEACHER.name();
-    public static final String COL_8 = DESCRIPTION.name();
-    public static final String COL_9 = COLOR.name();
-    public static final String COL_10 = FREQUENCY.name();
+    public static final String COL_0 = ID.name(); // id
+    public static final String COL_1 = START_TIME.name(); // Time in minutes
+    public static final String COL_2 = END_TIME.name(); // Time in minutes
+    public static final String COL_3 = DAY_OF_WEEK.name(); // {0|1|2|3|4|5|6}
+    public static final String COL_4 = SUBJECT.name(); // TODO albo nazwa zeby nie bylo tylko pod szkołe? Moze wybór na początku typ rzeczy: szkoła/zwykła czynnosc?
+    public static final String COL_5 = CLASSROOM.name();
+    public static final String COL_6 = TEACHER.name();
+    public static final String COL_7 = DESCRIPTION.name();
+    public static final String COL_8 = COLOR.name();
+    public static final String COL_9 = FREQUENCY.name();
 
     public SqlLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, 10); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
@@ -44,7 +44,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_2 + " INTEGER NOT NULL, " + COL_3 + " INTEGER NOT NULL," + COL_4 + " INTEGER NOT NULL, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT, " + COL_8 + " TEXT," + COL_9 + " TEXT," + COL_10 + " TEXT" + ")";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_0 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_1 + " INTEGER NOT NULL, " + COL_2 + " INTEGER NOT NULL," + COL_3 + " INTEGER NOT NULL, " + COL_4 + " TEXT, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT," + COL_8 + " TEXT," + COL_9 + " TEXT" + ")";
         db.execSQL(SQL_String);
     }
 
@@ -69,15 +69,15 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase(); //
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COL_2, startTime);
-        contentValues.put(COL_3, endTime);
-        contentValues.put(COL_4, dayOfWeek);
-        contentValues.put(COL_5, subject);
-        contentValues.put(COL_6, classroom);
-        contentValues.put(COL_7, teacher);
-        contentValues.put(COL_8, description);
-        contentValues.put(COL_9, color);
-        contentValues.put(COL_10, frequency);
+        contentValues.put(COL_1, startTime);
+        contentValues.put(COL_2, endTime);
+        contentValues.put(COL_3, dayOfWeek);
+        contentValues.put(COL_4, subject);
+        contentValues.put(COL_5, classroom);
+        contentValues.put(COL_6, teacher);
+        contentValues.put(COL_7, description);
+        contentValues.put(COL_8, color);
+        contentValues.put(COL_9, frequency);
 
         long result = db.insert(TABLE_NAME, null, contentValues); // if data is not inserted this method returns -1 (false)
         return result != -1; // true when isn't -1
@@ -125,34 +125,34 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
 
     public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) { // zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1
         SQLiteDatabase db = this.getReadableDatabase();
-//        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
-        return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_2 + " ) t WHERE " + COL_2 + " >= " + timeInMinutes + " AND " + COL_4 + " = " + dayInWeek + " limit 1", null);
+    //        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 + " = " + dayInWeek + " limit 1", null);
+        return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_1 + " ) t WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 + " = " + dayInWeek + " limit 1", null);
     }
 
     public int getMinStartTime() { // co jak nie bedzie nic?
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("select min(" + COL_2 + ") from " + TABLE_NAME, null); //zobaczyc jak działą rawquery i czy nie zamienic na query
+        Cursor result = db.rawQuery("select min(" + COL_1 + ") from " + TABLE_NAME, null); //zobaczyc jak działą rawquery i czy nie zamienic na query
         result.moveToFirst();
         return result.getInt(0);
     }
 
     public int getMaxEndTime() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("select max(" + COL_3 + ") from " + TABLE_NAME, null);
+        Cursor result = db.rawQuery("select max(" + COL_2 + ") from " + TABLE_NAME, null);
         result.moveToFirst();
         return result.getInt(0);
     }
 
     public int getMaxDay() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("select max(" + COL_4 + ") from " + TABLE_NAME, null);
+        Cursor result = db.rawQuery("select max(" + COL_3 + ") from " + TABLE_NAME, null);
         result.moveToFirst();
         return result.getInt(0);
     }
 
     public int getMinDay() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("select min(" + COL_4 + ") from " + TABLE_NAME, null);
+        Cursor result = db.rawQuery("select min(" + COL_3 + ") from " + TABLE_NAME, null);
         result.moveToFirst();
         return result.getInt(0);
     }

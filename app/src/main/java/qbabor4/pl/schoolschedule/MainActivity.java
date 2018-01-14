@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
+
 /**
  * TODO
  * statystki ile ktos juz chodził
@@ -73,32 +75,26 @@ import java.util.Map;
  * dodać mój color picker do wyboru koloru
  */
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnTouchListener {
-
     /**
      * Drawer menu
      */
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-
     /**
      * Class instances
      */
     private static SqlLiteHelper mDB;
     private static MainActivity thisInstance;
-
     /**
      * Rectangles on screen
      */
     private List<Rect> rectangleClasses = new ArrayList<>();
-
     /**
      * Data of classes (start time, end time, day of week etc.
      */
     private List<HashMap<SqlDataEnum, String>> classesData = new ArrayList<>();
-
     private Canvas canvas;
     private SurfaceView canvasSurfaceView;
-
     /**
      * canvas data got when canvas is made
      */
@@ -115,14 +111,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private int firstLineYValue; // moze to lokalnie w drawDefault? albo drawRectangleClasses
     private int lastLineYValue; // ^
     private int rowWidth;
-
     /**
      * Data from DB
      */
     private String[] daysOfWeek;
     /** Needed to move rectangle */
     private int minDay;
-
     /**
      * Constant canvas data
      */
@@ -147,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         setSurfaceView();
     }
-
 
 
     private void setInstance() {

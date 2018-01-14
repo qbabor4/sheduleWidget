@@ -48,6 +48,8 @@ public class NextClassWidget extends AppWidgetProvider {
                 Toast.makeText(context, intent.getAction() + "lol3", Toast.LENGTH_LONG).show();
                 updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
 
+                Log.d("alarm1: ", alarm.getTimeOfNextAlarmFromEndTime(cursor) +"");
+//                alarm.setNewAlarm(intent, alarm.getTimeOfNextAlarm());
                 // ustawić koleny alarm TODO
             } else if(intent.getAction().equals(OPEN_APP_ACTION)){
 //                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa

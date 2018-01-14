@@ -112,6 +112,47 @@ public class Alarm {
         return classData;
     }
 
+    /**
+     * Sets new alarm when class ends
+     * @return
+     */
+    public long getTimeOfNextAlarmFromEndTime(Cursor classData){
+        classData.moveToFirst();
+
+        int classStartTime = Integer.parseInt(classData.getString(2)); // end
+        int classHour = classStartTime / 60;
+        int classMinute = classStartTime % 60;
+        int classDayOfWeek = Integer.parseInt(classData.getString(3));
+
+        Calendar now = Calendar.getInstance();
+        int timeNow = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE); // number of minutes from minutes and hours now
+        Log.d("alarm1", timeNow + "");
+
+        // dzien z klasy zamienic na Calendar.DATE (dzien w tygodniu)
+        // dostac dzien w tygodniu teraz TODO
+
+
+        now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE), classHour, classMinute, 0); //now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE)
+
+
+        // mam tu ustawiony czas konca podanych zajęć (
+        // jesli czas ustawiony jest mniejszy od godziny teraz, to trzeba dodac 7 dni (albo mniej jak jest mniej dni)
+        // sprawdzic czy nie przekroczyło miesiąca
+        // sprawdzic czy nie przekroczyło roku
+
+        Log.d("alarm1" ,now.getTimeInMillis()+" " + now.get(Calendar.YEAR) + " " + now.get(Calendar.MONTH) + " " + now.get(Calendar.DATE));
+        // ustawic timestamp zakładając, że będzie w tym samym tygodniu
+        // biore timestamp teraz
+        Date d = new Date(now.getTimeInMillis());
+        Log.d("alarm1:", d.toString());
+        return 1L;
+    }
+
+    /**
+     * TO chyba nie działa TODO
+     * @param classData
+     * @return
+     */
     public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log
         classData.moveToFirst();
         int classStartTime = Integer.parseInt(classData.getString(1)); // start
@@ -167,12 +208,12 @@ public class Alarm {
 
         int timeInMinutes = TimeTools.getCurrentTimeInMinutes();
         int dayInWeek = TimeTools.getDayInCurrentWeek();
-        int thisDayWeekAfter = dayInWeek + 8; // looks in whole week includnig current day from 0:00
+        int thisDayWeekAfter = dayInWeek + 8; /* looks in whole week includnig current day from 0:00 */
 
         for (int i = dayInWeek; i < thisDayWeekAfter; i++) {
             Log.d("lol3",i + "");
             Cursor cursor = mDB.getNextSubjectData(timeInMinutes, i % 7);
-            if (cursor.getCount() != 0) { // if data in cursor
+            if (cursor.getCount() != 0) { /* if data in cursor */
                 retCursor = cursor;
                 Log.d("cur", "znalazł");
                 break;
@@ -180,6 +221,11 @@ public class Alarm {
             timeInMinutes = 0; // when in current day there is no class found, algorithm looks for class in next day from 0:00 hour
         }
         return retCursor;
+    }
+
+    public Cursor getCurrentClassData(){
+        // ma patrzec na zajecia w danym dniu i jeśli sa w dzisiejszym dniu i
+        return null;
     }
 
 
