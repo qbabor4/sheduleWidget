@@ -113,47 +113,11 @@ public class Alarm {
     }
 
     /**
-     * Sets new alarm when class ends
-     * @return
-     */
-    public long getTimeOfNextAlarmFromEndTime(Cursor classData){
-        classData.moveToFirst();
-
-        int classStartTime = Integer.parseInt(classData.getString(2)); // end
-        int classHour = classStartTime / 60;
-        int classMinute = classStartTime % 60;
-        int classDayOfWeek = Integer.parseInt(classData.getString(3));
-
-        Calendar now = Calendar.getInstance();
-        int timeNow = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE); // number of minutes from minutes and hours now
-        Log.d("alarm1", timeNow + "");
-
-        // dzien z klasy zamienic na Calendar.DATE (dzien w tygodniu)
-        // dostac dzien w tygodniu teraz TODO
-
-
-        now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE), classHour, classMinute, 0); //now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE)
-
-
-        // mam tu ustawiony czas konca podanych zajęć (
-        // jesli czas ustawiony jest mniejszy od godziny teraz, to trzeba dodac 7 dni (albo mniej jak jest mniej dni)
-        // sprawdzic czy nie przekroczyło miesiąca
-        // sprawdzic czy nie przekroczyło roku
-
-        Log.d("alarm1" ,now.getTimeInMillis()+" " + now.get(Calendar.YEAR) + " " + now.get(Calendar.MONTH) + " " + now.get(Calendar.DATE));
-        // ustawic timestamp zakładając, że będzie w tym samym tygodniu
-        // biore timestamp teraz
-        Date d = new Date(now.getTimeInMillis());
-        Log.d("alarm1:", d.toString());
-        return 1L;
-    }
-
-    /**
-     * TO chyba nie działa TODO
+     * Returns begine time of next class
      * @param classData
      * @return
      */
-    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log
+    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log (NEXT) sprawdzic czy dziala. Jak nie działa, to naprawic
         classData.moveToFirst();
         int classStartTime = Integer.parseInt(classData.getString(1)); // start
         int classHour = classStartTime / 60;
@@ -165,20 +129,20 @@ public class Alarm {
         // podaje 7 :41 a nie 19
 
         Log.d("data1", timeNow+"");
-        if (classDayOfWeek == TimeTools.getDayInCurrentWeek()){
-            if (classStartTime <= timeNow){
-                now.add(Calendar.DATE,7); // that many days you should add to get next day after now
-                now.set(Calendar.HOUR_OF_DAY, classHour);
-                now.set(Calendar.MINUTE, classMinute);
-            } else {
-                now.set(Calendar.HOUR_OF_DAY, classHour);
-                now.set(Calendar.MINUTE, classMinute);
-            }
+        if (classDayOfWeek == TimeTools.getDayInCurrentWeek() && classStartTime <= timeNow ){
+            now.add(Calendar.DATE, 7); // that many days you should add to get next day after now
+            Log.d("alarm1", "7");
         } else {
-            now.add(Calendar.DATE,(classDayOfWeek-TimeTools.getDayInCurrentWeek())%7); // that many days you should add to get next day after now
-            now.set(Calendar.HOUR_OF_DAY, classHour);
-            now.set(Calendar.MINUTE, classMinute);
+            now.add(Calendar.DATE,(classDayOfWeek - TimeTools.getDayInCurrentWeek() + 7)%7); // that many days you should add to get next day after now
+            int l = classDayOfWeek-TimeTools.getDayInCurrentWeek();
+            int l2 = -1%7;
+            Log.d("alarm1", "lo4" + l2 + " " + String.valueOf((classDayOfWeek-TimeTools.getDayInCurrentWeek()+7)%7));
         }
+
+        // ustawił na dzien do tyłu (TODO)
+
+        now.set(Calendar.HOUR_OF_DAY, classHour);
+        now.set(Calendar.MINUTE, classMinute);
         now.set(Calendar.SECOND, 0);
 
         return now.getTimeInMillis();
@@ -190,17 +154,13 @@ public class Alarm {
      * @param intent intent
      * @param time   time from now after this alarm will make alarm
      */
-    public void setNewAlarm(Intent intent, long time) { // moze podawac cały timestap?
+    public void setNewAlarm(Context context, Intent intent, long time) {
 
-        AlarmTry mActivity = AlarmTry.getInstace(); // TODO zmianic jak widget bedzie
-        if (mActivity != null) {
-            AlarmTry.getInstace().updateTheTextView("Updating"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
-        }
         /** Seting up pendingIntent and AlarmManager */
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mActivity.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); // tu zobaczyc tam gdzie numery
-        AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(ALARM_SERVICE); // co robi alarm_service ALARM_SERVICE
-        /** setsAnother alarm looking on end time of next classes */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); // RTC _WAKEUP budzi nawet jak jest zablokowany telefon //
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        /** setsAnother alarm looking on start time of next classes */
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
     }
 
     public Cursor getNextSubjectData() {

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 /**
@@ -41,16 +42,16 @@ public class NextClassWidget extends AppWidgetProvider {
 
         if (intent != null) {
             /** When got intent from alarm or when new widget is added */ // moze to rozbic i jak bedzie dodawany, to bedzie usuwany alarm i tworzony nowy?
-            if (intent.getAction().equals(Intent.ACTION_ANSWER) || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) {
+            if (intent.getAction().equals(Intent.ACTION_ANSWER) || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) { //usunac poprzedni alarm jak jest
                 Alarm alarm = new Alarm(context);
                 Cursor cursor = alarm.getNextSubjectData();
 
                 Toast.makeText(context, intent.getAction() + "lol3", Toast.LENGTH_LONG).show();
                 updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
 
-                Log.d("alarm1: ", alarm.getTimeOfNextAlarmFromEndTime(cursor) +"");
-//                alarm.setNewAlarm(intent, alarm.getTimeOfNextAlarm());
-                // ustawić koleny alarm TODO
+                Log.d("alarm1: ", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(alarm.getTimeOfNextAlarm(cursor)) +"");
+
+                alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
             } else if(intent.getAction().equals(OPEN_APP_ACTION)){
 //                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
             }

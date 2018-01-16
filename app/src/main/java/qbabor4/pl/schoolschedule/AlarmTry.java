@@ -151,14 +151,8 @@ public class AlarmTry extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent); // podaje w sekundach
+
+
     }
 
-    /** Changes text in textView in thread */
-    public void updateTheTextView(final String t) {
-        AlarmTry.this.runOnUiThread(new Runnable() {
-            public void run() {
-                tvUpdate.setText(t);
-            }
-        });
-    }
 }
