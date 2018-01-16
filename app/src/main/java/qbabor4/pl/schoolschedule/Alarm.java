@@ -130,16 +130,11 @@ public class Alarm {
 
         Log.d("data1", timeNow+"");
         if (classDayOfWeek == TimeTools.getDayInCurrentWeek() && classStartTime <= timeNow ){
-            now.add(Calendar.DATE, 7); // that many days you should add to get next day after now
+            now.add(Calendar.DATE, 7); /* You should add 7 days to get next time of classes that are earlier in time and today */
             Log.d("alarm1", "7");
         } else {
-            now.add(Calendar.DATE,(classDayOfWeek - TimeTools.getDayInCurrentWeek() + 7)%7); // that many days you should add to get next day after now
-            int l = classDayOfWeek-TimeTools.getDayInCurrentWeek();
-            int l2 = -1%7;
-            Log.d("alarm1", "lo4" + l2 + " " + String.valueOf((classDayOfWeek-TimeTools.getDayInCurrentWeek()+7)%7));
+            now.add(Calendar.DATE,(classDayOfWeek - TimeTools.getDayInCurrentWeek() + 7)%7); /* that many days you should add to get how many days to add, to set alarm on correct day */
         }
-
-        // ustawił na dzien do tyłu (TODO)
 
         now.set(Calendar.HOUR_OF_DAY, classHour);
         now.set(Calendar.MINUTE, classMinute);
