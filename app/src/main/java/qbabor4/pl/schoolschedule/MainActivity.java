@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (result.getCount() == 0) {
             Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
             // pusty plan od 8 do 16 plan TODO
+
         } else {
             setClassesData(result);
         }
@@ -460,31 +461,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setGlobalGapAndStartAndStopTimeDisplayed(int startTime, int stopTime) {
-        setGapAndStartAndStopTimeDisplayed(startTime, stopTime, 15); // starts looking with 15 min gap
+            Log.d("lol1", startTime + stopTime + "lol");
+        if (startTime + stopTime == 0){
+            setGapAndStartAndStopTimeDisplayed(480, 960, 15);
+        } else {
+            setGapAndStartAndStopTimeDisplayed(startTime, stopTime, 15); // starts looking with 15 min gap
+        }
     }
-
-//    private void setGapAndStartAndStopTimeDisplayed(int startTime, int stopTime, int gap) { // setuje czas poczatkowy i koncowy
-//        startTimeDisplayed = startTime - startTime % gap;
-//        int stopTimeCounted = stopTime; // jak bedzie 8:07 to doda 8 i bedzie 8 :15
-//        if (stopTime % gap != 0) {
-//            stopTimeCounted += gap - stopTime % gap;
-//        }
-//        numOfTimesDisplayed = (stopTimeCounted - startTimeDisplayed) / gap + 1;
-//        gapBetweenTimesDisplayed = gap;
-//
-//        if (numOfTimesDisplayed > 17) {                                                 /// mozna podawac ile ma sie wyswietlać
-//            setGapAndStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
-//        } else {
-//            endTimeDisplayed = startTimeDisplayed + 16 * gap;  // 17 -1
-//            numOfTimesDisplayed = 17;
-//            if (endTimeDisplayed > 1440) { // jak wiecej od 24 /* when bigger than 24 */
-//                endTimeDisplayed = 1440;
-//                Log.d("LOLnum", "lol");
-//                numOfTimesDisplayed = (endTimeDisplayed - startTimeDisplayed) / gap + 1;
-//                // podać liczbę godzin, które się wyświetlają (normalnie jest zawsze 17)
-//            }
-//        }
-//    }
 
     /**
      * Sets global variables: startTimeDisplayed, gapBetweenTimesDisplayed, endTimeDisplayed
