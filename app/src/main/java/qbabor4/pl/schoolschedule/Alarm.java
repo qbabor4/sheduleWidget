@@ -3,6 +3,7 @@ package qbabor4.pl.schoolschedule;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +35,8 @@ import static android.content.Context.ALARM_SERVICE;
 
 //public class Alarm extends BroadcastReceiver {
 public class Alarm {
+
+    public static final String UPDATE_WIDGET = "qbabor4.pl.schoolschedule.UPDATE_WIDGET";
     SqlLiteHelper mDB; // brac z widgeta
 
     public Alarm(Context context){
@@ -178,10 +181,27 @@ public class Alarm {
         return retCursor;
     }
 
-    public Cursor getCurrentClassData(){
-        // ma patrzec na zajecia w danym dniu i jeśli sa w dzisiejszym dniu i
-        return null;
+    public static void createAlarmIntent(Context context, AddNewClass addNewClass) {
+//        Intent intent = new Intent(ins, Alarm.class);
+        Intent intent = new Intent(context, NextClassWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        addNewClass.startActivity(intent);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT); /* you dont have to cancel previous alarm, because of FLAG_UPDATE_CURRENT that will update alarm*/
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1, pendingIntent);
     }
+
+    public static void updateWidget(Context context) {
+        Intent intent = new Intent(context, NextClassWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class));
+        if (ids != null && ids.length > 0) {
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            context.sendBroadcast(intent);
+        }
+    }
+
 
 
 }

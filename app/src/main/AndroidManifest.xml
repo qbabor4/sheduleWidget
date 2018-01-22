@@ -11,13 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AddNewClass"
             android:parentActivityName=".MainActivity">
@@ -27,6 +28,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <activity
             android:name=".AlarmTry"
             android:parentActivityName=".MainActivity">
@@ -40,6 +42,7 @@
         <receiver android:name=".NextClassWidget">
             <intent-filter>
                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+               <action android:name="qbabor4.pl.schoolschedule.UPDATE_WIDGET" />
              </intent-filter>
 
             <meta-data

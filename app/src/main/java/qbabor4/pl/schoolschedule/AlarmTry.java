@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -80,6 +81,7 @@ public class AlarmTry extends AppCompatActivity {
                 showTableData(s.getAllData());
             }
         });
+
     }
 
     private void setToolbar() {
@@ -141,18 +143,15 @@ public class AlarmTry extends AppCompatActivity {
         builder.setTitle(tile);
         builder.setMessage(message);
         builder.create().show();
-
     }
 
     public void createAlarmIntent(int time) {
 //        Intent intent = new Intent(ins, Alarm.class);
         Intent intent = new Intent(ins, NextClassWidget.class);
         intent.setAction(Intent.ACTION_ANSWER); // czy tu mozna ustawic swoją akcję ? TODOs
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ins.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); /* you dont have to cancel previous alarm, because of FLAG_UPDATE_CURRENT that will update alarm*/
         AlarmManager alarmManager = (AlarmManager) ins.getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent); // podaje w sekundach
-
-
     }
 
 }

@@ -61,15 +61,14 @@ import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
  * zamnąc drawer jak sie przejdzie do nowego layouta
  * patrzec na dni od do a nie tylko do bo jak jest cos w srode, to poniedziałek widac
  * zmianic wymiary stałe na procenty canvasa i wymiary tekstu
- * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter
+ * przerwa jak sie pokazuje dane jak dodałem pszyre (moze na koncu był enter (trimować inputy)
  * pokazywac gdzie teraz jestes na planie
  * ustawic czas update na taki, żeby sie nie robiło
  * przechodzenie do aplikacji jak sie kliknie na widget
  * jak edytuje zajecia to powinno updatowac alarm
- * odstep pomiedzy godzinami a koncami layoutu
  * wpakowac wsztstko jakoś (teraz nie widac sali)
- *
- * jak czasy takie same, to nie ma przejść
+ * nie zmienia danych zaj\e\c na widgeci po właczeniu alarmu (zmieniło po jakims czasie)
+ * sqlitehelper jak propertymanager statycznie getInstance i od razu przydzielic konstruktor do zmiennej jak sie da (moze byc problem z contextem
  *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru
@@ -152,11 +151,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setDatabaseInstance() {
+        // moze tu ostawiac zmienną statyczną na poczatku z tym contextem, a potem tylko brac tamtą instancje? TODO
         mDB = new SqlLiteHelper(this); //this jako context
-    }
-
-    public static SqlLiteHelper getDatabaseInstance() {
-        return mDB;
     }
 
     private void setToolbar() {
@@ -621,6 +617,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
+                        Alarm.updateWidget(getApplicationContext());
                         deleteClass(classData);
                         finish();
                         startActivity(getIntent());

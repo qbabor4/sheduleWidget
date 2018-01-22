@@ -29,7 +29,7 @@ import java.util.HashMap;
  */
 public class NextClassWidget extends AppWidgetProvider {
 
-    public static String OPEN_APP_ACTION = "qbabor4.pl.schoolschedule.OPEN_APP";
+    public static final String OPEN_APP_ACTION = "qbabor4.pl.schoolschedule.OPEN_APP";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,6 +39,7 @@ public class NextClassWidget extends AppWidgetProvider {
         // zrobic własną nazwę akcji do intenta alarmującego coś jak android.appwidget.action.APPWIDGET_UPDATE tylko dac do zmiennej i wstawic do intenta
         // pobierac dane z bazy tylko raz a nie dla kazdego widgeta w updateAppWidget
         Log.d("lol4", intent.getAction() + "out");
+
 
         if (intent != null) {
             /** When got intent from alarm or when new widget is added */ // moze to rozbic i jak bedzie dodawany, to bedzie usuwany alarm i tworzony nowy?

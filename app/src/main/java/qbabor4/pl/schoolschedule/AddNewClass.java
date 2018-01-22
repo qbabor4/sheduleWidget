@@ -189,6 +189,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                 if (updateOperation) {
                     if (updateDataInDB()) {
                         Toast.makeText(getApplicationContext(), "Edytuje dane zajęć", Toast.LENGTH_SHORT).show();
+                        Alarm.updateWidget(getApplicationContext());
                         finish();
                         goBackToTimetableActivity();
                     } else {
@@ -198,6 +199,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
                     if (insertDataToDB()) {
                         Toast.makeText(getApplicationContext(), "Dodaje zajęcia", Toast.LENGTH_SHORT).show();
                         Log.d("lol34", classData.toString());
+                        Alarm.updateWidget(getApplicationContext());
                         finish();
                         goBackToTimetableActivity();
                     } else {
@@ -219,15 +221,15 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
     }
 
     private void addDataFromInputsToClassData() {
-        classData.put(SqlDataEnum.SUBJECT, etSubject.getText().toString());
-        classData.put(SqlDataEnum.TEACHER, etTeacher.getText().toString());
-        classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString());
-        classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString());
-        classData.put(SqlDataEnum.COLOR, etColor.getText().toString());
-        classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString());
-        classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()));
-        classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())));
-        classData.put(SqlDataEnum.END_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())));
+        classData.put(SqlDataEnum.SUBJECT, etSubject.getText().toString().trim());
+        classData.put(SqlDataEnum.TEACHER, etTeacher.getText().toString().trim());
+        classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString().trim());
+        classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString().trim());
+        classData.put(SqlDataEnum.COLOR, etColor.getText().toString().trim());
+        classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString().trim());
+        classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()).trim());
+        classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())).trim());
+        classData.put(SqlDataEnum.END_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())).trim());
     }
 
     private boolean updateDataInDB() {
