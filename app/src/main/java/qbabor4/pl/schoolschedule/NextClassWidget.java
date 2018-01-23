@@ -54,7 +54,9 @@ public class NextClassWidget extends AppWidgetProvider {
 
                 alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
             } else if(intent.getAction().equals(OPEN_APP_ACTION)){
-//                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
+                Log.d("lol4", "1");
+
+                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
             }
         }
     }
@@ -66,19 +68,10 @@ public class NextClassWidget extends AppWidgetProvider {
      * @return
      */
     public static boolean openApp(Context context, String packageName) {
-        PackageManager manager = context.getPackageManager();
-        try {
-            Intent i = manager.getLaunchIntentForPackage(packageName);
-            if (i == null) {
-                return false;
-                //throw new ActivityNotFoundException();
-            }
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-            context.startActivity(i);
-            return true;
-        } catch (ActivityNotFoundException e) {
-            return false;
-        }
+        // TODO otworzyc tu aplikację ( bedzie jak sie kliknie na widget )
+        Intent i = new Intent(context, MainActivity.class);
+        context.startActivity(i);
+        return false;
     }
 
     private void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, HashMap<SqlDataEnum, String> classData){
@@ -94,7 +87,7 @@ public class NextClassWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
         changeLayoutData(views, classData);
 
-        createWidgetOnClickListener(context, views);
+        createWidgetOnClickListener(context, views, appWidgetManager);
 
 
         // Instruct the widget manager to update the widget
@@ -106,11 +99,13 @@ public class NextClassWidget extends AppWidgetProvider {
         return daysOfWeek[Integer.parseInt(index)];
     }
 
-    private void createWidgetOnClickListener(Context context, RemoteViews views){
+    private void createWidgetOnClickListener(Context context, RemoteViews views, AppWidgetManager appWidgetManager){
         Intent openAppIntent = new Intent(context, this.getClass());
         openAppIntent.setAction(OPEN_APP_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, openAppIntent, 0);
         views.setOnClickPendingIntent(R.id.widget_linearLayout, pendingIntent);
+//        ComponentName comp = new ComponentName(context.getPackageName(), MainActivity.class.getName());
+//        appWidgetManager.updateAppWidget(comp, views);
     }
 
     @Override
@@ -127,6 +122,7 @@ public class NextClassWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+        Alarm.updateWidget(context);
         // jak ktos dodaje widget to dac mu onClickEvent
 //        Intent intent = new Intent(context, this.getClass());
 //        intent.setAction(YOUR_AWESOME_ACTION);

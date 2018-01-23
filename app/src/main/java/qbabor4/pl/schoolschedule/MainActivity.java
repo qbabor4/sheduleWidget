@@ -69,6 +69,7 @@ import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
  * wpakowac wsztstko jakoś (teraz nie widac sali)
  * nie zmienia danych zaj\e\c na widgeci po właczeniu alarmu (zmieniło po jakims czasie)
  * sqlitehelper jak propertymanager statycznie getInstance i od razu przydzielic konstruktor do zmiennej jak sie da (moze byc problem z contextem
+ * przy
  *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru
