@@ -62,7 +62,7 @@ public class NextClassWidget extends AppWidgetProvider {
     }
 
     /**
-     * Nie działa. Ma otwierac główną aplikacje jak sie kliknie na widget
+     * Ma otwierac główną aplikacje jak sie kliknie na widget
      * @param context
      * @param packageName
      * @return

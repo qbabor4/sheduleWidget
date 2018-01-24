@@ -106,11 +106,14 @@ public class Alarm {
 //    }
 
     public HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
-        cursor.moveToFirst(); // to bedzie mozna wywalic jak nic nie bede z tym robił
         HashMap<SqlDataEnum, String> classData = new HashMap<>();
-        SqlDataEnum[] rowNames = SqlDataEnum.values();
-        for (int i = 0; i < rowNames.length; i++) {
-            classData.put(rowNames[i], cursor.getString(i));
+        if (cursor != null) {
+            cursor.moveToFirst(); // to bedzie mozna wywalic jak nic nie bede z tym robił
+
+            SqlDataEnum[] rowNames = SqlDataEnum.values();
+            for (int i = 0; i < rowNames.length; i++) {
+                classData.put(rowNames[i], cursor.getString(i));
+            }
         }
         return classData;
     }
