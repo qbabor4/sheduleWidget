@@ -5,17 +5,17 @@
         android:title="Dodaj zajęcia"
         android:icon="@drawable/ic_add_white_36dp"/>
 
-    <item android:id="@+id/navigation_add_free_days"
+    <!-- <item android:id="@+id/navigation_add_free_days"
         android:title="Dni wolne"
-        android:icon="@drawable/ic_directions_run_black_24dp"/>
+        android:icon="@drawable/ic_directions_run_black_24dp"/> -->
 
     <item android:id="@+id/navigation_time_to_holiday"
         android:title="Dni do Wakacji"
         android:icon="@drawable/ic_sentiment_very_satisfied_white_24dp"/>
 
-    <item android:id="@+id/navigation_alarm_try"
+     <!-- <item android:id="@+id/navigation_alarm_try"
         android:title="alarm try"
-        android:icon="@drawable/ic_directions_run_black_24dp"/>
+        android:icon="@drawable/ic_directions_run_black_24dp"/> -->
 
 
 </menu>

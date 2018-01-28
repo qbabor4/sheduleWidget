@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (item.getItemId() == R.id.action_setting) { // plus icon
             addNewClassActivity();
         } else if (mActionBarDrawerToggle.onOptionsItemSelected(item)) { // when drawer is opened by clicking on button
-            Toast.makeText(MainActivity.this, "opening/closing drawer", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, "opening/closing drawer", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -194,15 +194,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         addNewClassActivity();
                         mDrawerLayout.closeDrawers();
                         return true;
-                    case R.id.navigation_add_free_days:
-                        // dodawanie wolnych dni TODO
-                        return true;
+//                    case R.id.navigation_add_free_days:
+//                        // dodawanie wolnych dni TODO
+//                        return true;
                     case R.id.navigation_time_to_holiday:
                         timeToHolidayActivity();
                         return true;
-                    case R.id.navigation_alarm_try:
-                        alarmTryActivity();
-                        return true;
+//                    case R.id.navigation_alarm_try:
+//                        alarmTryActivity();
+//                        return true;
 
                     default:
                         return false;
