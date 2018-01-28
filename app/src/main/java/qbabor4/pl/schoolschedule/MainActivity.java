@@ -129,16 +129,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(qbabor4.pl.schoolschedule.R.layout.main_activity);
-
         setInstance();
         setDatabaseInstance();
-
         setToolbar();
         setNavigationDrawer();
         setNavigationViewListener();
-
         getDataFromDB();
-
         setSurfaceView();
     }
 
@@ -199,12 +195,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         return true;
                     case R.id.navigation_add_free_days:
                         // dodawanie wolnych dni TODO
-                        Toast.makeText(MainActivity.this, "add free days", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_time_to_holiday:
+                        timeToHolidayActivity();
                         return true;
                     case R.id.navigation_alarm_try:
                         alarmTryActivity();
-                        Toast.makeText(MainActivity.this, "alarmTry", Toast.LENGTH_SHORT).show();
                         return true;
+
                     default:
                         return false;
                 }
@@ -637,6 +635,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void addNewClassActivity() {
         Intent intent = new Intent(this, AddNewClass.class);
+        startActivity(intent);
+    }
+
+    private void timeToHolidayActivity() {
+        Intent intent = new Intent(this, TimeToHoliday.class);
         startActivity(intent);
     }
 

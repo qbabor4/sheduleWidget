@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_time_to_holiday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="Czas do Wakacji" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <!-- tu zegar -->
+
+
+        <TextView
+            android:id="@+id/tv_timeleft_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zostało" />
+
+        <TextView
+            android:id="@+id/tv_clock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0 dni" />
+    </LinearLayout>
+
+</LinearLayout>
