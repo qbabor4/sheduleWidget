@@ -70,6 +70,7 @@ import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
  * nie zmienia danych zaj\e\c na widgeci po właczeniu alarmu (zmieniło po jakims czasie)
  * sqlitehelper jak propertymanager statycznie getInstance i od razu przydzielic konstruktor do zmiennej jak sie da (moze byc problem z contextem
  * przy
+ *  narysowac nazwy zajęć na prostokątach (kolor tekstu bedzie podawany przez uzytkownika
  *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru
@@ -345,8 +346,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         int x2 = TIME_SECTION_SIZE + rowWidth * (day + 1) - RECTANGLE_HORIZONTAL_PADDING;
 
         Log.d("lol7",getColorFromData(classData));
-        Log.d("lol34", x1 + " " + x2 + " " + y1 + " " + y2); // z y jest problem
-        drawRectangle(x1, y1, x2, y2, getColorFromData(classData));
+        Log.d("lol34", x1 + " " + x2 + " " + y1 + " " + y2);
+        drawRectangle(x1, y1, x2, y2, getColorFromData(classData), classData.get(SqlDataEnum.SUBJECT));
     }
 
     private String getColorFromData(Map<SqlDataEnum, String> classData){
@@ -360,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         return color;
     }
 
-    private void drawRectangle(int left, int top, int right, int bottom, String hexColor) {
+    private void drawRectangle(int left, int top, int right, int bottom, String hexColor, String text) {
         Rect rect = new Rect(left, top, right, bottom);
         rectangleClasses.add(rect);
         Paint paint = new Paint();
@@ -368,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         Log.d("lol4", hexColor+"");
         paint.setColor(Color.parseColor(hexColor));
         canvas.drawRect(rect, paint);
+        drawText(text, left, top, right, bottom);
     }
 
     private void drawTimesWithLines() {
@@ -496,13 +498,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         canvas.drawPaint(paint);
     }
 
-    private void drawText(String text) {  // TODO narysowac nazwy zajęć na prostokątach (kolor tekstu bedzie podawany przez uzytkownika
+    private void drawText(String text, int x1, int y1, int x2, int y2) {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setTextSize(50);  //set text size
+        paint.setTextSize(39);  //set text size
         float w = paint.measureText(text) / 2;
         float textSize = paint.getTextSize();
-        canvas.drawText(text, 50, 100, paint);
+        if (text != null && text.length() > 4 ) {
+            text = text.substring(0, 5);
+        }
+        canvas.drawText(text, x1 + (x2-x1)/2 - w/2, y1 + (y2 - y1)/2 , paint);
         // wpisywanie textu w rectangle (patrzenie na x, y rectangla i na tej podstawie text)
         // upierdalać text jak wychodzi poza obszar
         // wpisywac na środku
@@ -558,19 +563,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private String getClassDataToDisplay(HashMap<SqlDataEnum, String> classData) {
         String out = "";
         SqlDataEnum[] sqlDataEnumValues = SqlDataEnum.values();
-//        sqlDataEnumValues = Arrays.copyOfRange(sqlDataEnumValues, 1, sqlDataEnumValues.length);
-//
-//        for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
-//            if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
-//                out += sqlDataEnum.name() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
-//            } else if ( sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ){
-//                out += sqlDataEnum.name() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
-//            } else if ( sqlDataEnum == SqlDataEnum.COLOR ){
-//
-//            } else {
-//                out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
-//            }
-//        }
         for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
             if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
                 out += sqlDataEnum.getDescriptionPL() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
@@ -580,7 +572,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 out += sqlDataEnum.getDescriptionPL() + ": " + classData.get(sqlDataEnum) + "\n";
             }
         }
-
         return out;
     }
 
