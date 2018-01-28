@@ -558,19 +558,29 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private String getClassDataToDisplay(HashMap<SqlDataEnum, String> classData) {
         String out = "";
         SqlDataEnum[] sqlDataEnumValues = SqlDataEnum.values();
-        sqlDataEnumValues = Arrays.copyOfRange(sqlDataEnumValues, 1, sqlDataEnumValues.length);
-
+//        sqlDataEnumValues = Arrays.copyOfRange(sqlDataEnumValues, 1, sqlDataEnumValues.length);
+//
+//        for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
+//            if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
+//                out += sqlDataEnum.name() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
+//            } else if ( sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ){
+//                out += sqlDataEnum.name() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
+//            } else if ( sqlDataEnum == SqlDataEnum.COLOR ){
+//
+//            } else {
+//                out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
+//            }
+//        }
         for (SqlDataEnum sqlDataEnum : sqlDataEnumValues) {
             if (sqlDataEnum == SqlDataEnum.START_TIME || sqlDataEnum == SqlDataEnum.END_TIME ){
-                out += sqlDataEnum.name() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
-            } else if ( sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ){
-                out += sqlDataEnum.name() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
-            } else if ( sqlDataEnum == SqlDataEnum.COLOR ){
-
-            } else {
-                out += sqlDataEnum.name() + ": " + classData.get(sqlDataEnum) + "\n";
+                out += sqlDataEnum.getDescriptionPL() + ": " + TimeTools.getClockFormatTime(classData.get(sqlDataEnum)) + "\n";
+            } else if (sqlDataEnum == SqlDataEnum.DAY_OF_WEEK ) {
+                out += sqlDataEnum.getDescriptionPL() + ": " + TimeTools.DAYS_OF_WEEK_PL_FULL[Integer.parseInt(classData.get(sqlDataEnum))] + "\n";
+            } else if (sqlDataEnum != SqlDataEnum.ID && sqlDataEnum != SqlDataEnum.COLOR){
+                out += sqlDataEnum.getDescriptionPL() + ": " + classData.get(sqlDataEnum) + "\n";
             }
         }
+
         return out;
     }
 

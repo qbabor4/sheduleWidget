@@ -52,12 +52,12 @@
             android:gravity="center"
             android:text="nazwa " />
 
-        <TextView
+        <!-- <TextView
             android:id="@+id/tv_classroom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="klasa" />
+            android:text="klasa" /> -->
 
     </LinearLayout>
 

@@ -33,10 +33,10 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
     public static final String COL_6 = TEACHER.name();
     public static final String COL_7 = DESCRIPTION.name();
     public static final String COL_8 = COLOR.name();
-    public static final String COL_9 = FREQUENCY.name();
+//    public static final String COL_9 = FREQUENCY.name();
 
     public SqlLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, 10); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
+        super(context, DATABASE_NAME, null, 11); // numerki to wersje (jak sie zmieni wersje na wieksza, to updatuje
     }
 
     /**
@@ -44,7 +44,8 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_0 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_1 + " INTEGER NOT NULL, " + COL_2 + " INTEGER NOT NULL," + COL_3 + " INTEGER NOT NULL, " + COL_4 + " TEXT, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT," + COL_8 + " TEXT," + COL_9 + " TEXT" + ")";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_0 + " INTEGER PRIMARY KEY AUTOINCREMENT  ," + COL_1 + " INTEGER NOT NULL, " + COL_2 + " INTEGER NOT NULL," + COL_3 + " INTEGER NOT NULL, " + COL_4 + " TEXT, " + COL_5 + " TEXT, " + COL_6 + " TEXT, " + COL_7 + " TEXT," + COL_8 + " TEXT" + ")";
+        // ," + COL_9 + " TEXT"
         db.execSQL(SQL_String);
     }
 
@@ -77,7 +78,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, teacher);
         contentValues.put(COL_7, description);
         contentValues.put(COL_8, color);
-        contentValues.put(COL_9, frequency);
+//        contentValues.put(COL_9, frequency);
 
         long result = db.insert(TABLE_NAME, null, contentValues); // if data is not inserted this method returns -1 (false)
         return result != -1; // true when isn't -1

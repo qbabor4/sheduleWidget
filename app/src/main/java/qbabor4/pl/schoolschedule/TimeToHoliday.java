@@ -109,13 +109,16 @@ public class TimeToHoliday extends AppCompatActivity {
                 }
             }
         };
-
         t.start();
     }
 
+    /**
+     * Changes TextViews showing on them time to holiday
+     */
     private void changeTimeTextViews(){
         Calendar timeToHoliday = Calendar.getInstance();
         timeToHoliday.setTimeInMillis(startTimeOfNextHoliday - timeToHoliday.getTimeInMillis());
+
         tvDaysToHoliday.setText(String.valueOf(timeToHoliday.get(Calendar.DAY_OF_YEAR)));
         tvHoursToHoliday.setText(String.valueOf(timeToHoliday.get(Calendar.HOUR)));
         tvMinutesToHoliday.setText(String.valueOf(timeToHoliday.get(Calendar.MINUTE)));

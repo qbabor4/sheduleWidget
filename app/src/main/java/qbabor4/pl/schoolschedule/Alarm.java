@@ -123,7 +123,10 @@ public class Alarm {
      * @param classData
      * @return
      */
-    public long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log (NEXT) sprawdzic czy dziala. Jak nie działa, to naprawic
+    public Long getTimeOfNextAlarm(Cursor classData){ // zobaczyc czy zwraca początek kolejnych zajęć (zobaczyc co to zwraca) log (NEXT) sprawdzic czy dziala. Jak nie działa, to naprawic
+        if (classData == null){
+            return null;
+        }
         classData.moveToFirst();
         int classStartTime = Integer.parseInt(classData.getString(1)); // start
         int classHour = classStartTime / 60;
@@ -155,13 +158,14 @@ public class Alarm {
      * @param intent intent
      * @param time   time from now after this alarm will make alarm
      */
-    public void setNewAlarm(Context context, Intent intent, long time) {
-
-        /** Seting up pendingIntent and AlarmManager */
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
-        /** setsAnother alarm looking on start time of next classes */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
+    public void setNewAlarm(Context context, Intent intent, Long time) {
+        if (time != null) {
+            /** Seting up pendingIntent and AlarmManager */
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            /** setsAnother alarm looking on start time of next classes */
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
+        }
     }
 
     public Cursor getNextSubjectData() {

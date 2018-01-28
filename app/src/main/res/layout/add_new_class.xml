@@ -71,12 +71,12 @@
                 android:focusable="false"
                 android:inputType="textPersonName" />
 
-            <EditText
+            <!-- <EditText
                 android:id="@+id/et_frequency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Częstotliwość"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName" /> -->
 
             <EditText
                 android:id="@+id/et_start_time"

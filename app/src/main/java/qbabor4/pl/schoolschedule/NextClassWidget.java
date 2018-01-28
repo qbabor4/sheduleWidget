@@ -46,17 +46,11 @@ public class NextClassWidget extends AppWidgetProvider {
             if (intent.getAction().equals(Intent.ACTION_ANSWER) || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) { //usunac poprzedni alarm jak jest
                 Alarm alarm = new Alarm(context);
                 Cursor cursor = alarm.getNextSubjectData();
-
-                Toast.makeText(context, intent.getAction() + "lol3", Toast.LENGTH_LONG).show();
                 updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
-
-                Log.d("alarm1: ", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(alarm.getTimeOfNextAlarm(cursor)) +"");
-
                 alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
-            } else if(intent.getAction().equals(OPEN_APP_ACTION)){
-                Log.d("lol4", "1");
 
-                openApp(context, "qbabor4.pl.schoolschedule"); // nie działa
+            } else if(intent.getAction().equals(OPEN_APP_ACTION)){
+                openApp(context); // nie działa
             }
         }
     }
@@ -64,10 +58,10 @@ public class NextClassWidget extends AppWidgetProvider {
     /**
      * Ma otwierac główną aplikacje jak sie kliknie na widget
      * @param context
-     * @param packageName
+
      * @return
      */
-    public static boolean openApp(Context context, String packageName) {
+    public static boolean openApp(Context context) {
         // TODO otworzyc tu aplikację ( bedzie jak sie kliknie na widget )
         Intent i = new Intent(context, MainActivity.class);
         context.startActivity(i);
@@ -83,18 +77,18 @@ public class NextClassWidget extends AppWidgetProvider {
 
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId,  HashMap<SqlDataEnum, String> classData) {
         /* Change data on widget */
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
         changeLayoutData(views, classData);
-
+        Log.d("updateMe", "okl");
         createWidgetOnClickListener(context, views, appWidgetManager);
-
-
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     private String getFullNameOfDayOfWeek(String index){
+        if (index == null){
+            return "brak";
+        }
         String[] daysOfWeek = new String[]{"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
         return daysOfWeek[Integer.parseInt(index)];
     }
@@ -139,11 +133,9 @@ public class NextClassWidget extends AppWidgetProvider {
     public void changeLayoutData(RemoteViews views, HashMap<SqlDataEnum, String> classData){ // trzeba będzie kążdemy widgetowi updatować text (chyba bedzie w onUpdate
         views.setTextViewText(R.id.tv_start_time,  TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
         views.setTextViewText(R.id.tv_end_time, TimeTools.getClockFormatTime(classData.get(SqlDataEnum.END_TIME)));
-        views.setTextViewText(R.id.tv_subject, "Przedmiot: " + classData.get(SqlDataEnum.SUBJECT));
-        views.setTextViewText(R.id.tv_classroom, "Sala: " + classData.get(SqlDataEnum.CLASSROOM));
+        views.setTextViewText(R.id.tv_subject, "Przedmiot: " + (classData.get(SqlDataEnum.SUBJECT) == null ? "brak" : classData.get(SqlDataEnum.SUBJECT)));
+        //views.setTextViewText(R.id.tv_classroom, "Sala: " + classData.get(SqlDataEnum.CLASSROOM));
         views.setTextViewText(R.id.tv_day_of_week, "Dzień: " + getFullNameOfDayOfWeek(classData.get(SqlDataEnum.DAY_OF_WEEK)));
-        // jak puste pola, to napisać, że brak TODO
-
     }
 
 }

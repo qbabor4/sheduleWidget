@@ -53,7 +53,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
 
     public final static int ADD_NEW_CLASS = 1;
 
-    EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor, etFrequency;
+    EditText etStartTime, etEndTime, etSubject, etTeacher, etClassroom, etDescription, etColor;
+    //, etFrequency;
     Spinner spDayOfWeek;
 
     private HashMap<SqlDataEnum, String> classData;
@@ -91,7 +92,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etClassroom.setText(classData.get(SqlDataEnum.CLASSROOM));
         etDescription.setText(classData.get(SqlDataEnum.DESCRIPTION));
         etColor.setText(classData.get(SqlDataEnum.COLOR));
-        etFrequency.setText(classData.get(SqlDataEnum.FREQUENCY));
+//        etFrequency.setText(classData.get(SqlDataEnum.FREQUENCY));
         spDayOfWeek.setSelection(Integer.parseInt(classData.get(SqlDataEnum.DAY_OF_WEEK)));
         etStartTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.START_TIME)));
         etEndTime.setText(TimeTools.getClockFormatTime(classData.get(SqlDataEnum.END_TIME)));
@@ -116,8 +117,8 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         etDescription.setOnClickListener(this);
         etColor = (EditText) findViewById(R.id.et_color);
         etColor.setOnClickListener(this);
-        etFrequency = (EditText) findViewById(R.id.et_frequency);
-        etFrequency.setOnClickListener(this);
+//        etFrequency = (EditText) findViewById(R.id.et_frequency);
+//        etFrequency.setOnClickListener(this);
     }
 
     private void dontShowKeyboardOnStart() {
@@ -226,7 +227,7 @@ public class AddNewClass extends AppCompatActivity implements View.OnClickListen
         classData.put(SqlDataEnum.CLASSROOM, etClassroom.getText().toString().trim());
         classData.put(SqlDataEnum.DESCRIPTION, etDescription.getText().toString().trim());
         classData.put(SqlDataEnum.COLOR, etColor.getText().toString().trim());
-        classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString().trim());
+//        classData.put(SqlDataEnum.FREQUENCY, etFrequency.getText().toString().trim());
         classData.put(SqlDataEnum.DAY_OF_WEEK, String.valueOf(spDayOfWeek.getSelectedItemPosition()).trim());
         classData.put(SqlDataEnum.START_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etStartTime.getText().toString())).trim());
         classData.put(SqlDataEnum.END_TIME, String.valueOf(TimeTools.getTimeInMinutesFromTimePicker(etEndTime.getText().toString())).trim());

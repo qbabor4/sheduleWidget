@@ -19,6 +19,9 @@ public class TimeTools {
     }
 
     public static String getClockFormatTime(String time){
+        if (time == null){
+            return "brak";
+        }
         int timeInt = Integer.parseInt(time);
         int hour = timeInt/60;
         String minutes = String.valueOf(timeInt%60);

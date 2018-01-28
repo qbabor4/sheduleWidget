@@ -5,16 +5,26 @@ package qbabor4.pl.schoolschedule;
  */
 
 public enum SqlDataEnum {
-    ID,
-    START_TIME,
-    END_TIME,
-    DAY_OF_WEEK,
-    SUBJECT,
-    CLASSROOM,
-    TEACHER,
-    DESCRIPTION,
-    COLOR,
-    FREQUENCY;
+    ID("Identyfikator"),
+    START_TIME("Czas rozpoczęcia"),
+    END_TIME("Czas zakończenia"),
+    DAY_OF_WEEK("Dzień Tygodnia"),
+    SUBJECT("Zajęcia"),
+    CLASSROOM("Sala"),
+    TEACHER("Nauczyciel"),
+    DESCRIPTION("Opis"),
+    COLOR("Kolor");
+    //    FREQUENCY;
+
+    String descriptionPL;
+
+    SqlDataEnum(String descriptionPL){
+        this.descriptionPL = descriptionPL;
+    }
+
+    public String getDescriptionPL(){
+        return descriptionPL;
+    }
 
 
 }
