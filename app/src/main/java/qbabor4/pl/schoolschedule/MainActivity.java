@@ -498,16 +498,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         canvas.drawPaint(paint);
     }
 
-    private void drawText(String text, int x1, int y1, int x2, int y2) {
+    private void drawText(String text, int x1, int y1, int x2, int y2) { /// kto to panu tak spierdo**ł... TODO
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(39);  //set text size
         float w = paint.measureText(text) / 2;
+        // długosc textu
         float textSize = paint.getTextSize();
         if (text != null && text.length() > 4 ) {
             text = text.substring(0, 5);
         }
-        canvas.drawText(text, x1 + (x2-x1)/2 - w/2, y1 + (y2 - y1)/2 , paint);
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        canvas.drawText(text, x1 + (x2-x1)/2 - bounds.width()/2, y1 + (y2 - y1)/2 - bounds.height() /2 , paint);
         // wpisywanie textu w rectangle (patrzenie na x, y rectangla i na tej podstawie text)
         // upierdalać text jak wychodzi poza obszar
         // wpisywac na środku
