@@ -29,13 +29,138 @@
             android:id="@+id/tv_timeleft_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zostało" />
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            android:text="Zostały jeszcze"
+            android:textSize="40dp"/>
 
-        <TextView
-            android:id="@+id/tv_clock"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 dni" />
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_days_to_holiday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingRight="10dp"
+                android:textSize="40dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_days_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DNI"
+                android:textSize="40dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_hours_to_holiday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingRight="10dp"
+                android:textSize="40dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_hours_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GODZINY"
+                android:textSize="40dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_minutes_to_holiday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingRight="10dp"
+                android:textSize="40dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_minutes_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MINUTY"
+                android:textSize="40dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_seconds_to_holiday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingRight="10dp"
+                android:textSize="40dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_seconds_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SEKUNDY"
+                android:textSize="40dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_to_holiday_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do wakacji"
+                android:paddingRight="10dp"
+                android:textSize="40dp"
+                />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -68,7 +68,7 @@ public class AlarmTry extends AppCompatActivity {
         btnSet = (Button) findViewById(R.id.btnAlarm);
         etTime = (EditText) findViewById(R.id.etAlarm);
         etTime.setText("5");
-        tvUpdate = (TextView) findViewById(R.id.tv_update); //TODO
+        tvUpdate = (TextView) findViewById(R.id.tv_update);
     }
 
     private void setButtonListeners() {
