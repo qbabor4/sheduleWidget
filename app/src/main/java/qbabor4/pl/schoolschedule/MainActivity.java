@@ -71,6 +71,7 @@ import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
  * sqlitehelper jak propertymanager statycznie getInstance i od razu przydzielic konstruktor do zmiennej jak sie da (moze byc problem z contextem
  * przy
  *  narysowac nazwy zajęć na prostokątach (kolor tekstu bedzie podawany przez uzytkownika
+ *  patrzec na pixele od krawedzi w rectanglu i jak tekst bedzie pasował, to dac, jak nie, to zmiejszyc
  *
  * TODO IFTIME:
  * dodać mój color picker do wyboru koloru
@@ -449,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private int getYaxisOfLine(int indexOfLinOnScreen) {
-        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji
+        return DAYS_SECTION_SIZE + (indexOfLinOnScreen * 2 + 1) * ((scheduleHeight / ((numOfTimesDisplayed) * 2))); // czy ja bede potrzebowal w innych miejscach numOfTimesDisplayed? (moze podawac do funkcji TODO
     }
 
     private void setGlobalValuesOfFirstAndLastLineOnYaxis() {

@@ -148,7 +148,7 @@ public class Alarm {
         now.set(Calendar.HOUR_OF_DAY, classHour);
         now.set(Calendar.MINUTE, classMinute);
         now.set(Calendar.SECOND, 0);
-
+        Log.d("time2", now.getTimeInMillis() + "");
         return now.getTimeInMillis();
     }
 
@@ -160,6 +160,7 @@ public class Alarm {
      */
     public void setNewAlarm(Context context, Intent intent, Long time) {
         if (time != null) {
+            Log.d("time", time + "");
             /** Seting up pendingIntent and AlarmManager */
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
@@ -171,7 +172,7 @@ public class Alarm {
     public Cursor getNextSubjectData() {
         Cursor retCursor = null;
 
-        int timeInMinutes = TimeTools.getCurrentTimeInMinutes();
+        int timeInMinutes = TimeTools.getCurrentTimeInMinutes() +1; // dodac funkcję, bo z alarmu zwraca zajecia które są wczesniej i trzeba je jakby przeskoczyć dodając minutę
         int dayInWeek = TimeTools.getDayInCurrentWeek();
         int thisDayWeekAfter = dayInWeek + 8; /* looks in whole week includnig current day from 0:00 */
 

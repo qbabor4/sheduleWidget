@@ -124,11 +124,15 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result != 0; // returns rows affected (when returns 0 it is false)
     }
 
-    public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) { // zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1
+    // powinno zwracać inaczej z alarmu
+    public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) {
         SQLiteDatabase db = this.getReadableDatabase();
-    //        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 + " = " + dayInWeek + " limit 1", null);
-        return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_1 + " ) t WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 + " = " + dayInWeek + " limit 1", null);
+        return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY "
+                + COL_1 + " ) t WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 +
+                " = " + dayInWeek + " limit 1", null);
     }
+
+    // ^ zrobić pętlę jak nic nie zwróci dodająca 1 do dayInWeek ale jak wiecej niz 7 to zrobic od 1 ^
 
     public int getMinStartTime() { // co jak nie bedzie nic?
         SQLiteDatabase db = this.getReadableDatabase();

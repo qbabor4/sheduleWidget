@@ -33,12 +33,9 @@ public class NextClassWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // tu dać rzeczy z alarmu TODO
-        // zobaczyc czy tu odbiera
-        // jak sie dodaje na ekran to dostaje android.appwidget.action.APPWIDGET_UPDATEout
         // zrobic własną nazwę akcji do intenta alarmującego coś jak android.appwidget.action.APPWIDGET_UPDATE tylko dac do zmiennej i wstawic do intenta
         // pobierac dane z bazy tylko raz a nie dla kazdego widgeta w updateAppWidget
-        Log.d("lol4", intent.getAction() + "out");
+        Log.d("time", intent.getAction() + "out");
 
 
         if (intent != null) {
@@ -46,6 +43,7 @@ public class NextClassWidget extends AppWidgetProvider {
             if (intent.getAction().equals(Intent.ACTION_ANSWER) || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) { //usunac poprzedni alarm jak jest
                 Alarm alarm = new Alarm(context);
                 Cursor cursor = alarm.getNextSubjectData();
+
                 updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
                 alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
 
@@ -71,6 +69,7 @@ public class NextClassWidget extends AppWidgetProvider {
     private void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, HashMap<SqlDataEnum, String> classData){
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
+            Log.d("time", classData.toString());
             updateAppWidget(context, appWidgetManager, appWidgetId, classData);
         }
     }
