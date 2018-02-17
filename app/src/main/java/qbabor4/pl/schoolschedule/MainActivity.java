@@ -38,8 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static qbabor4.pl.schoolschedule.AddNewClass.ADD_NEW_CLASS;
-
 /**
  * TODO
  * statystki ile ktos juz chodził
@@ -461,19 +459,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void setGlobalGapAndStartAndStopTimeDisplayed(int startTime, int stopTime) {
             Log.d("lol1", startTime + stopTime + "lol");
         if (startTime + stopTime == 0){
-            setGapAndStartAndStopTimeDisplayed(480, 960, 15);
+            setGapNumOfTimesStartAndStopTimeDisplayed(480, 960, 15);
         } else {
-            setGapAndStartAndStopTimeDisplayed(startTime, stopTime, 15); // starts looking with 15 min gap
+            setGapNumOfTimesStartAndStopTimeDisplayed(startTime, stopTime, 15); // starts looking with 15 min gap
         }
     }
 
     /**
-     * Sets global variables: startTimeDisplayed, gapBetweenTimesDisplayed, endTimeDisplayed
+     * Sets global variables: startTimeDisplayed, gapBetweenTimesDisplayed, endTimeDisplayed and numOfTimesDisplayed
      * @param startTime start time of earliest class in week
      * @param stopTime stop time of earliest class in week
-     * @param gap gap between times to be displayed. If there will be more than 17 times displayed gap is multipied by 2
+     * @param gap gap between times to be displayed. If there will be more than 17 times displayed gap is multiplied by 2
      */
-    private void setGapAndStartAndStopTimeDisplayed(int startTime, int stopTime, int gap) { // setuje czas poczatkowy i koncowy
+    private void setGapNumOfTimesStartAndStopTimeDisplayed(int startTime, int stopTime, int gap) {
         startTimeDisplayed = startTime - startTime % gap;
         int stopTimeCounted = stopTime;
         if (stopTime % gap != 0) {
@@ -482,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         numOfTimesDisplayed = (stopTimeCounted - startTimeDisplayed) / gap + 1;
         gapBetweenTimesDisplayed = gap;
         if (numOfTimesDisplayed > 17) {   /* you can change here maximum number of times that can be displayed on screen */
-            setGapAndStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
+            setGapNumOfTimesStartAndStopTimeDisplayed(startTime, stopTime, gap * 2);
         } else {
             endTimeDisplayed = startTimeDisplayed + (numOfTimesDisplayed-1) * gap;
             if (endTimeDisplayed > 1440) { /* when more than 24:00 */

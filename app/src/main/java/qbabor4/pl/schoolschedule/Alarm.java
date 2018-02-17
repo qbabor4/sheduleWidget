@@ -172,7 +172,7 @@ public class Alarm {
     public Cursor getNextSubjectData() {
         Cursor retCursor = null;
 
-        int timeInMinutes = TimeTools.getCurrentTimeInMinutes() +1; // dodac funkcję, bo z alarmu zwraca zajecia które są wczesniej i trzeba je jakby przeskoczyć dodając minutę
+        int timeInMinutes = TimeTools.getCurrentTimeInMinutes() ; // dodac funkcję, bo z alarmu zwraca zajecia które są wczesniej
         int dayInWeek = TimeTools.getDayInCurrentWeek();
         int thisDayWeekAfter = dayInWeek + 8; /* looks in whole week includnig current day from 0:00 */
 

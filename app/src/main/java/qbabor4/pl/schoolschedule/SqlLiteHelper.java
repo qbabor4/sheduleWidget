@@ -128,7 +128,7 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
     public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY "
-                + COL_1 + " ) t WHERE " + COL_1 + " >= " + timeInMinutes + " AND " + COL_3 +
+                + COL_1 + " ) t WHERE " + COL_1 + " > " + timeInMinutes + " AND " + COL_3 +
                 " = " + dayInWeek + " limit 1", null);
     }
 
