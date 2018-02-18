@@ -1,4 +1,4 @@
-package qbabor4.pl.schoolschedule;
+﻿package qbabor4.pl.schoolschedule;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         canvas.drawPaint(paint);
     }
 
-    private void drawText(String text, int x1, int y1, int x2, int y2) { /// kto to panu tak spierdo**ł... TODO
+    private void drawText(String text, int x1, int y1, int x2, int y2) { /// TODO
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(39);  //set text size

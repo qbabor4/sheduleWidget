@@ -124,7 +124,6 @@ public class SqlLiteHelper extends SQLiteOpenHelper {
         return result != 0; // returns rows affected (when returns 0 it is false)
     }
 
-    // powinno zwracać inaczej z alarmu
     public Cursor getNextSubjectData(int timeInMinutes, int dayInWeek) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM (SELECT * FROM " + TABLE_NAME + " ORDER BY "
