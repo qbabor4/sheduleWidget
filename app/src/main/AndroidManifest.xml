@@ -53,7 +53,7 @@
 
         <!--<receiver android:process=":remote" android:name="NextClassWidget" />  dodane -->
 
-        <receiver android:name=".NextClassWidget">
+        <receiver android:name="NextClassWidget"> <!-- wywaliłem kropkę przed nazwą -->
             <intent-filter>
                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                <action android:name="qbabor4.pl.schoolschedule.UPDATE_WIDGET" />

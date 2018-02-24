@@ -46,7 +46,7 @@ public class NextClassWidget extends AppWidgetProvider {
         if (intentAction.equals(Intent.ACTION_ANSWER) || intentAction.equals("android.appwidget.action.APPWIDGET_UPDATE") || intentAction.equals("android.intent.action.BOOT_COMPLETED")) {
 //                WakeLocker.acquire(context);
             Toast.makeText(context, intentAction, Toast.LENGTH_LONG).show();
-
+            Log.d("time3", context.getApplicationContext() + "out");
             Alarm alarm = new Alarm(context);
             Cursor cursor = alarm.getNextSubjectData();
 

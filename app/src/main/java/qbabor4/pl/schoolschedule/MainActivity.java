@@ -43,7 +43,7 @@ import java.util.Map;
  * ile miał jakich zajęc
  * ile czasu spedził w szkole
  * ile jeszcze do chodzenia
- * ile do wakacji
+ * Jak nie jest wywalona aplikacja, to alarm działa. Zrobic tak, że przy zamykaniu aplikacji alarm zostaje (bo sie wywala alarm)
  * jak wywala sie widget, to trzeba usunąć alarm
  * pobieranie danych czasu tak, ze pokazuje sie zegar
  * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
