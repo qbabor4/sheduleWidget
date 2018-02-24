@@ -34,29 +34,32 @@ public class NextClassWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // zrobic własną nazwę akcji do intenta alarmującego coś jak android.appwidget.action.APPWIDGET_UPDATE tylko dac do zmiennej i wstawic do intenta
-        // pobierac dane z bazy tylko raz a nie dla kazdego widgeta w updateAppWidget
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TAG");
+        wl.acquire();
         Log.d("time", intent.getAction() + "out");
 
 
-        if (intent != null) {
+
             /** When got intent from alarm or when new widget is added or when phone is booted up*/
-            String intentAction = intent.getAction();
-            if (intentAction.equals(Intent.ACTION_ANSWER) || intentAction.equals("android.appwidget.action.APPWIDGET_UPDATE") || intentAction.equals("android.intent.action.BOOT_COMPLETED")) {
-                WakeLocker.acquire(context);
+        String intentAction = intent.getAction();
+        if (intentAction.equals(Intent.ACTION_ANSWER) || intentAction.equals("android.appwidget.action.APPWIDGET_UPDATE") || intentAction.equals("android.intent.action.BOOT_COMPLETED")) {
+//                WakeLocker.acquire(context);
+            Toast.makeText(context, intentAction, Toast.LENGTH_LONG).show();
 
-                Alarm alarm = new Alarm(context);
-                Cursor cursor = alarm.getNextSubjectData();
+            Alarm alarm = new Alarm(context);
+            Cursor cursor = alarm.getNextSubjectData();
 
-                updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
-                alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
+            updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
+            alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
 
-                WakeLocker.release();
-
-            } else if(intent.getAction().equals(OPEN_APP_ACTION)){
-                openApp(context); // nie działa
-            }
+        } else if(intent.getAction().equals(OPEN_APP_ACTION)){
+            openApp(context); // nie działa
         }
+
+//        WakeLocker.release();
+        wl.release();
+
     }
 
     /**

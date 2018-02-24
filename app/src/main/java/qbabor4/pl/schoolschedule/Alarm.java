@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.icu.text.UnicodeSetSpanner;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -43,67 +44,6 @@ public class Alarm {
         mDB = new SqlLiteHelper(context);
     }
 
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//
-//        if (intent != null) {
-//            if (intent.getAction().equals(Intent.ACTION_ANSWER)) {
-//                Log.d("lol4", intent.getAction() + "lolAlarm");
-//                int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class));
-//                if ( appWidgetIds.length != 0) { /* There are my widgets on screen */
-//
-//                    //shows that alarm do something
-//                    AlarmTry mActivity = AlarmTry.getInstace();
-//                    if (mActivity != null) {
-//                        AlarmTry.getInstace().updateTheTextView("Updated"); // when app is closed this is null (dac do widgeta, to bedzie zawsze działac)
-//                    }
-//                    // Vibrate for 500 milliseconds
-////                    Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-////                    v.vibrate(500);
-//
-//                    Cursor cursor = getNextSubjectData();
-//                    if (cursor != null) { /** got next class data */
-////                        mActivity.showTableData(cursor);
-////                        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show();
-//
-//                        /// zobaczyc na co ustawia (wylogować w konsoli)
-//                        long time = getTimeOfNextAlarm(cursor);
-//                        Date date = new Date(time);
-//                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//                        Log.d("data1", dateFormat.format(date));
-//
-//                        HashMap<SqlDataEnum, String> classData = getDataFromCursor(cursor);
-//
-////                        Toast.makeText(context, "Number of widgets: " + appWidgetIds.length, Toast.LENGTH_LONG).show();
-//
-//                        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-//                        views.setTextViewText(R.id.tv_start_time, classData.get(SqlDataEnum.START_TIME));
-//                        views.setTextViewText(R.id.tv_end_time, classData.get(SqlDataEnum.END_TIME));
-//                        views.setTextViewText(R.id.tv_subject, classData.get(SqlDataEnum.SUBJECT));
-//                        views.setTextViewText(R.id.tv_classroom, classData.get(SqlDataEnum.CLASSROOM));
-//
-//                        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-//                        manager.updateAppWidget(appWidgetIds, views);
-//
-////                    setNewAlarm(intent, getTimeOfNextAlarm(cursor)); // jak sie konczą zajecia z cursora
-//
-//
-//                    } else { /** no subjects added to timetable */
-//                        Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show();
-//                        // nie ustawiać kolejnego alarmu
-//                    }
-//
-//
-//                    // zmienić dane na widgecie (na jakiekolwiek)
-//
-//                } else {
-//                    Toast.makeText(context, "Number of widgets: " + "nie ma widgetow", Toast.LENGTH_LONG).show();
-//                    // nie ma widgetów
-//                }
-//
-//            }
-//        }
-//    }
 
     public HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
         HashMap<SqlDataEnum, String> classData = new HashMap<>();
@@ -165,7 +105,24 @@ public class Alarm {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             /** setsAnother alarm looking on start time of next classes */
-            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Wakes up the device in Doze Mode
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // Wakes up the device in Idle Mode
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+            } else {
+                // Old APIs
+                alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+            }
+
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+//                alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+//            } else {
+//                alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+//            }
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
         }
     }
 
@@ -189,16 +146,16 @@ public class Alarm {
         return retCursor;
     }
 
-    public static void createAlarmIntent(Context context, AddNewClass addNewClass) {
-//        Intent intent = new Intent(ins, Alarm.class);
-        Intent intent = new Intent(context, NextClassWidget.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        addNewClass.startActivity(intent);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT); /* you dont have to cancel previous alarm, because of FLAG_UPDATE_CURRENT that will update alarm*/
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1, pendingIntent);
-    }
+//    public static void createAlarmIntent(Context context, AddNewClass addNewClass) {
+////        Intent intent = new Intent(ins, Alarm.class);
+//        Intent intent = new Intent(context, NextClassWidget.class);
+//        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//        addNewClass.startActivity(intent);
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT); /* you dont have to cancel previous alarm, because of FLAG_UPDATE_CURRENT that will update alarm*/
+//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1, pendingIntent);
+//    }
 
     public static void updateWidget(Context context) {
         Intent intent = new Intent(context, NextClassWidget.class);
