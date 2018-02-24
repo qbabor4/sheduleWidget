@@ -43,9 +43,7 @@ public class NextClassWidget extends AppWidgetProvider {
             /** When got intent from alarm or when new widget is added or when phone is booted up*/
             String intentAction = intent.getAction();
             if (intentAction.equals(Intent.ACTION_ANSWER) || intentAction.equals("android.appwidget.action.APPWIDGET_UPDATE") || intentAction.equals("android.intent.action.BOOT_COMPLETED")) {
-                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
-                wl.acquire();
+                WakeLocker.acquire(context);
 
                 Alarm alarm = new Alarm(context);
                 Cursor cursor = alarm.getNextSubjectData();
@@ -53,7 +51,7 @@ public class NextClassWidget extends AppWidgetProvider {
                 updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
                 alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
 
-                wl.release();
+                WakeLocker.release();
 
             } else if(intent.getAction().equals(OPEN_APP_ACTION)){
                 openApp(context); // nie działa
