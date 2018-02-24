@@ -1,10 +1,9 @@
-﻿package qbabor4.pl.schoolschedule;
+package qbabor4.pl.schoolschedule;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -47,13 +46,6 @@ import java.util.Map;
  * ile do wakacji
  * jak wywala sie widget, to trzeba usunąć alarm
  * pobieranie danych czasu tak, ze pokazuje sie zegar
- * podawanie czasu w pm/am czy tylko 24h?
- * pokazac kolene pole nad tym ekranem co jest z wyborem czasu na zegarze
- * rozwijane munu na dni tygodnia (albo na górze, to zanaczania jako remoteButton)
- * zobaczyc czy da sie lepiej odczytywac dane od StringBufera z Cursera
- * jak se kliknie na widget, to dać do alarm_try
- * kolory do kazdego przedmiotu
- * Dodać widget
  * nie robic 2 razy Calendar rightNow = Calendar.getInstance();
  * zrobić klasę do danych z kalędarza ?
  * zamnąc drawer jak sie przejdzie do nowego layouta

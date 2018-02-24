@@ -3,6 +3,8 @@
     package="qbabor4.pl.schoolschedule">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -53,6 +55,7 @@
             <intent-filter>
                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                <action android:name="qbabor4.pl.schoolschedule.UPDATE_WIDGET" />
+               <action android:name="android.intent.action.BOOT_COMPLETED" />
              </intent-filter>
 
             <meta-data

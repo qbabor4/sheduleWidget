@@ -1,0 +1,12 @@
+setExact 
+alarm ma wybudzac urzadzenie co chwile, bo sie same kasuja
+alarm ma sie uaktywniac na bootcie urzadzenia
+zmienic nazwe SqlLiteHelper
+dodawac listener jakos raz, a nie za kazdym update
+jak minusowy czas, to dac wszystko na 0
+uzytkownik ma sam ustawiac czaswakacji,
+
+statystki ile ktos juz chodzil
+ile mial jakich zajec
+ile czasu spedzil w szkole
+ile jeszcze do chodzenia (ile godzin)
