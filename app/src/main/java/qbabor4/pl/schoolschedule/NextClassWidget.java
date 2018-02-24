@@ -1,5 +1,6 @@
 package qbabor4.pl.schoolschedule;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -17,16 +18,13 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
+import static android.content.Context.ALARM_SERVICE;
+
 /**
  * TODO
- * wywołać alarm
- * odebrać alarm w onReceive, pobrać dane z bazy i zmienic dane na widgecie
- * skasować alarm
- * podmienić textView na godziny
- * metoda dostajaca klasę i zmieniająca dane klasy na widgecie
- * Ma ustawiać alarm w momencie rozpoczęcia kolejnych zajęć a nie zakończenia tych co są
- * Jak jest widget na ekarnie i sie odpala jeszcze raz aplikację, to wywala błąd
- *
+ * zrobić widget z własnym service (bo nie powinno to wywalać alarmu wtedy)
+ * alarm puszczas z mojego service
+ * Jak sie klika na widget, to czasami tworzy nowe activity i jak sie cofa, to cofa do tego samego
  */
 public class NextClassWidget extends AppWidgetProvider {
 
@@ -34,17 +32,17 @@ public class NextClassWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE); /* to wake up device and recive intent when is locked */
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TAG");
         wl.acquire();
         Log.d("time", intent.getAction() + "out");
 
+//        final Intent i = new Intent(context, UpdateWidgetService.class);
 
 
-            /** When got intent from alarm or when new widget is added or when phone is booted up*/
+        /** When got intent from alarm or when new widget is added or when phone is booted up*/
         String intentAction = intent.getAction();
         if (intentAction.equals(Intent.ACTION_ANSWER) || intentAction.equals("android.appwidget.action.APPWIDGET_UPDATE") || intentAction.equals("android.intent.action.BOOT_COMPLETED")) {
-//                WakeLocker.acquire(context);
             Toast.makeText(context, intentAction, Toast.LENGTH_LONG).show();
             Log.d("time3", context.getApplicationContext() + "out");
             Alarm alarm = new Alarm(context);
@@ -52,12 +50,12 @@ public class NextClassWidget extends AppWidgetProvider {
 
             updateAllWidgets(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NextClassWidget.class)), alarm.getDataFromCursor(cursor));
             alarm.setNewAlarm(context, intent, alarm.getTimeOfNextAlarm(cursor));
+//            alarm.setNewAlarm(context, i , alarm.getTimeOfNextAlarm(cursor));
 
         } else if(intent.getAction().equals(OPEN_APP_ACTION)){
             openApp(context); // nie działa
         }
 
-//        WakeLocker.release();
         wl.release();
 
     }
@@ -106,8 +104,6 @@ public class NextClassWidget extends AppWidgetProvider {
         openAppIntent.setAction(OPEN_APP_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, openAppIntent, 0);
         views.setOnClickPendingIntent(R.id.widget_linearLayout, pendingIntent);
-//        ComponentName comp = new ComponentName(context.getPackageName(), MainActivity.class.getName());
-//        appWidgetManager.updateAppWidget(comp, views);
     }
 
     @Override
@@ -136,6 +132,7 @@ public class NextClassWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        Alarm.cancelAlarm(context);
     }
 
     public void changeLayoutData(RemoteViews views, HashMap<SqlDataEnum, String> classData){ // trzeba będzie kążdemy widgetowi updatować text (chyba bedzie w onUpdate

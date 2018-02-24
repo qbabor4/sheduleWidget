@@ -51,6 +51,7 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <!-- <service android:name=".UpdateWidgetService" /> -->
         <!--<receiver android:process=":remote" android:name="NextClassWidget" />  dodane -->
 
         <receiver android:name="NextClassWidget"> <!-- wywaliłem kropkę przed nazwą -->

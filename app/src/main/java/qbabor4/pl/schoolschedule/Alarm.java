@@ -44,7 +44,6 @@ public class Alarm {
         mDB = new SqlLiteHelper(context);
     }
 
-
     public HashMap<SqlDataEnum, String> getDataFromCursor(Cursor cursor){
         HashMap<SqlDataEnum, String> classData = new HashMap<>();
         if (cursor != null) {
@@ -107,22 +106,15 @@ public class Alarm {
             /** setsAnother alarm looking on start time of next classes */
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // Wakes up the device in Doze Mode
+                /* Wakes up the device in Doze Mode */
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Wakes up the device in Idle Mode
+                /* Wakes up the device in Idle Mode */
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
             } else {
-                // Old APIs
+                /* Old APIs */
                 alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
             }
-
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-//                alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-//            } else {
-//                alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-//            }
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent); /* RTC _WAKEUP works even when phone is locked */
         }
     }
 
@@ -144,6 +136,13 @@ public class Alarm {
             timeInMinutes = 0; // when in current day there is no class found, algorithm looks for class in next day from 0:00 hour
         }
         return retCursor;
+    }
+
+    public static void cancelAlarm(Context context){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(context, NextClassWidget.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 
 //    public static void createAlarmIntent(Context context, AddNewClass addNewClass) {
